@@ -15,6 +15,7 @@ const routes = [
   { path: "/snake", priority: 0.8, changeFrequency: "monthly" },
   { path: "/flappy", priority: 0.8, changeFrequency: "monthly" },
   { path: "/hamster", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/fortune", priority: 0.8, changeFrequency: "daily" },
 ];
 
 export default function sitemap() {

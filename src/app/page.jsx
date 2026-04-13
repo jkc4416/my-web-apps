@@ -157,6 +157,18 @@ const apps = [
     accent: "text-orange-400",
     size: "featured",
   },
+  {
+    id: 14,
+    name: "사주 & 오늘의 운세",
+    description: "사주팔자 분석과 매일 바뀌는 운세",
+    href: "/fortune",
+    emoji: "🔮",
+    gradient: "from-purple-500/20 to-pink-500/20",
+    border: "hover:border-purple-500/30",
+    glow: "group-hover:shadow-purple-500/10",
+    accent: "text-purple-400",
+    size: "featured",
+  },
 ];
 
 export default function Home() {
@@ -229,7 +241,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              13 Apps Live
+              14 Apps Live
             </span>
           </div>
 
