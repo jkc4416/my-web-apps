@@ -58,7 +58,7 @@ export const metadata = {
     canonical: SITE_URL,
   },
   verification: {
-    // google: "구글서치콘솔-인증코드",
+    google: "rZB0-yIQHlqiW5QC465kCwOo5dBYJ-mfCGKqzcfCkOw",
     // naver: "네이버서치어드바이저-인증코드",
   },
 };
