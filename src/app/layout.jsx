@@ -58,7 +58,7 @@ export const metadata = {
     canonical: SITE_URL,
   },
   verification: {
-    google: "rZB0-yIQHlqiW5QC465kCwOo5dBYJ-mfCGKqzcfCkOw",
+    google: "cBLKQjaTrczqWZUpAzNwVJ-fB4hnxMyesvcRLS7_sAI",
     // naver: "네이버서치어드바이저-인증코드",
   },
 };
