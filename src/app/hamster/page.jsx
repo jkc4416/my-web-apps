@@ -249,15 +249,23 @@ export default function HamsterPage() {
   const [bounce, setBounce] = useState(false);
   const [nameEditing, setNameEditing] = useState(false);
   const [nameInput, setNameInput] = useState("");
-  // Hamster position & movement
+  // Hamster position & movement — use refs to avoid stale closures
   const [hamX, setHamX] = useState(CAGE_W / 2);
   const [hamY, setHamY] = useState(CAGE_H / 2);
   const [hamFlip, setHamFlip] = useState(false);
   const [hamAction, setHamAction] = useState("idle"); // idle, walk, sniff, groom
+  const hamPosRef = useRef({ x: CAGE_W / 2, y: CAGE_H / 2 });
   const moveTimerRef = useRef(null);
+  const animRef = useRef(null);
   const wheelTimerRef = useRef(null);
   const decayRef = useRef(null);
   const particleId = useRef(0);
+  // Keep ref in sync
+  const updatePos = useCallback((x, y) => {
+    hamPosRef.current = { x, y };
+    setHamX(x);
+    setHamY(y);
+  }, []);
 
   // Load
   useEffect(() => {
@@ -285,53 +293,54 @@ export default function HamsterPage() {
     localStorage.setItem(SAVE_KEY, JSON.stringify({ ...state, lastSaved: Date.now() }));
   }, [state]);
 
+  // Animate hamster to a target position (reusable)
+  const animateTo = useCallback((targetX, targetY, duration, onDone) => {
+    if (animRef.current) cancelAnimationFrame(animRef.current);
+    const startX = hamPosRef.current.x;
+    const startY = hamPosRef.current.y;
+    setHamFlip(targetX < startX);
+    const startTime = Date.now();
+    const step = () => {
+      const elapsed = Date.now() - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      updatePos(startX + (targetX - startX) * ease, startY + (targetY - startY) * ease);
+      if (t < 1) { animRef.current = requestAnimationFrame(step); }
+      else { animRef.current = null; if (onDone) onDone(); }
+    };
+    animRef.current = requestAnimationFrame(step);
+  }, [updatePos]);
+
   // Random hamster movement
   useEffect(() => {
-    if (!state || wheelActive) return;
+    if (!state || wheelActive || isSleeping) {
+      clearTimeout(moveTimerRef.current);
+      return;
+    }
 
     const doMove = () => {
-      if (isSleeping) {
-        setHamAction("idle");
-        return;
-      }
-
       const actions = ["idle", "idle", "walk", "walk", "walk", "sniff", "groom"];
       const action = actions[Math.floor(Math.random() * actions.length)];
       setHamAction(action);
 
       if (action === "walk") {
-        const tier = getSizeTier(state.level);
-        const spriteW = SPRITES[tier].normal[0].length * SIZES[tier].pixel;
-        const spriteH = SPRITES[tier].normal.length * SIZES[tier].pixel;
-        const margin = 10;
+        const t = getSizeTier(state.level);
+        const spriteW = SPRITES[t].normal[0].length * SIZES[t].pixel;
+        const spriteH = SPRITES[t].normal.length * SIZES[t].pixel;
+        const margin = 15;
         const targetX = margin + Math.random() * (CAGE_W - spriteW - margin * 2);
-        const targetY = CAGE_H * 0.3 + Math.random() * (CAGE_H * 0.5 - spriteH);
+        const targetY = CAGE_H * 0.25 + Math.random() * (CAGE_H * 0.45 - spriteH);
+        const duration = 1000 + Math.random() * 1500;
 
-        setHamFlip(targetX < hamX);
-        // Animate to target
-        const startX = hamX;
-        const startY = hamY;
-        const duration = 800 + Math.random() * 1200;
-        const start = Date.now();
-
-        const animate = () => {
-          const elapsed = Date.now() - start;
-          const t = Math.min(elapsed / duration, 1);
-          const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-          setHamX(startX + (targetX - startX) * ease);
-          setHamY(startY + (targetY - startY) * ease);
-          if (t < 1) requestAnimationFrame(animate);
-          else setHamAction("idle");
-        };
-        requestAnimationFrame(animate);
+        animateTo(targetX, targetY, duration, () => setHamAction("idle"));
       }
 
-      moveTimerRef.current = setTimeout(doMove, 1500 + Math.random() * 3000);
+      moveTimerRef.current = setTimeout(doMove, 2000 + Math.random() * 3000);
     };
 
-    moveTimerRef.current = setTimeout(doMove, 1000 + Math.random() * 2000);
-    return () => clearTimeout(moveTimerRef.current);
-  }, [state?.level, isSleeping, wheelActive]);
+    moveTimerRef.current = setTimeout(doMove, 1500 + Math.random() * 2000);
+    return () => { clearTimeout(moveTimerRef.current); if (animRef.current) cancelAnimationFrame(animRef.current); };
+  }, [state?.level, isSleeping, wheelActive, animateTo]);
 
   // Stat decay
   useEffect(() => {
@@ -460,31 +469,16 @@ export default function HamsterPage() {
     setTimeout(() => {
       setWheelPhase("approaching");
       setHamFlip(false); // face right toward wheel
-      const tier = getSizeTier(state.level);
-      const spriteH = SPRITES[tier].normal.length * SIZES[tier].pixel;
-      // Animate hamster walking to wheel
-      const startX = hamX;
-      const startY = hamY;
+      const t = getSizeTier(state.level);
+      const spriteH = SPRITES[t].normal.length * SIZES[t].pixel;
       const targetX = WHEEL_X - 20;
       const targetY = WHEEL_Y + WHEEL_SIZE / 2 - spriteH / 2;
-      const duration = 1000;
-      const start = Date.now();
-      const animate = () => {
-        const elapsed = Date.now() - start;
-        const t = Math.min(elapsed / duration, 1);
-        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        setHamX(startX + (targetX - startX) * ease);
-        setHamY(startY + (targetY - startY) * ease);
-        if (t < 1) requestAnimationFrame(animate);
-        else {
-          // Phase 3: hamster is on the wheel, ready
-          setWheelPhase("ready");
-          showBubble("준비 완료! 아래 버튼을 눌러주세요!");
-        }
-      };
-      requestAnimationFrame(animate);
+      animateTo(targetX, targetY, 1000, () => {
+        setWheelPhase("ready");
+        showBubble("준비 완료! 아래 버튼을 눌러주세요!");
+      });
     }, 600);
-  }, [state, isSleeping, wheelActive, showBubble, hamX, hamY]);
+  }, [state, isSleeping, wheelActive, showBubble, animateTo]);
 
   const startRunning = useCallback(() => {
     if (wheelPhase !== "ready") return;
@@ -508,17 +502,21 @@ export default function HamsterPage() {
           gainXP(XP_PER_ACTION * 2);
           return 0;
         });
-        // Hamster hops off after a moment
+        // Hamster hops off — walk to a random spot instead of teleporting
         setTimeout(() => {
           setWheelPhase("none");
-          setHamX(CAGE_W / 2);
-          setHamY(CAGE_H / 2);
+          const t = getSizeTier(state.level);
+          const spriteW = SPRITES[t].normal[0].length * SIZES[t].pixel;
+          const margin = 15;
+          const wanderX = margin + Math.random() * (CAGE_W * 0.5 - spriteW);
+          const wanderY = CAGE_H * 0.3 + Math.random() * (CAGE_H * 0.3);
+          animateTo(wanderX, wanderY, 1200, () => setHamAction("idle"));
         }, 1500);
       } else {
         setWheelTime(remaining);
       }
     }, 100);
-  }, [wheelPhase, showBubble, spawnParticles, gainXP]);
+  }, [wheelPhase, showBubble, spawnParticles, gainXP, state, animateTo]);
 
   const tapWheel = useCallback(() => {
     if (wheelPhase !== "running") return;
@@ -540,7 +538,7 @@ export default function HamsterPage() {
   const resetGame = useCallback(() => {
     localStorage.removeItem(SAVE_KEY);
     setState(getDefaultState()); setIsSleeping(false); setWheelPhase("none"); setShowShop(false);
-    setHamX(CAGE_W / 2); setHamY(CAGE_H / 2);
+    updatePos(CAGE_W / 2, CAGE_H / 2);
     showBubble("새 햄스터를 입양했어요!"); spawnParticles("🎀", 6);
   }, [showBubble, spawnParticles]);
 
