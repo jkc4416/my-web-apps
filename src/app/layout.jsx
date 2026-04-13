@@ -59,7 +59,9 @@ export const metadata = {
   },
   verification: {
     google: "cBLKQjaTrczqWZUpAzNwVJ-fB4hnxMyesvcRLS7_sAI",
-    // naver: "네이버서치어드바이저-인증코드",
+    other: {
+      "naver-site-verification": "naverf940320fdd24874640fa7506720856a2",
+    },
   },
 };
 
