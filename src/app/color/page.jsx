@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef } from "react";
+import Link from "next/link";
 
 /*
   ╔══════════════════════════════════════════════════════════════╗
@@ -324,6 +325,7 @@ export default function ColorCraft(){
         <div className="absolute w-[350px] h-[350px] rounded-full od" style={{background:"radial-gradient(circle,rgba(236,72,153,.04),transparent 70%)",bottom:"8%",left:"-12%",animationDelay:"-6s"}}/>
       </div>
 
+      {/* Home */}<Link href="/" className="fixed top-4 left-4 z-50 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:bg-white/10 active:scale-95" style={{color:"rgba(255,255,255,.4)",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",backdropFilter:"blur(12px)"}}>← 홈</Link>
       <header className="sticky top-0 z-30" style={{background:"rgba(12,6,24,.88)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,.04)"}}>
         <div className="max-w-lg mx-auto px-5 py-3 flex items-center justify-between">
           {act?(<button onClick={()=>setAct(null)} className="text-[13px] hover:text-white transition-colors" style={{color:"rgba(255,255,255,.3)"}}>← Tools</button>)

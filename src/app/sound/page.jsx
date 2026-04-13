@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import Link from "next/link";
 
 /*
   ╔══════════════════════════════════════════════════════════════╗
@@ -241,6 +242,7 @@ export default function SoundFocus() {
         {playing && <div className="absolute w-[300px] h-[300px] rounded-full breathe" style={{ background: `radial-gradient(circle, ${dominantColor}0c, transparent 60%)`, top: "35%", left: "30%", transition: "background 2s" }} />}
       </div>
 
+      {/* Home */}<Link href="/" className="fixed top-4 left-4 z-50 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:bg-white/10 active:scale-95" style={{color:"rgba(255,255,255,.4)",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",backdropFilter:"blur(12px)"}}>← 홈</Link>
       {/* Header */}
       <header className="sticky top-0 z-30" style={{ background: "rgba(4,12,24,0.85)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-lg mx-auto px-5 py-3">

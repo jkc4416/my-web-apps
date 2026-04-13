@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import Link from "next/link";
 
 /*
   ╔══════════════════════════════════════════════════════════════╗
@@ -175,6 +176,7 @@ export default function DdayMaker() {
         <div className="absolute w-[400px] h-[400px] rounded-full od transition-all duration-[2s]" style={{ background: `radial-gradient(circle, ${th.accent}04, transparent 70%)`, bottom: "5%", left: "-15%", animationDelay: "-7s" }} />
       </div>
 
+      {/* Home */}<Link href="/" className="fixed top-4 left-4 z-50 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:bg-white/10 active:scale-95" style={{color:"rgba(255,255,255,.4)",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",backdropFilter:"blur(12px)"}}>← 홈</Link>
       {/* Header */}
       <header className="sticky top-0 z-30" style={{ background: pg === "view" ? `${th.bg[0]}dd` : "rgba(8,12,26,.88)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: "1px solid rgba(255,255,255,.04)" }}>
         <div className="max-w-lg mx-auto px-5 py-3 flex items-center justify-between">

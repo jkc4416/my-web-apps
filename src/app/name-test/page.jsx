@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import Link from "next/link";
 
 /*
   ╔══════════════════════════════════════════════════════════════╗
@@ -153,7 +154,7 @@ export default function App(){
       </div>
 
       {/* Header */}
-      <header className="relative z-10 pt-10 pb-5 text-center">
+      <header className="relative z-10 pt-10 pb-5 text-center"><Link href="/" className="absolute left-5 top-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:bg-white/10 z-20" style={{color:"rgba(255,255,255,.35)",border:"1px solid rgba(255,255,255,.06)"}}>← 홈</Link>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full gl mb-4" style={{fontSize:10,letterSpacing:"0.2em",color:"rgba(255,255,255,.25)"}}>
           NAME CHEMISTRY
         </div>
