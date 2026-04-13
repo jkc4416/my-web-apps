@@ -175,6 +175,21 @@ const 럭키색 = [
 const 럭키방향 = ["동쪽","서쪽","남쪽","북쪽","동남쪽","서남쪽","동북쪽","서북쪽"];
 const 럭키음식 = ["국밥","비빔밥","치킨","파스타","초밥","떡볶이","샐러드","삼겹살","칼국수","카레","김치찌개","된장찌개","햄버거","우동","볶음밥"];
 
+const 띠운세 = [
+  "새로운 기회가 다가오는 시기! 주저하지 말고 도전하세요.",
+  "꾸준함이 빛을 발하는 때. 묵묵히 자기 길을 가세요.",
+  "리더십을 발휘할 기회가 와요. 자신감을 가지세요.",
+  "예상치 못한 행운이 찾아와요. 열린 마음으로 받아들이세요.",
+  "큰 그림을 그릴 때! 원대한 계획을 세워보세요.",
+  "지혜로운 판단이 필요해요. 신중하게 결정하세요.",
+  "활발한 활동이 행운을 불러와요. 적극적으로 움직이세요.",
+  "부드러운 태도가 행복을 가져와요. 양보의 미덕을 발휘하세요.",
+  "재치와 유머로 인기를 끌어요. 사교활동에 유리해요.",
+  "완벽을 추구하면 좋은 결과가 와요. 디테일에 신경 쓰세요.",
+  "충성스러운 인연이 복을 가져와요. 사람을 소중히 하세요.",
+  "재물운이 상승하는 시기! 재테크에 관심을 가져보세요.",
+];
+
 const SAVE_KEY = "fortune-birth";
 
 export default function FortunePage() {
@@ -193,7 +208,7 @@ export default function FortunePage() {
       const d = JSON.parse(saved);
       setBirthYear(d.year || ""); setBirthMonth(d.month || ""); setBirthDay(d.day || "");
       setBirthHour(d.hour ?? "-1"); setGender(d.gender || "male");
-      if (d.year && d.month && d.day) setShowResult(true);
+      if (d.year && d.month && d.day) { setShowResult(true); setActiveTab("fortune"); }
     }
   }, []);
 
@@ -246,11 +261,11 @@ export default function FortunePage() {
     const categories = ["총운", "애정", "재물", "건강", "직장"];
     const results = {};
 
-    categories.forEach((cat) => {
-      const hash = getDailyHash(birth, cat);
+    categories.forEach((cat, ci) => {
+      const hash = getDailyHash(birth, cat + ci);
       const texts = 운세풀[cat];
       const idx = hash % texts.length;
-      const score = (hash % 5) + 1; // 1~5 stars
+      const score = ((hash >> (ci * 3)) % 5) + 1; // vary per category
       results[cat] = { text: texts[idx], score };
     });
 
@@ -301,15 +316,15 @@ export default function FortunePage() {
                 <label className="block text-[10px] uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,.2)" }}>생년월일</label>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <input type="number" placeholder="년 (1950~)" value={birthYear} onChange={(e) => setBirthYear(e.target.value)} min="1920" max="2025" required className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40" />
+                    <input type="number" placeholder="년 (1950~)" value={birthYear} onChange={(e) => setBirthYear(e.target.value)} min="1920" max="2025" required inputMode="numeric" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>년</span>
                   </div>
                   <div>
-                    <input type="number" placeholder="월" value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)} min="1" max="12" required className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40" />
+                    <input type="number" placeholder="월" value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)} min="1" max="12" required inputMode="numeric" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>월</span>
                   </div>
                   <div>
-                    <input type="number" placeholder="일" value={birthDay} onChange={(e) => setBirthDay(e.target.value)} min="1" max="31" required className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40" />
+                    <input type="number" placeholder="일" value={birthDay} onChange={(e) => setBirthDay(e.target.value)} min="1" max="31" required inputMode="numeric" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>일</span>
                   </div>
                 </div>
@@ -317,7 +332,7 @@ export default function FortunePage() {
 
               <div>
                 <label className="block text-[10px] uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,.2)" }}>태어난 시간 (선택)</label>
-                <select value={birthHour} onChange={(e) => setBirthHour(e.target.value)} className="w-full rounded-xl px-3 py-3 text-[14px] bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40" style={{ color: "rgba(255,255,255,.7)" }}>
+                <select value={birthHour} onChange={(e) => setBirthHour(e.target.value)} className="w-full rounded-xl px-3 py-3 text-[14px] border border-white/[0.06] outline-none focus:border-purple-500/40" style={{ color: "rgba(255,255,255,.7)", background: "#1a0e28" }}>
                   <option value="-1">모름</option>
                   {Array.from({ length: 24 }, (_, i) => (
                     <option key={i} value={i}>{String(i).padStart(2, "0")}:00 ~ {String(i).padStart(2, "0")}:59 ({지지[시간지지[i]]}시)</option>
@@ -370,6 +385,13 @@ export default function FortunePage() {
             {/* ===== 사주팔자 TAB ===== */}
             {activeTab === "saju" && (
               <div className="space-y-4 fi">
+                {/* 핵심 요약 */}
+                <div className="rounded-2xl p-5 text-center" style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.08), rgba(236,72,153,0.08))", border: "1px solid rgba(168,85,247,0.12)" }}>
+                  <div className="text-3xl mb-2">{띠이모지[saju.띠idx]}</div>
+                  <div className="text-[20px] font-black mb-1" style={{ color: "#c084fc" }}>{일간성격[saju.일간].title}의 기운</div>
+                  <div className="text-[12px]" style={{ color: "rgba(255,255,255,.35)" }}>일간 {saju.일간} · {띠이름[saju.띠idx]}띠 · {오행[천간오행[saju.일.간]]} 속성</div>
+                </div>
+
                 {/* 사주 기둥 */}
                 <div className="gl rounded-2xl p-5">
                   <h3 className="text-[10px] uppercase tracking-widest mb-4" style={{ color: "rgba(255,255,255,.2)" }}>사주 네 기둥</h3>
@@ -455,11 +477,19 @@ export default function FortunePage() {
             {/* ===== 오늘의 운세 TAB ===== */}
             {activeTab === "fortune" && (
               <div className="space-y-3 fi">
-                <div className="text-center mb-2">
-                  <div className="text-[11px]" style={{ color: "rgba(255,255,255,.2)" }}>
-                    {new Date().getFullYear()}년 {new Date().getMonth() + 1}월 {new Date().getDate()}일의 운세
-                  </div>
-                </div>
+                {(() => {
+                  const avg = ((fortune.총운.score + fortune.애정.score + fortune.재물.score + fortune.건강.score + fortune.직장.score) / 5).toFixed(1);
+                  const label = avg >= 4 ? "대길 🎉" : avg >= 3 ? "길 ✨" : avg >= 2 ? "보통 🙂" : "소길 💪";
+                  return (
+                    <div className="rounded-2xl p-5 text-center mb-1" style={{ background: "linear-gradient(135deg, rgba(251,191,36,0.08), rgba(236,72,153,0.08))", border: "1px solid rgba(251,191,36,0.12)" }}>
+                      <div className="text-[11px] mb-1" style={{ color: "rgba(255,255,255,.2)" }}>
+                        {new Date().getFullYear()}년 {new Date().getMonth() + 1}월 {new Date().getDate()}일
+                      </div>
+                      <div className="text-3xl font-black mb-1" style={{ color: "#fbbf24" }}>{avg}점</div>
+                      <div className="text-[13px] font-semibold" style={{ color: "rgba(255,255,255,.4)" }}>{label}</div>
+                    </div>
+                  );
+                })()}
 
                 {[
                   { key: "총운", emoji: "🌟", label: "총운" },
@@ -486,6 +516,18 @@ export default function FortunePage() {
             {/* ===== 행운 TAB ===== */}
             {activeTab === "lucky" && (
               <div className="fi">
+                {/* 띠 운세 */}
+                <div className="gl rounded-2xl p-5 mb-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-3xl">{띠이모지[saju.띠idx]}</span>
+                    <div>
+                      <div className="text-[14px] font-bold" style={{ color: "rgba(255,255,255,.6)" }}>{띠이름[saju.띠idx]}띠 운세</div>
+                      <div className="text-[10px]" style={{ color: "rgba(255,255,255,.2)" }}>{birthYear}년생</div>
+                    </div>
+                  </div>
+                  <p className="text-[12px] leading-relaxed" style={{ color: "rgba(255,255,255,.35)" }}>{띠운세[saju.띠idx]}</p>
+                </div>
+
                 <div className="text-center mb-4">
                   <div className="text-[11px]" style={{ color: "rgba(255,255,255,.2)" }}>오늘의 행운 아이템</div>
                 </div>
@@ -516,8 +558,19 @@ export default function FortunePage() {
           </div>
         )}
 
-        <div className="mt-10 text-center text-[10px] leading-relaxed" style={{ color: "rgba(255,255,255,.06)" }}>
-          <p>본 운세는 전통 사주 이론을 기반으로 한 재미 콘텐츠입니다.</p>
+        {/* Share */}
+        {showResult && (
+          <button onClick={() => {
+            const text = `🔮 ${birthYear}년 ${birthMonth}월 ${birthDay}일생 오늘의 운세\n총운: ${"★".repeat(fortune?.총운?.score || 0)}${"☆".repeat(5 - (fortune?.총운?.score || 0))}\n${fortune?.총운?.text}\n\n나도 보러가기 → funappbox.com/fortune`;
+            if (navigator.share) navigator.share({ title: "오늘의 운세", text });
+            else { navigator.clipboard.writeText(text); alert("복사되었습니다!"); }
+          }} className="w-full rounded-2xl py-3 mt-4 text-center text-[13px] font-semibold transition-all active:scale-[0.98]" style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.15)", color: "#c084fc" }}>
+            📤 오늘의 운세 공유하기
+          </button>
+        )}
+
+        <div className="mt-10 text-center text-[10px] leading-relaxed px-4 py-3 rounded-xl mx-auto max-w-xs" style={{ color: "rgba(255,255,255,.15)", background: "rgba(255,255,255,.01)", border: "1px solid rgba(255,255,255,.03)" }}>
+          <p>⚠️ 본 운세는 전통 사주 이론을 기반으로 한 <strong>재미 콘텐츠</strong>입니다.</p>
           <p>실제 운명이나 미래를 예측하는 것이 아닙니다.</p>
         </div>
       </div>
