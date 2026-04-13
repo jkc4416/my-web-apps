@@ -51,20 +51,20 @@ const TITLES = [
   "우주 햄스터", "신화의 햄스터",
 ];
 
-// Pixel sizes per level tier: level 1-2, 3-4, 5-6, 7-8, 9+
+// Pixel sizes per level tier: every 5 levels
 const SIZES = [
-  { pixel: 4, cols: 7, label: "아기" },    // lv 1-2
-  { pixel: 5, cols: 9, label: "꼬마" },    // lv 3-4
-  { pixel: 5, cols: 11, label: "청소년" }, // lv 5-6
-  { pixel: 6, cols: 11, label: "어른" },   // lv 7-8
-  { pixel: 7, cols: 13, label: "왕" },     // lv 9+
+  { pixel: 4, cols: 7, label: "아기" },    // lv 1-4
+  { pixel: 5, cols: 9, label: "꼬마" },    // lv 5-9
+  { pixel: 5, cols: 11, label: "청소년" }, // lv 10-14
+  { pixel: 6, cols: 11, label: "어른" },   // lv 15-19
+  { pixel: 7, cols: 13, label: "왕" },     // lv 20+
 ];
 
 function getSizeTier(level) {
-  if (level <= 2) return 0;
-  if (level <= 4) return 1;
-  if (level <= 6) return 2;
-  if (level <= 8) return 3;
+  if (level < 5) return 0;
+  if (level < 10) return 1;
+  if (level < 15) return 2;
+  if (level < 20) return 3;
   return 4;
 }
 
