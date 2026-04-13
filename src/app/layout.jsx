@@ -67,6 +67,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ko">
       <head>
+        <link
+          rel="preconnect"
+          href="https://cdn.jsdelivr.net"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body>
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
@@ -79,13 +86,8 @@ export default function RootLayout({ children }) {
             gtag('config', '${GA_ID}');
           `}
         </Script>
-        <link
-          rel="preconnect"
-          href="https://cdn.jsdelivr.net"
-          crossOrigin="anonymous"
-        />
-      </head>
-      <body>{children}</body>
+        {children}
+      </body>
     </html>
   );
 }
