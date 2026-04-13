@@ -25,8 +25,9 @@ A collection of 10 fun and useful mini web apps built with Next.js 15 and Tailwi
 - **Styling:** Tailwind CSS 4
 - **Charts:** Recharts
 - **Deployment:** Vercel
-- **Domain:** funappbox.com
+- **Domain:** www.funappbox.com
 - **Analytics:** Google Analytics 4
+- **Monetization:** Google AdSense
 
 ## Getting Started
 
@@ -44,7 +45,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 src/app/
-├── layout.jsx              # Root layout (GA4, SEO metadata, verification)
+├── layout.jsx              # Root layout (GA4, AdSense, SEO metadata, verification)
 ├── page.jsx                # Hub page (bento grid with 10 app cards)
 ├── globals.css             # Tailwind config + animations
 ├── sitemap.js              # Auto-generated sitemap.xml

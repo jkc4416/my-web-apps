@@ -19,6 +19,7 @@ git push             # Auto-deploys to Vercel
 - **Styling:** Tailwind CSS 4 (no tailwind.config — uses `@theme inline` in globals.css)
 - **State:** All client-side, no backend/database. D-Day app uses localStorage.
 - **Analytics:** GA4 (G-9B1VWBK256) loaded via `next/script` in body (not head — head doesn't work in App Router)
+- **Monetization:** Google AdSense (ca-pub-7511894317730921) loaded via `next/script` in body, `ads.txt` in `public/`
 - **SEO:** Each app has its own `layout.jsx` exporting `metadata` for title/description/keywords/OG/Twitter
 - **Sitemap:** Auto-generated via `src/app/sitemap.js`
 - **Deployment:** Vercel, auto-deploy on push to main
@@ -28,7 +29,8 @@ git push             # Auto-deploys to Vercel
 - App pages use `.jsx` extension
 - Each app directory has `page.jsx` (client component) + `layout.jsx` (server component for metadata)
 - Source `.jsx` files (e.g., `name-compatibility.jsx`) in `src/app/` are the originals — the route pages are copies with `"use client"` prepended
-- Root `layout.jsx` contains GA4 scripts, verification codes, and shared metadata with `title.template`
+- Root `layout.jsx` contains GA4 scripts, AdSense script, verification codes, and shared metadata with `title.template`
+- `public/ads.txt` contains AdSense publisher authorization
 
 ## Domain & Verification
 
@@ -36,6 +38,7 @@ git push             # Auto-deploys to Vercel
 - Google Search Console: verified via meta tag
 - Naver Search Advisor: verified via meta tag
 - GA4 Measurement ID: `G-9B1VWBK256`
+- AdSense Publisher ID: `ca-pub-7511894317730921`
 
 ## Important Notes
 

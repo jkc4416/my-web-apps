@@ -24,8 +24,10 @@ Deployment typically completes in 1-2 minutes.
 No environment variables are required. All configuration is in the source code:
 
 - GA4 ID: hardcoded in `src/app/layout.jsx`
+- AdSense ID: hardcoded in `src/app/layout.jsx`
 - Verification codes: hardcoded in `src/app/layout.jsx`
 - Site URL: hardcoded in `src/app/sitemap.js` and `src/app/layout.jsx`
+- ads.txt: `public/ads.txt`
 
 ## Domain Setup (Vercel)
 
@@ -38,6 +40,7 @@ No environment variables are required. All configuration is in the source code:
 | Service | Status | Dashboard |
 |---------|--------|-----------|
 | Google Analytics 4 | Active (G-9B1VWBK256) | analytics.google.com |
+| Google AdSense | Pending (ca-pub-7511894317730921) | adsense.google.com |
 | Google Search Console | Verified | search.google.com/search-console |
 | Naver Search Advisor | Verified | searchadvisor.naver.com |
 
