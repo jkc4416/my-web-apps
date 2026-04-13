@@ -240,9 +240,10 @@ export default function HamsterPage() {
   const [particles, setParticles] = useState([]);
   const [showShop, setShowShop] = useState(false);
   const [shopTab, setShopTab] = useState("food");
-  const [wheelActive, setWheelActive] = useState(false);
+  const [wheelPhase, setWheelPhase] = useState("none"); // none | appearing | approaching | ready | running | finishing
   const [wheelTaps, setWheelTaps] = useState(0);
   const [wheelTime, setWheelTime] = useState(0);
+  const wheelActive = wheelPhase !== "none";
   const [isSleeping, setIsSleeping] = useState(false);
   const [bubbleMsg, setBubbleMsg] = useState("");
   const [bounce, setBounce] = useState(false);
@@ -442,30 +443,88 @@ export default function HamsterPage() {
     setTimeout(() => setMood("happy"), 1500);
   }, [state, isSleeping, wheelActive, spawnParticles, showBubble, doBounce, gainXP]);
 
+  // Wheel position in cage
+  const WHEEL_X = CAGE_W - 80;
+  const WHEEL_Y = CAGE_H * 0.35;
+  const WHEEL_SIZE = 64;
+
   const startWheel = useCallback(() => {
     if (!state || isSleeping || wheelActive) return;
     if (state.energy < 15) { showBubble("너무 피곤해요..."); return; }
-    setWheelActive(true); setWheelTaps(0); setWheelTime(WHEEL_DURATION);
-    showBubble("빨리 탭하세요! 🏃");
+
+    // Phase 1: wheel appears
+    setWheelPhase("appearing");
+    showBubble("오! 쳇바퀴다!");
+
+    // Phase 2: hamster runs to wheel
+    setTimeout(() => {
+      setWheelPhase("approaching");
+      setHamFlip(false); // face right toward wheel
+      const tier = getSizeTier(state.level);
+      const spriteH = SPRITES[tier].normal.length * SIZES[tier].pixel;
+      // Animate hamster walking to wheel
+      const startX = hamX;
+      const startY = hamY;
+      const targetX = WHEEL_X - 20;
+      const targetY = WHEEL_Y + WHEEL_SIZE / 2 - spriteH / 2;
+      const duration = 1000;
+      const start = Date.now();
+      const animate = () => {
+        const elapsed = Date.now() - start;
+        const t = Math.min(elapsed / duration, 1);
+        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        setHamX(startX + (targetX - startX) * ease);
+        setHamY(startY + (targetY - startY) * ease);
+        if (t < 1) requestAnimationFrame(animate);
+        else {
+          // Phase 3: hamster is on the wheel, ready
+          setWheelPhase("ready");
+          showBubble("준비 완료! 아래 버튼을 눌러주세요!");
+        }
+      };
+      requestAnimationFrame(animate);
+    }, 600);
+  }, [state, isSleeping, wheelActive, showBubble, hamX, hamY]);
+
+  const startRunning = useCallback(() => {
+    if (wheelPhase !== "ready") return;
+    setWheelPhase("running");
+    setWheelTaps(0);
+    setWheelTime(WHEEL_DURATION);
+    showBubble("빨리 눌러요! 🏃");
+
     const start = Date.now();
     wheelTimerRef.current = setInterval(() => {
       const remaining = WHEEL_DURATION - (Date.now() - start);
       if (remaining <= 0) {
-        clearInterval(wheelTimerRef.current); setWheelActive(false); setWheelTime(0);
+        clearInterval(wheelTimerRef.current);
+        setWheelPhase("finishing");
+        setWheelTime(0);
         setWheelTaps((taps) => {
           const earned = Math.floor(taps * COIN_PER_TAP);
           setState((s) => ({ ...s, coins: s.coins + earned, energy: clamp(s.energy - 15), happiness: clamp(s.happiness + 10) }));
-          showBubble(`🎉 ${earned} 코인 획득!`); spawnParticles("🪙", 8); gainXP(XP_PER_ACTION * 2);
+          showBubble(`🎉 ${earned} 코인 획득!`);
+          spawnParticles("🪙", 8);
+          gainXP(XP_PER_ACTION * 2);
           return 0;
         });
-      } else { setWheelTime(remaining); }
+        // Hamster hops off after a moment
+        setTimeout(() => {
+          setWheelPhase("none");
+          setHamX(CAGE_W / 2);
+          setHamY(CAGE_H / 2);
+        }, 1500);
+      } else {
+        setWheelTime(remaining);
+      }
     }, 100);
-  }, [state, isSleeping, wheelActive, showBubble, spawnParticles, gainXP]);
+  }, [wheelPhase, showBubble, spawnParticles, gainXP]);
 
   const tapWheel = useCallback(() => {
-    if (!wheelActive) return;
-    setWheelTaps((t) => t + 1); doBounce();
-  }, [wheelActive, doBounce]);
+    if (wheelPhase !== "running") return;
+    setWheelTaps((t) => t + 1);
+    doBounce();
+  }, [wheelPhase, doBounce]);
 
   const petHamster = useCallback(() => {
     if (isSleeping || wheelActive) return;
@@ -480,7 +539,7 @@ export default function HamsterPage() {
 
   const resetGame = useCallback(() => {
     localStorage.removeItem(SAVE_KEY);
-    setState(getDefaultState()); setIsSleeping(false); setWheelActive(false); setShowShop(false);
+    setState(getDefaultState()); setIsSleeping(false); setWheelPhase("none"); setShowShop(false);
     setHamX(CAGE_W / 2); setHamY(CAGE_H / 2);
     showBubble("새 햄스터를 입양했어요!"); spawnParticles("🎀", 6);
   }, [showBubble, spawnParticles]);
@@ -567,10 +626,38 @@ export default function HamsterPage() {
             <div key={i} className="absolute rounded-full" style={{ width: 3, height: 2, background: "rgba(200,160,100,0.06)", left: `${(i * 17) % 100}%`, bottom: 12 + (i % 5) * 4 }} />
           ))}
 
-          {/* Wheel decoration */}
-          <div className="absolute top-4 right-4 opacity-[0.08]">
-            <div className="w-12 h-12 rounded-full border-2 border-white" style={{ animation: wheelActive ? `wheelSpin ${Math.max(0.15, 0.8 - wheelTaps * 0.008)}s linear infinite` : "none" }} />
-          </div>
+          {/* Wheel — visible when mini-game active */}
+          {wheelPhase !== "none" && (
+            <div className="absolute z-5" style={{ right: 24, top: WHEEL_Y - 8, transition: "opacity 0.5s", opacity: wheelPhase === "appearing" ? 0.5 : 1 }}>
+              {/* Stand */}
+              <div className="absolute" style={{ width: 4, height: WHEEL_SIZE + 16, background: "rgba(180,140,100,0.25)", borderRadius: 2, left: WHEEL_SIZE / 2 - 2, top: 0 }} />
+              {/* Wheel circle */}
+              <div className="rounded-full flex items-center justify-center" style={{
+                width: WHEEL_SIZE, height: WHEEL_SIZE,
+                border: "3px solid rgba(251,191,36,0.35)",
+                background: "rgba(251,191,36,0.04)",
+                animation: wheelPhase === "running" ? `wheelSpin ${Math.max(0.1, 0.6 - wheelTaps * 0.005)}s linear infinite` : "none",
+                boxShadow: wheelPhase === "running" ? "0 0 20px rgba(251,191,36,0.15)" : "none",
+                transition: "box-shadow 0.3s",
+              }}>
+                {/* Spokes */}
+                {[0, 45, 90, 135].map((deg) => (
+                  <div key={deg} className="absolute" style={{ width: 1, height: WHEEL_SIZE - 10, background: "rgba(251,191,36,0.15)", transform: `rotate(${deg}deg)` }} />
+                ))}
+                {/* Center */}
+                <div className="rounded-full" style={{ width: 8, height: 8, background: "rgba(251,191,36,0.4)" }} />
+              </div>
+              {/* Base */}
+              <div className="absolute" style={{ width: WHEEL_SIZE + 8, height: 4, background: "rgba(180,140,100,0.2)", borderRadius: 2, left: -4, top: WHEEL_SIZE + 12 }} />
+            </div>
+          )}
+
+          {/* Wheel decoration (idle, faint) */}
+          {wheelPhase === "none" && (
+            <div className="absolute top-4 right-4 opacity-[0.06]">
+              <div className="w-10 h-10 rounded-full border-2 border-white" />
+            </div>
+          )}
 
           {/* Water bottle */}
           <div className="absolute top-4 left-4 text-xl opacity-[0.12]">🍶</div>
@@ -593,37 +680,73 @@ export default function HamsterPage() {
 
           {/* Hamster */}
           <button
-            onClick={wheelActive ? tapWheel : petHamster}
+            onClick={petHamster}
             className="absolute outline-none select-none"
             style={{
               left: hamX,
               top: hamY,
-              transition: hamAction === "walk" ? "none" : "left 0.3s, top 0.3s",
-              cursor: "pointer",
-              animation: bounce ? "hamsterBounce 0.5s ease" : isSleeping ? "hamsterSleep 3s ease-in-out infinite" : hamAction === "walk" ? "hamsterWalk 0.3s ease infinite" : hamAction === "sniff" ? "hamsterSniff 0.6s ease infinite" : "none",
+              transition: (hamAction === "walk" || wheelPhase === "approaching") ? "none" : "left 0.3s, top 0.3s",
+              cursor: wheelActive ? "default" : "pointer",
+              animation: bounce ? "hamsterBounce 0.5s ease"
+                : isSleeping ? "hamsterSleep 3s ease-in-out infinite"
+                : wheelPhase === "running" ? "hamsterWalk 0.15s ease infinite"
+                : wheelPhase === "approaching" ? "hamsterWalk 0.3s ease infinite"
+                : hamAction === "walk" ? "hamsterWalk 0.3s ease infinite"
+                : hamAction === "sniff" ? "hamsterSniff 0.6s ease infinite"
+                : "none",
+              zIndex: 10,
             }}
           >
             <PixelHamster tier={tier} sleeping={isSleeping} flip={hamFlip} />
           </button>
 
           {/* Mood indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center z-10">
             <span className="text-lg">{moodData.face}</span>
             <span className="text-[11px] ml-1.5" style={{ color: moodData.color }}>{moodData.msg}</span>
           </div>
 
-          {/* Wheel mini-game overlay */}
-          {wheelActive && (
-            <div className="absolute top-8 left-1/2 -translate-x-1/2 text-center z-10">
-              <div className="text-sm font-bold text-amber-300 mb-1">🏃 빨리 탭하세요!</div>
-              <div className="flex items-center gap-3 text-[12px]">
-                <span style={{ color: "rgba(255,255,255,.3)" }}>{(wheelTime / 1000).toFixed(1)}초</span>
-                <span className="font-black text-amber-400">{wheelTaps} 탭</span>
-                <span style={{ color: "rgba(255,255,255,.3)" }}>≈ {wheelTaps * COIN_PER_TAP} 🪙</span>
+          {/* Wheel running stats */}
+          {wheelPhase === "running" && (
+            <div className="absolute top-3 left-4 text-left z-10">
+              <div className="flex items-center gap-2 text-[12px]">
+                <span className="font-black text-amber-400 text-lg tabular-nums">{wheelTaps}</span>
+                <span style={{ color: "rgba(255,255,255,.25)" }}>탭</span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px]">
+                <span style={{ color: "rgba(255,255,255,.25)" }}>🪙 ≈{wheelTaps * COIN_PER_TAP}</span>
+                <span style={{ color: "rgba(255,255,255,.15)" }}>|</span>
+                <span style={{ color: wheelTime < 3000 ? "#ef4444" : "rgba(255,255,255,.25)" }}>{(wheelTime / 1000).toFixed(1)}초</span>
               </div>
             </div>
           )}
+
+          {/* Finishing message */}
+          {wheelPhase === "finishing" && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 text-center">
+              <div className="text-lg">😮‍💨</div>
+              <div className="text-[11px]" style={{ color: "rgba(255,255,255,.3)" }}>수고했어~!</div>
+            </div>
+          )}
         </div>
+
+        {/* Wheel tap button — appears below cage when ready or running */}
+        {(wheelPhase === "ready" || wheelPhase === "running") && (
+          <button
+            onClick={wheelPhase === "ready" ? startRunning : tapWheel}
+            className="w-full rounded-2xl py-5 mb-4 text-center font-black transition-all active:scale-[0.96]"
+            style={{
+              background: wheelPhase === "running"
+                ? `linear-gradient(135deg, rgba(251,191,36,${0.15 + Math.min(wheelTaps * 0.002, 0.25)}), rgba(245,158,11,${0.15 + Math.min(wheelTaps * 0.002, 0.25)}))`
+                : "linear-gradient(135deg, rgba(74,222,128,0.15), rgba(34,211,153,0.15))",
+              border: `1px solid ${wheelPhase === "running" ? "rgba(251,191,36,0.3)" : "rgba(74,222,128,0.3)"}`,
+              color: wheelPhase === "running" ? "#fbbf24" : "#4ade80",
+              fontSize: wheelPhase === "running" ? 18 : 15,
+            }}
+          >
+            {wheelPhase === "ready" ? "🏃 달려! 탭하여 시작!" : `☸️ 탭! 탭! 탭! (${wheelTaps})`}
+          </button>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-2 mb-4">
