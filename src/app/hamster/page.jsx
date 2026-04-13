@@ -568,46 +568,39 @@ export default function HamsterPage() {
         {/* ===== CAGE ===== */}
         <div className="relative rounded-3xl mb-4 overflow-hidden" style={{ background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.05)", animation: "glow 4s ease-in-out infinite", height: CAGE_H + 80 }}>
 
-          {/* Sawdust bedding — realistic cage floor */}
-          <div className="absolute bottom-0 left-0 right-0" style={{ height: 50, background: `linear-gradient(to top, ${sawdustColor}20, ${sawdustColor}08, transparent)` }} />
-          {/* Dense sawdust chips — various shapes scattered across the floor */}
-          {Array.from({ length: 80 }).map((_, i) => {
+          {/* Sawdust bedding — covers entire cage like a real hamster home */}
+          <div className="absolute inset-0 rounded-3xl" style={{ background: `${sawdustColor}08` }} />
+          <div className="absolute bottom-0 left-0 right-0" style={{ height: "70%", background: `linear-gradient(to top, ${sawdustColor}18, ${sawdustColor}0a, transparent)` }} />
+          {/* Dense sawdust chips — spread across entire cage */}
+          {Array.from({ length: 140 }).map((_, i) => {
             const isDirty = (i * 31 + 7) % 100 > state.sawdustFresh;
             const seed = i * 17 + 3;
             const x = (seed * 7.3) % 97;
-            const y = 38 + (seed * 3.1) % 14; // bottom area as px from bottom
+            const yPct = (seed * 3.7) % 85 + 8; // 8%~93% of cage height
             const w = 3 + (seed % 5);
             const h = 1.5 + (seed % 3) * 0.5;
             const rot = (seed * 13) % 180;
-            const freshColor = `rgba(${sawdustR},${sawdustG},${sawdustB},${0.12 + (seed % 4) * 0.03})`;
-            const dirtyColor = `rgba(${90 + (seed % 20)},${85 + (seed % 15)},${80 + (seed % 10)},${0.1 + (seed % 3) * 0.02})`;
-            return <div key={i} className="absolute" style={{ width: w, height: h, borderRadius: 1, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, bottom: y, transform: `rotate(${rot}deg)` }} />;
+            // Bottom-heavy opacity: denser at bottom, sparser at top
+            const depthFade = 0.5 + (yPct / 100) * 0.5;
+            const baseAlpha = (0.08 + (seed % 4) * 0.025) * depthFade;
+            const freshColor = `rgba(${sawdustR},${sawdustG},${sawdustB},${baseAlpha})`;
+            const dirtyAlpha = (0.06 + (seed % 3) * 0.02) * depthFade;
+            const dirtyColor = `rgba(${90 + (seed % 20)},${85 + (seed % 15)},${80 + (seed % 10)},${dirtyAlpha})`;
+            return <div key={i} className="absolute" style={{ width: w, height: h, borderRadius: 1, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, top: `${yPct}%`, transform: `rotate(${rot}deg)` }} />;
           })}
-          {/* Bigger sawdust clumps */}
-          {Array.from({ length: 20 }).map((_, i) => {
+          {/* Bigger sawdust clumps — also spread across whole cage */}
+          {Array.from({ length: 40 }).map((_, i) => {
             const isDirty = (i * 43 + 11) % 100 > state.sawdustFresh;
             const seed = i * 23 + 5;
             const x = (seed * 4.7) % 92 + 2;
-            const y = 35 + (seed * 2.3) % 18;
-            const w = 6 + (seed % 4);
-            const h = 2.5 + (seed % 2);
+            const yPct = (seed * 2.9) % 80 + 12;
+            const w = 5 + (seed % 5);
+            const h = 2 + (seed % 3);
             const rot = (seed * 9) % 160;
-            const freshColor = `rgba(${sawdustR - 10},${sawdustG - 5},${sawdustB - 15},${0.15 + (seed % 3) * 0.04})`;
-            const dirtyColor = `rgba(${80 + (seed % 15)},${78 + (seed % 12)},${75 + (seed % 10)},${0.13 + (seed % 3) * 0.03})`;
-            return <div key={`clump${i}`} className="absolute" style={{ width: w, height: h, borderRadius: 2, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, bottom: y, transform: `rotate(${rot}deg)` }} />;
-          })}
-          {/* Top edge — scattered chips above the main bed for depth */}
-          {Array.from({ length: 15 }).map((_, i) => {
-            const isDirty = (i * 51) % 100 > state.sawdustFresh;
-            const seed = i * 41 + 9;
-            const x = (seed * 6.1) % 95;
-            const y = 50 + (seed * 1.7) % 10;
-            const w = 2 + (seed % 3);
-            const h = 1 + (seed % 2) * 0.5;
-            const rot = (seed * 11) % 180;
-            const freshColor = `rgba(${sawdustR},${sawdustG},${sawdustB},${0.06 + (seed % 3) * 0.02})`;
-            const dirtyColor = `rgba(95,90,85,${0.05 + (seed % 3) * 0.015})`;
-            return <div key={`top${i}`} className="absolute" style={{ width: w, height: h, borderRadius: 1, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, bottom: y, transform: `rotate(${rot}deg)` }} />;
+            const depthFade = 0.4 + (yPct / 100) * 0.6;
+            const freshColor = `rgba(${sawdustR - 10},${sawdustG - 5},${sawdustB - 15},${(0.1 + (seed % 3) * 0.03) * depthFade})`;
+            const dirtyColor = `rgba(${80 + (seed % 15)},${78 + (seed % 12)},${75 + (seed % 10)},${(0.08 + (seed % 3) * 0.025) * depthFade})`;
+            return <div key={`clump${i}`} className="absolute" style={{ width: w, height: h, borderRadius: 2, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, top: `${yPct}%`, transform: `rotate(${rot}deg)` }} />;
           })}
 
           {/* Sawdust freshness indicator */}
