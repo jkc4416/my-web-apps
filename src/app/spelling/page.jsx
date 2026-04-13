@@ -178,8 +178,7 @@ export default function SpellingQuiz(){
         </div>
       </header>
 
-      {/* Ad top */}
-      <div className="w-full flex justify-center my-3 relative z-10"><div className="w-full max-w-[728px] h-[60px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9,letterSpacing:"0.15em"}}>AD</div></div>
+      {/* Ad placeholder removed */}
 
       <main className="max-w-lg mx-auto px-5 pb-28 relative z-10">
         {/* ===== HOME ===== */}
@@ -271,8 +270,7 @@ export default function SpellingQuiz(){
             <h3 className="text-[18px] font-bold leading-relaxed">{qs[ci].q}</h3>
           </div>
 
-          {/* Interstitial ad */}
-          {show&&(ci+1)%10===0&&ci+1<qs.length&&<div className="w-full flex justify-center mb-4"><div className="w-full h-[70px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.04)",fontSize:9}}>AD</div></div>}
+          {/* Interstitial ad placeholder removed */}
 
           {/* Options */}
           <div className="space-y-2.5">
@@ -370,8 +368,7 @@ export default function SpellingQuiz(){
             })}
           </div>
 
-          {/* Ad */}
-          <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{width:300,height:250,border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9}}>AD 300×250</div></div>
+          {/* Ad placeholder removed */}
 
           {/* Actions */}
           <div className="grid grid-cols-3 gap-2.5 mb-5">
@@ -406,9 +403,7 @@ export default function SpellingQuiz(){
         </div>}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{background:"linear-gradient(to top, rgba(6,5,10,.97), rgba(6,5,10,.5), transparent)"}}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:8,letterSpacing:"0.2em"}}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }

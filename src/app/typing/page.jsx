@@ -249,8 +249,7 @@ export default function TypingChallenge() {
               </div>
             )}
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-3"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Modes */}
             <div className="space-y-2.5 mb-6">
@@ -407,8 +406,7 @@ export default function TypingChallenge() {
               </div>
             )}
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{ width: 300, height: 250, border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD 300×250</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Actions */}
             <div className="grid grid-cols-3 gap-2.5 mb-5">
@@ -452,9 +450,7 @@ export default function TypingChallenge() {
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{ background: "linear-gradient(to top, rgba(8,6,10,.97), rgba(8,6,10,.5), transparent)" }}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 8, letterSpacing: "0.2em" }}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }

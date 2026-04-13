@@ -154,7 +154,8 @@ export default function App(){
       </div>
 
       {/* Header */}
-      <header className="relative z-10 pt-10 pb-5 text-center"><Link href="/" className="absolute left-5 top-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:bg-white/10 z-20" style={{color:"rgba(255,255,255,.35)",border:"1px solid rgba(255,255,255,.06)"}}>← 홈</Link>
+      <Link href="/" className="fixed top-4 left-4 z-50 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:bg-white/10 active:scale-95" style={{color:"rgba(255,255,255,.4)",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",backdropFilter:"blur(12px)"}}>← 홈</Link>
+      <header className="relative z-10 pt-10 pb-5 text-center">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full gl mb-4" style={{fontSize:10,letterSpacing:"0.2em",color:"rgba(255,255,255,.25)"}}>
           NAME CHEMISTRY
         </div>
@@ -164,8 +165,7 @@ export default function App(){
         <p className="text-[11px] mt-2 tracking-[0.12em]" style={{color:"rgba(255,255,255,.2)"}}>두 사람의 이름으로 운명을 읽다</p>
       </header>
 
-      {/* Ad top */}
-      <div className="w-full flex justify-center my-3 relative z-10"><div className="w-full max-w-[728px] h-[70px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.04)",color:"rgba(255,255,255,.06)",fontSize:9,letterSpacing:"0.15em"}}>AD BANNER</div></div>
+      {/* Ad top — placeholder removed until AdSense approved */}
 
       <main className="max-w-[420px] mx-auto px-5 pb-32 relative z-10">
         {/* ===== HOME ===== */}
@@ -186,7 +186,7 @@ export default function App(){
             <div className="absolute top-0 right-0 w-40 h-40 rounded-full" style={{background:`radial-gradient(circle at 100% 0%, ${theme.ring}08, transparent 70%)`}}/>
             <div className="relative space-y-6">
               <div>
-                <label className="block text-[9px] uppercase tracking-[0.2em] mb-2 ml-0.5" style={{color:"rgba(255,255,255,.2)"}}>First Name</label>
+                <label className="block text-[9px] uppercase tracking-[0.2em] mb-2 ml-0.5" style={{color:"rgba(255,255,255,.2)"}}>첫 번째 이름</label>
                 <input type="text" value={n1} onChange={e=>setN1(e.target.value)} placeholder="이름 입력" maxLength={4}
                   className="w-full rounded-2xl px-5 py-4 text-center text-lg font-bold transition-all duration-300" style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)"}} onFocus={e=>e.target.style.borderColor=`${theme.ring}40`} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,.06)"}/>
               </div>
@@ -198,7 +198,7 @@ export default function App(){
               </div>
 
               <div>
-                <label className="block text-[9px] uppercase tracking-[0.2em] mb-2 ml-0.5" style={{color:"rgba(255,255,255,.2)"}}>Second Name</label>
+                <label className="block text-[9px] uppercase tracking-[0.2em] mb-2 ml-0.5" style={{color:"rgba(255,255,255,.2)"}}>두 번째 이름</label>
                 <input type="text" value={n2} onChange={e=>setN2(e.target.value)} placeholder="이름 입력" maxLength={4}
                   className="w-full rounded-2xl px-5 py-4 text-center text-lg font-bold transition-all duration-300" style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)"}} onFocus={e=>e.target.style.borderColor=`${theme.ring}40`} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,.06)"}/>
               </div>
@@ -304,8 +304,7 @@ export default function App(){
             ))}
           </div>
 
-          {/* Ad */}
-          <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{width:300,height:250,border:"1px dashed rgba(255,255,255,.04)",color:"rgba(255,255,255,.06)",fontSize:9,letterSpacing:"0.15em"}}>AD 300×250</div></div>
+          {/* Ad placeholder removed */}
 
           {/* Actions */}
           <div className="grid grid-cols-3 gap-2.5 mb-5">
@@ -340,15 +339,9 @@ export default function App(){
             <p className="mt-1.5"><span className="font-semibold" style={{color:"#60a5fa"}}>음양</span> — 양성모음·음성모음 분포로 균형을 평가합니다.</p>
           </div>
 
-          <div className="w-full flex justify-center my-5"><div className="w-full h-[70px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.04)",color:"rgba(255,255,255,.06)",fontSize:9,letterSpacing:"0.15em"}}>AD BANNER</div></div>
         </div>}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{background:"linear-gradient(to top, rgba(4,2,10,.97), rgba(4,2,10,.5), transparent)"}}>
-        <div className="text-center py-2.5">
-          <div className="inline-block rounded-xl px-8 py-1.5" style={{border:"1px dashed rgba(255,255,255,.04)",color:"rgba(255,255,255,.06)",fontSize:8,letterSpacing:"0.2em"}}>ANCHOR AD</div>
-        </div>
-      </footer>
     </div>
   );
 }

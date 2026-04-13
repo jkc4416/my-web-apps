@@ -238,8 +238,7 @@ export default function DdayMaker() {
               </div>
             )}
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-4"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Presets */}
             <div className="mt-4">
@@ -405,8 +404,7 @@ export default function DdayMaker() {
                 className="py-3 rounded-2xl text-[11px] font-medium transition-all active:scale-95" style={{ background: "rgba(248,113,113,.06)", border: "1px solid rgba(248,113,113,.1)", color: "rgba(248,113,113,.5)" }}>🗑️ 삭제</button>
             </div>
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{ width: 300, height: 250, border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD 300×250</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Exam info link */}
             {viewing.info && (
@@ -459,7 +457,7 @@ export default function DdayMaker() {
               📅 내 디데이에 추가
             </button>
 
-            <div className="w-full flex justify-center my-4"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
 
             <div className="gl2 rounded-2xl p-5 mb-4">
               <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3" style={{ color: "rgba(255,255,255,.12)" }}>Info</h3>
@@ -477,7 +475,7 @@ export default function DdayMaker() {
               </div>
             </div>
 
-            <div className="w-full flex justify-center my-4"><div className="rounded-2xl flex items-center justify-center" style={{ width: 300, height: 250, border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD 300×250</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Related */}
             <div className="gl rounded-2xl p-4">
@@ -497,9 +495,7 @@ export default function DdayMaker() {
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{ background: pg === "view" ? `linear-gradient(to top, ${th.bg[1]}f8, ${th.bg[1]}80, transparent)` : "linear-gradient(to top, rgba(4,6,14,.97), rgba(4,6,14,.5), transparent)" }}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 8, letterSpacing: "0.2em" }}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }

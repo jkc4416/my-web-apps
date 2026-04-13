@@ -331,10 +331,7 @@ export default function SoundFocus() {
               <div className="text-center mt-3 text-[11px]" style={{ color: "rgba(255,255,255,0.12)" }}>{active.length}개 사운드 재생 중</div>
             )}
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-5">
-              <div className="w-full h-[65px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.05)", fontSize: 9, letterSpacing: "0.15em" }}>AD</div>
-            </div>
+            {/* Ad placeholder removed */}
           </div>
         )}
 
@@ -374,9 +371,7 @@ export default function SoundFocus() {
               <p>백색소음은 모든 주파수 대역이 균일한 소리로, 집중력 향상과 수면에 도움을 줍니다. 자연음과 환경음을 조합하면 나만의 집중 환경을 만들 수 있습니다.</p>
             </div>
 
-            <div className="w-full flex justify-center my-5">
-              <div className="w-full h-[65px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.05)", fontSize: 9 }}>AD</div>
-            </div>
+            {/* Ad placeholder removed */}
           </div>
         )}
 
@@ -464,9 +459,7 @@ export default function SoundFocus() {
               </div>
             )}
 
-            <div className="w-full flex justify-center my-5">
-              <div className="w-full h-[65px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.05)", fontSize: 9 }}>AD</div>
-            </div>
+            {/* Ad placeholder removed */}
           </div>
         )}
       </main>
@@ -474,9 +467,7 @@ export default function SoundFocus() {
       {/* Bottom Player */}
       {playing && (
         <div className="fixed bottom-0 left-0 right-0 z-30">
-          <div className="text-center py-1" style={{ background: "rgba(4,12,24,0.5)" }}>
-            <div className="inline-block rounded-xl px-6 py-0.5" style={{ border: "1px dashed rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.05)", fontSize: 8, letterSpacing: "0.2em" }}>ANCHOR AD</div>
-          </div>
+          {/* Anchor ad placeholder removed */}
           <div style={{ background: "rgba(4,12,24,0.85)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderTop: "1px solid rgba(255,255,255,0.04)" }} className="px-5 py-2.5">
             <div className="max-w-lg mx-auto flex items-center gap-3">
               <div className="flex gap-0.5 flex-1 overflow-hidden">
@@ -497,14 +488,7 @@ export default function SoundFocus() {
         </div>
       )}
 
-      {/* Footer (when not playing) */}
-      {!playing && (
-        <footer className="fixed bottom-0 left-0 right-0 z-20" style={{ background: "linear-gradient(to top, rgba(2,6,16,0.97), rgba(2,6,16,0.5), transparent)" }}>
-          <div className="text-center py-2.5">
-            <div className="inline-block rounded-xl px-8 py-1.5" style={{ border: "1px dashed rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.05)", fontSize: 8, letterSpacing: "0.2em" }}>ANCHOR AD</div>
-          </div>
-        </footer>
-      )}
+      {/* Footer ad placeholder removed */}
     </div>
   );
 }

@@ -350,8 +350,7 @@ export default function CalculatorHub(){
         </div>
       </header>
 
-      {/* Ad top */}
-      <div className="w-full flex justify-center my-3 relative z-10"><div className="w-full max-w-[728px] h-[65px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.06)",fontSize:9,letterSpacing:"0.15em"}}>AD BANNER</div></div>
+      {/* Ad placeholder removed */}
 
       <main className="max-w-lg mx-auto px-5 pb-28 relative z-10">
         {/* Grid */}
@@ -372,8 +371,7 @@ export default function CalculatorHub(){
         {/* Active Calc */}
         {act&&AC&&<div className="mt-4 fi">
           <AC/>
-          {/* Ad */}
-          <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{width:300,height:250,border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.06)",fontSize:9,letterSpacing:"0.15em"}}>AD 300×250</div></div>
+          {/* Ad placeholder removed */}
           {/* Related */}
           <div className="mt-5 pt-4" style={{borderTop:"1px solid rgba(255,255,255,.03)"}}>
             <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3" style={{color:"rgba(255,255,255,.12)"}}>Related</h3>
@@ -402,9 +400,7 @@ export default function CalculatorHub(){
         </div>}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{background:"linear-gradient(to top, rgba(3,8,16,.97), rgba(3,8,16,.5), transparent)"}}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:8,letterSpacing:"0.2em"}}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }

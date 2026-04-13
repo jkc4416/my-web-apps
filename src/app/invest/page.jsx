@@ -172,8 +172,7 @@ export default function InvestSim() {
               <p className="text-[11px] mt-2" style={{ color: "rgba(255,255,255,.2)" }}>종목을 선택하고 시뮬레이션하세요</p>
             </div>
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-3"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Categories */}
             <div className="flex gap-1.5 overflow-x-auto mb-4 pb-1">
@@ -302,7 +301,7 @@ export default function InvestSim() {
               📊 시뮬레이션 실행
             </button>
 
-            <div className="w-full flex justify-center my-5"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
           </div>
         )}
 
@@ -361,8 +360,7 @@ export default function InvestSim() {
               </ResponsiveContainer>
             </div>
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{ width: 300, height: 250, border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD 300×250</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Actions */}
             <div className="grid grid-cols-3 gap-2.5 mb-5">
@@ -394,14 +392,12 @@ export default function InvestSim() {
               <p className="text-[10px] leading-relaxed" style={{ color: "rgba(251,191,36,.3)" }}>⚠️ 과거 데이터 기반 가상 시뮬레이션. 세금·수수료·환율·배당 미반영. 투자 결정 시 전문가 상담 필수.</p>
             </div>
 
-            <div className="w-full flex justify-center my-5"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
           </div>
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{ background: "linear-gradient(to top, rgba(3,8,6,.97), rgba(3,8,6,.5), transparent)" }}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 8, letterSpacing: "0.2em" }}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }

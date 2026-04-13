@@ -229,8 +229,7 @@ export default function MBTIInsight(){
         </div>
       </header>
 
-      {/* Ad */}
-      <div className="w-full flex justify-center my-3 relative z-10"><div className="w-full max-w-[728px] h-[65px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9,letterSpacing:"0.15em"}}>AD</div></div>
+      {/* Ad placeholder removed */}
 
       <main className="max-w-lg mx-auto px-5 pb-28 relative z-10">
         {/* ===== HOME ===== */}
@@ -325,8 +324,7 @@ export default function MBTIInsight(){
             <h3 className="text-[18px] font-bold leading-relaxed px-2">{test.qs[cq].q}</h3>
           </div>
 
-          {/* Interstitial ad every 5 questions */}
-          {cq>0&&cq%5===0&&<div className="w-full flex justify-center mb-6"><div className="w-full h-[80px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9}}>AD</div></div>}
+          {/* Interstitial ad placeholder removed */}
 
           <div className="space-y-3">
             {test.qs[cq].a.map(([text,dim,pts],i)=>(
@@ -381,8 +379,7 @@ export default function MBTIInsight(){
             </div>
           </div>
 
-          {/* Ad */}
-          <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{width:300,height:250,border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9}}>AD 300×250</div></div>
+          {/* Ad placeholder removed */}
 
           {/* Compatibility */}
           {compat&&<div className="gl rounded-2xl p-5 mb-5">
@@ -426,13 +423,11 @@ export default function MBTIInsight(){
             <p>{ti.desc} {resType}과 가장 잘 맞는 유형은 {compat?.best.join(", ")}입니다.</p>
           </div>
 
-          <div className="w-full flex justify-center my-5"><div className="w-full h-[65px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9}}>AD</div></div>
+          {/* Ad placeholder removed */}
         </div>}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{background:"linear-gradient(to top, rgba(4,3,12,.97), rgba(4,3,12,.5), transparent)"}}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:8,letterSpacing:"0.2em"}}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }

@@ -308,8 +308,7 @@ export default function MenuRoulette() {
               {customMode ? `${customItems.length}개 메뉴` : `${filtered.length}개 메뉴`}
             </div>
 
-            {/* Ad */}
-            <div className="w-full flex justify-center my-4"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
 
             {/* History */}
             {history.length > 0 && (
@@ -368,7 +367,7 @@ export default function MenuRoulette() {
               ))}
             </div>
 
-            <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{ width: 300, height: 250, border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD 300×250</div></div>
+            {/* Ad placeholder removed */}
           </div>
         )}
 
@@ -409,7 +408,7 @@ export default function MenuRoulette() {
               <div className="text-[9px] mt-1" style={{ color: "rgba(255,255,255,.1)" }}>1인분 | 일일 2,000kcal 기준</div>
             </div>
 
-            <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{ width: 300, height: 250, border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD 300×250</div></div>
+            {/* Ad placeholder removed */}
 
             {/* Similar menus — session depth */}
             {detail.similar?.length > 0 && (
@@ -446,14 +445,12 @@ export default function MenuRoulette() {
               </button>
             </div>
 
-            <div className="w-full flex justify-center my-4"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 9 }}>AD</div></div>
+            {/* Ad placeholder removed */}
           </div>
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{ background: "linear-gradient(to top, rgba(8,5,4,.97), rgba(8,5,4,.5), transparent)" }}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{ border: "1px dashed rgba(255,255,255,.03)", color: "rgba(255,255,255,.05)", fontSize: 8, letterSpacing: "0.2em" }}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }

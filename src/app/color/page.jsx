@@ -341,7 +341,7 @@ export default function ColorCraft(){
               <h2 className="text-[20px] font-black">디자이너를 위한<br/><span style={{background:"linear-gradient(135deg, #a855f7, #ec4899)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>도구 모음</span></h2>
               <p className="text-[11px] mt-2" style={{color:"rgba(255,255,255,.2)"}}>색상, CSS, 폰트를 빠르게 만들고 복사하세요</p>
             </div>
-            <div className="w-full flex justify-center my-3"><div className="w-full h-[60px] rounded-2xl flex items-center justify-center" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9}}>AD</div></div>
+            {/* Ad placeholder removed */}
             <div className="grid grid-cols-2 gap-2.5">
               {TOOLS.map((t,i)=>(
                 <button key={t.id} onClick={()=>setAct(t.id)}
@@ -361,7 +361,7 @@ export default function ColorCraft(){
         ):(
           <div className="mt-4 si">
             <AC/>
-            <div className="w-full flex justify-center my-5"><div className="rounded-2xl flex items-center justify-center" style={{width:300,height:250,border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:9}}>AD 300×250</div></div>
+            {/* Ad placeholder removed */}
             <div className="pt-4" style={{borderTop:"1px solid rgba(255,255,255,.03)"}}>
               <h3 className="text-[9px] uppercase tracking-[0.2em] mb-2" style={{color:"rgba(255,255,255,.1)"}}>Other Tools</h3>
               <div className="flex gap-2 overflow-x-auto">
@@ -378,9 +378,7 @@ export default function ColorCraft(){
         )}
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 z-20" style={{background:"linear-gradient(to top, rgba(6,3,12,.97), rgba(6,3,12,.5), transparent)"}}>
-        <div className="text-center py-2.5"><div className="inline-block rounded-xl px-8 py-1.5" style={{border:"1px dashed rgba(255,255,255,.03)",color:"rgba(255,255,255,.05)",fontSize:8,letterSpacing:"0.2em"}}>ANCHOR AD</div></div>
-      </footer>
+      {/* Anchor ad placeholder removed */}
     </div>
   );
 }
