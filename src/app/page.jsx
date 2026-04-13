@@ -145,6 +145,18 @@ const apps = [
     accent: "text-amber-400",
     size: "normal",
   },
+  {
+    id: 13,
+    name: "햄스터 키우기",
+    description: "귀여운 가상 펫 육성 게임",
+    href: "/hamster",
+    emoji: "🐹",
+    gradient: "from-orange-500/20 to-amber-500/20",
+    border: "hover:border-orange-500/30",
+    glow: "group-hover:shadow-orange-500/10",
+    accent: "text-orange-400",
+    size: "featured",
+  },
 ];
 
 export default function Home() {
@@ -217,7 +229,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              12 Apps Live
+              13 Apps Live
             </span>
           </div>
 
