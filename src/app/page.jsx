@@ -121,6 +121,18 @@ const apps = [
     accent: "text-sky-400",
     size: "normal",
   },
+  {
+    id: 11,
+    name: "스네이크 게임",
+    description: "클래식 뱀 게임 — 최고 점수에 도전",
+    href: "/snake",
+    emoji: "🐍",
+    gradient: "from-green-500/20 to-emerald-500/20",
+    border: "hover:border-green-500/30",
+    glow: "group-hover:shadow-green-500/10",
+    accent: "text-green-400",
+    size: "featured",
+  },
 ];
 
 export default function Home() {
@@ -193,7 +205,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              10 Apps Live
+              11 Apps Live
             </span>
           </div>
 
@@ -215,7 +227,7 @@ export default function Home() {
             className="text-base sm:text-lg max-w-md leading-relaxed"
             style={{ color: "rgba(255,255,255,0.3)" }}
           >
-            유용하고 재미있는 10가지 미니 웹 앱.
+            유용하고 재미있는 미니 웹 앱 & 게임.
             <br />
             클릭 한 번으로 바로 사용하세요.
           </p>
