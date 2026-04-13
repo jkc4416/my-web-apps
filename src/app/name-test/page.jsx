@@ -157,7 +157,7 @@ export default function App(){
       <Link href="/" className="fixed top-4 left-4 z-50 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:bg-white/10 active:scale-95" style={{color:"rgba(255,255,255,.4)",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",backdropFilter:"blur(12px)"}}>← 홈</Link>
       <header className="relative z-10 pt-10 pb-5 text-center">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full gl mb-4" style={{fontSize:10,letterSpacing:"0.2em",color:"rgba(255,255,255,.25)"}}>
-          NAME CHEMISTRY
+          이름궁합 테스트
         </div>
         <h1 className="text-[32px] font-black tracking-tight leading-none">
           <span style={{background:`linear-gradient(135deg, ${theme.ring}, #c084fc, #60a5fa)`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>이름궁합</span>
@@ -167,7 +167,7 @@ export default function App(){
 
       {/* Ad top — placeholder removed until AdSense approved */}
 
-      <main className="max-w-[420px] mx-auto px-5 pb-32 relative z-10">
+      <main className="max-w-[420px] mx-auto px-5 pb-16 relative z-10">
         {/* ===== HOME ===== */}
         {pg==="home"&&<div className="si">
           {/* Theme pills */}
@@ -215,7 +215,7 @@ export default function App(){
 
           {/* History */}
           {hist.length>0&&<div className="mt-8">
-            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3 ml-0.5" style={{color:"rgba(255,255,255,.15)"}}>Recent Tests</h3>
+            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3 ml-0.5" style={{color:"rgba(255,255,255,.15)"}}>최근 테스트</h3>
             <div className="space-y-1.5">
               {hist.slice(0,4).map((h,i)=>(
                 <button key={i} onClick={()=>{setN1(h.n1);setN2(h.n2);setTi(h.ti);}}
@@ -290,7 +290,7 @@ export default function App(){
 
           {/* Analysis */}
           <div className="gl rounded-2xl p-5 mb-5">
-            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-4" style={{color:"rgba(255,255,255,.15)"}}>Detail Analysis</h3>
+            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-4" style={{color:"rgba(255,255,255,.15)"}}>상세 분석</h3>
             {[["획수 조화",res.strokeScore,"#ff6b9d"],["오행 상성",res.elScore,"#c084fc"],["음양 조화",res.harmonyScore,"#60a5fa"]].map(([l,v,c])=>(
               <div key={l} className="mb-3">
                 <div className="flex justify-between mb-1.5">
@@ -319,7 +319,7 @@ export default function App(){
 
           {/* Other themes */}
           <div className="gl rounded-2xl p-5 mb-5">
-            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3" style={{color:"rgba(255,255,255,.15)"}}>Other Chemistry</h3>
+            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3" style={{color:"rgba(255,255,255,.15)"}}>다른 궁합 보기</h3>
             <div className="grid grid-cols-3 gap-2">
               {THEMES.filter(t=>t.id!==ti).map(t=>(
                 <button key={t.id} onClick={()=>switchTheme(t.id)}
@@ -333,7 +333,7 @@ export default function App(){
 
           {/* Method */}
           <div className="gl rounded-2xl p-5" style={{fontSize:10.5,lineHeight:1.8,color:"rgba(255,255,255,.2)"}}>
-            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3" style={{color:"rgba(255,255,255,.12)"}}>Methodology</h3>
+            <h3 className="text-[9px] uppercase tracking-[0.2em] mb-3" style={{color:"rgba(255,255,255,.12)"}}>분석 방법</h3>
             <p><span className="font-semibold" style={{color:"#ff6b9d"}}>획수</span> — 초성·중성·종성 획수 합으로 수리적 조화를 측정합니다.</p>
             <p className="mt-1.5"><span className="font-semibold" style={{color:"#c084fc"}}>오행</span> — 木火土金水 속성을 비교하여 상생·상극을 파악합니다.</p>
             <p className="mt-1.5"><span className="font-semibold" style={{color:"#60a5fa"}}>음양</span> — 양성모음·음성모음 분포로 균형을 평가합니다.</p>

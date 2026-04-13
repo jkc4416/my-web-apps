@@ -352,7 +352,7 @@ export default function CalculatorHub(){
 
       {/* Ad placeholder removed */}
 
-      <main className="max-w-lg mx-auto px-5 pb-28 relative z-10">
+      <main className="max-w-lg mx-auto px-5 pb-16 relative z-10">
         {/* Grid */}
         {!act&&<div className="grid grid-cols-2 gap-2.5 mt-2">
           {filtered.map((c,i)=>{const ct=CATS.find(x=>x.id===c.cat);return(

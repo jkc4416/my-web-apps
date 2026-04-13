@@ -334,7 +334,7 @@ export default function ColorCraft(){
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-5 pb-28 relative z-10">
+      <main className="max-w-lg mx-auto px-5 pb-16 relative z-10">
         {!act?(
           <div className="si">
             <div className="text-center py-6">

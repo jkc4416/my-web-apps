@@ -227,7 +227,7 @@ export default function TypingChallenge() {
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-5 pb-28 relative z-10">
+      <main className="max-w-2xl mx-auto px-5 pb-16 relative z-10">
         {/* ===== HOME ===== */}
         {pg === "home" && (
           <div className="si">
