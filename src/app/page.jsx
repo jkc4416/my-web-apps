@@ -133,6 +133,18 @@ const apps = [
     accent: "text-green-400",
     size: "featured",
   },
+  {
+    id: 12,
+    name: "플래피버드",
+    description: "원터치 점프로 파이프 통과!",
+    href: "/flappy",
+    emoji: "🐤",
+    gradient: "from-amber-500/20 to-yellow-500/20",
+    border: "hover:border-amber-500/30",
+    glow: "group-hover:shadow-amber-500/10",
+    accent: "text-amber-400",
+    size: "normal",
+  },
 ];
 
 export default function Home() {
@@ -205,7 +217,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              11 Apps Live
+              12 Apps Live
             </span>
           </div>
 

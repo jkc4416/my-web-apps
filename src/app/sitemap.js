@@ -13,6 +13,7 @@ const routes = [
   { path: "/menu", priority: 0.8, changeFrequency: "monthly" },
   { path: "/dday", priority: 0.8, changeFrequency: "monthly" },
   { path: "/snake", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/flappy", priority: 0.8, changeFrequency: "monthly" },
 ];
 
 export default function sitemap() {
