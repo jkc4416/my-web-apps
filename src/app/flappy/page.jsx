@@ -6,7 +6,7 @@ import Link from "next/link";
 const W = 400;
 const H = 600;
 const GRAVITY = 0.45;
-const JUMP = -7.5;
+const JUMP = -3.75;
 const PIPE_W = 60;
 const GAP = 160;
 const PIPE_SPEED = 2.5;
