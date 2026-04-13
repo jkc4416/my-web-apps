@@ -1,6 +1,6 @@
 # FunAppBox
 
-A collection of 10 fun and useful mini web apps built with Next.js 15 and Tailwind CSS.
+A collection of 13 fun and useful mini web apps & games built with Next.js 15 and Tailwind CSS.
 
 **Live:** [https://www.funappbox.com](https://www.funappbox.com)
 
@@ -18,6 +18,9 @@ A collection of 10 fun and useful mini web apps built with Next.js 15 and Tailwi
 | 8 | 타이핑 챌린지 | `/typing` | Korean typing speed and accuracy test |
 | 9 | 밥뭐먹지 | `/menu` | Random menu picker with category filters |
 | 10 | 디데이 메이커 | `/dday` | D-Day counter with localStorage persistence |
+| 11 | 스네이크 게임 | `/snake` | Classic snake game with Canvas rendering |
+| 12 | 플래피버드 | `/flappy` | Flappy Bird with neon dark theme |
+| 13 | 햄스터 키우기 | `/hamster` | Virtual pet raising game with pixel art hamster |
 
 ## Tech Stack
 
@@ -46,46 +49,31 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 src/app/
 ├── layout.jsx              # Root layout (GA4, AdSense, SEO metadata, verification)
-├── page.jsx                # Hub page (bento grid with 10 app cards)
+├── page.jsx                # Hub page (bento grid with 13 app cards)
 ├── globals.css             # Tailwind config + animations
 ├── sitemap.js              # Auto-generated sitemap.xml
 ├── robots.js               # robots.txt configuration
-├── name-test/
-│   ├── layout.jsx          # SEO metadata
-│   └── page.jsx            # App component
-├── calculator/
-│   ├── layout.jsx
-│   └── page.jsx
-├── mbti/
-│   ├── layout.jsx
-│   └── page.jsx
-├── spelling/
-│   ├── layout.jsx
-│   └── page.jsx
-├── sound/
-│   ├── layout.jsx
-│   └── page.jsx
-├── invest/
-│   ├── layout.jsx
-│   └── page.jsx
-├── color/
-│   ├── layout.jsx
-│   └── page.jsx
-├── typing/
-│   ├── layout.jsx
-│   └── page.jsx
-├── menu/
-│   ├── layout.jsx
-│   └── page.jsx
-└── dday/
-    ├── layout.jsx
-    └── page.jsx
+├── name-test/              # 이름궁합
+├── calculator/             # 만능 계산기
+├── mbti/                   # MBTI 인사이트
+├── spelling/               # 맞춤법 왕
+├── sound/                  # 사운드포커스
+├── invest/                 # 투자 시뮬레이터
+├── color/                  # 컬러크래프트
+├── typing/                 # 타이핑 챌린지
+├── menu/                   # 밥뭐먹지
+├── dday/                   # 디데이 메이커
+├── snake/                  # 스네이크 게임
+├── flappy/                 # 플래피버드
+└── hamster/                # 햄스터 키우기
 ```
+
+Each app directory contains `page.jsx` (client component) + `layout.jsx` (SEO metadata).
 
 ## SEO
 
 - Per-page metadata (title, description, keywords, OpenGraph, Twitter Card)
-- Auto-generated `sitemap.xml` with all 11 URLs
+- Auto-generated `sitemap.xml` with all 14 URLs
 - `robots.txt` allowing all crawlers
 - Google Search Console verified
 - Naver Search Advisor verified

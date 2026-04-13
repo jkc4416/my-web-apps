@@ -2,7 +2,7 @@
 
 ## Overview
 
-FunAppBox contains 10 mini web apps. All apps are client-side only (no API routes, no database) and are deployed as a single Next.js application.
+FunAppBox contains 13 mini web apps and games. All apps are client-side only (no API routes, no database) and are deployed as a single Next.js application.
 
 ---
 
@@ -78,3 +78,39 @@ FunAppBox contains 10 mini web apps. All apps are client-side only (no API route
 - **Features:** D-Day counter, multiple events, add/remove events, sorted by date, persistent storage
 - **Key Tech:** localStorage for persistence, date arithmetic
 - **Note:** Requires `"use client"` — localStorage is browser-only
+
+---
+
+## Games
+
+## 11. 스네이크 게임 (Snake Game)
+
+- **Route:** `/snake`
+- **Features:** Classic snake game, arrow key + swipe + mobile D-pad controls, score tracking with localStorage high score, speed increases with score
+- **Key Tech:** Canvas API, requestAnimationFrame game loop, touch/swipe detection
+- **Controls:** Arrow keys (desktop), swipe or D-pad buttons (mobile), Space/Enter to start
+
+## 12. 플래피버드 (Flappy Bird)
+
+- **Route:** `/flappy`
+- **Features:** Flappy Bird clone with neon dark theme, pipe navigation, collision detection, animated bird with wing flap and rotation, star parallax background
+- **Key Tech:** Canvas API, requestAnimationFrame at 60fps, gravity/jump physics
+- **Controls:** Space/↑ (desktop), tap/click (mobile)
+
+## 13. 햄스터 키우기 (Hamster Pet)
+
+- **Route:** `/hamster`
+- **Features:**
+  - **Pixel art hamster** with 5 growth tiers (아기→꼬마→청소년→어른→왕), each with unique sprite and sleeping expression
+  - **4 stats:** hunger, happiness, energy, cleanliness (decay over time)
+  - **Random roaming:** hamster walks around cage naturally with smooth eased animation
+  - **Actions:** feed, bathe, sleep, pet (tap hamster)
+  - **Wheel mini-game:** wheel appears → hamster walks to it → tap button rapidly to earn coins
+  - **Toy system:** buy toys permanently (ball, tunnel, swing), interactive play sequence with tap mechanic
+  - **Poop system:** hamster poops periodically, tap to clean, affects cleanliness/happiness
+  - **Sawdust system:** degrades over time (turns gray visually), buy new sawdust from shop, covers entire cage floor
+  - **Shop:** 3 tabs (food, toys, maintenance), 5 foods, 3 toys (permanent), sawdust
+  - **Level/XP system:** 10 title tiers, size grows every 5 levels, king tier has golden crown
+  - **Persistence:** full state saved to localStorage including offline time decay
+- **Key Tech:** CSS pixel art rendering, ref-based position tracking, multi-phase animation sequences, seeded pseudo-random sawdust distribution
+- **Note:** Requires `"use client"` — localStorage and timers are browser-only
