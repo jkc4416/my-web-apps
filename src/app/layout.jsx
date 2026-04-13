@@ -2,6 +2,7 @@ import Script from "next/script";
 import "./globals.css";
 
 const GA_ID = "G-9B1VWBK256";
+const ADSENSE_ID = "ca-pub-7511894317730921";
 const SITE_URL = "https://funappbox.com";
 const SITE_NAME = "FunAppBox";
 
@@ -61,6 +62,7 @@ export const metadata = {
     google: "cBLKQjaTrczqWZUpAzNwVJ-fB4hnxMyesvcRLS7_sAI",
     other: {
       "naver-site-verification": "fcc59b1aaa1b8cfdb86cfa6b79e45e74ce89c17f",
+      "google-adsense-account": "ca-pub-7511894317730921",
     },
   },
 };
@@ -76,6 +78,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <Script
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
