@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FunAppBox
+
+A collection of 10 fun and useful mini web apps built with Next.js 15 and Tailwind CSS.
+
+**Live:** [https://www.funappbox.com](https://www.funappbox.com)
+
+## Apps
+
+| # | App | Route | Description |
+|---|-----|-------|-------------|
+| 1 | 이름궁합 | `/name-test` | Name compatibility test using Korean stroke count & five elements analysis |
+| 2 | 만능 계산기 | `/calculator` | Multi-purpose calculator (salary, BMI, unit conversion, discount) |
+| 3 | MBTI 인사이트 | `/mbti` | Deep analysis of 16 MBTI personality types |
+| 4 | 맞춤법 왕 | `/spelling` | Korean spelling quiz with commonly confused words |
+| 5 | 사운드포커스 | `/sound` | Ambient sound mixer for focus (rain, waves, fire, etc.) |
+| 6 | 투자 시뮬레이터 | `/invest` | Compound interest investment simulator with yearly projections |
+| 7 | 컬러크래프트 | `/color` | Color palette generator (analogous, complementary, triadic, monochromatic) |
+| 8 | 타이핑 챌린지 | `/typing` | Korean typing speed and accuracy test |
+| 9 | 밥뭐먹지 | `/menu` | Random menu picker with category filters |
+| 10 | 디데이 메이커 | `/dday` | D-Day counter with localStorage persistence |
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router, Turbopack)
+- **Styling:** Tailwind CSS 4
+- **Charts:** Recharts
+- **Deployment:** Vercel
+- **Domain:** funappbox.com
+- **Analytics:** Google Analytics 4
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/app/
+├── layout.jsx              # Root layout (GA4, SEO metadata, verification)
+├── page.jsx                # Hub page (bento grid with 10 app cards)
+├── globals.css             # Tailwind config + animations
+├── sitemap.js              # Auto-generated sitemap.xml
+├── robots.js               # robots.txt configuration
+├── name-test/
+│   ├── layout.jsx          # SEO metadata
+│   └── page.jsx            # App component
+├── calculator/
+│   ├── layout.jsx
+│   └── page.jsx
+├── mbti/
+│   ├── layout.jsx
+│   └── page.jsx
+├── spelling/
+│   ├── layout.jsx
+│   └── page.jsx
+├── sound/
+│   ├── layout.jsx
+│   └── page.jsx
+├── invest/
+│   ├── layout.jsx
+│   └── page.jsx
+├── color/
+│   ├── layout.jsx
+│   └── page.jsx
+├── typing/
+│   ├── layout.jsx
+│   └── page.jsx
+├── menu/
+│   ├── layout.jsx
+│   └── page.jsx
+└── dday/
+    ├── layout.jsx
+    └── page.jsx
+```
 
-## Learn More
+## SEO
 
-To learn more about Next.js, take a look at the following resources:
+- Per-page metadata (title, description, keywords, OpenGraph, Twitter Card)
+- Auto-generated `sitemap.xml` with all 11 URLs
+- `robots.txt` allowing all crawlers
+- Google Search Console verified
+- Naver Search Advisor verified
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The app auto-deploys to Vercel on push to `main`. Custom domain `www.funappbox.com` is configured with automatic HTTPS.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private project.
