@@ -142,6 +142,7 @@ export default function HamsterPage() {
   const animRef = useRef(null);
   const wheelTimerRef = useRef(null);
   const toyTimerRef = useRef(null);
+  const sleepTimerRef = useRef(null);
   const decayRef = useRef(null);
   const poopTimerRef = useRef(null);
   const sawdustTimerRef = useRef(null);
@@ -392,10 +393,12 @@ export default function HamsterPage() {
     if (!state || busy) return;
     if (state.energy > 90) { showBubble("아직 안 졸려요~"); return; }
     setIsSleeping(true); showBubble(MOODS.sleeping.msg); spawnParticles("💤", 3);
-    const timer = setInterval(() => {
+    if (sleepTimerRef.current) clearInterval(sleepTimerRef.current);
+    sleepTimerRef.current = setInterval(() => {
       setState((s) => {
         if (s.energy >= 100) {
-          clearInterval(timer); setIsSleeping(false); setMood("happy");
+          clearInterval(sleepTimerRef.current); sleepTimerRef.current = null;
+          setIsSleeping(false); setMood("happy");
           showBubble("푹 잤어요! 상쾌~!"); spawnParticles("☀️", 5);
           return { ...s, energy: 100 };
         }

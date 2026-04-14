@@ -384,6 +384,8 @@ export default function SnakePage() {
             border: "1px solid rgba(255,255,255,.06)",
             boxShadow: "0 0 40px rgba(74,222,128,0.05)",
             touchAction: "none",
+            maxWidth: "calc(100vw - 40px)",
+            height: "auto",
           }}
         />
 
