@@ -119,9 +119,10 @@ export default function InvestSim() {
     if (months === -1) {
       setStartD(asset.prices[0].d.slice(0, 7));
     } else {
-      const end = new Date(lastDate);
+      // Use day 15 to avoid timezone edge cases with UTC
+      const end = new Date(lastDate + "-15");
       end.setMonth(end.getMonth() - months);
-      const earliest = new Date(asset.prices[0].d);
+      const earliest = new Date(asset.prices[0].d + "-15");
       const target = end < earliest ? earliest : end;
       setStartD(target.toISOString().slice(0, 7));
     }
@@ -130,21 +131,25 @@ export default function InvestSim() {
   const run = useCallback(() => {
     if (!asset) return;
     const finalEnd = endD || asset.prices[asset.prices.length - 1].d;
+    // Prevent invalid date range
+    if (startD >= finalEnd) return;
     if (simType === "lump") {
       const inv = parseFloat(amount) * 1e4; if (!inv || inv <= 0) return;
-      const sp = getPrice(asset, startD + "-01"), ep = getPrice(asset, finalEnd + "-01");
+      const sp = getPrice(asset, startD + "-15"), ep = getPrice(asset, finalEnd + "-15");
       const shares = inv / sp, cv = shares * ep, profit = cv - inv, ret = ((cv / inv) - 1) * 100;
-      const chart = []; const s = new Date(startD + "-01"), e = new Date(finalEnd + "-01"), cur = new Date(s);
-      while (cur <= e) { const ds = cur.toISOString().slice(0, 7); const pr = getPrice(asset, ds + "-01"); chart.push({ date: ds, value: Math.round(shares * pr), principal: Math.round(inv) }); cur.setMonth(cur.getMonth() + 1); }
+      const chart = []; const s = new Date(startD + "-15"), e = new Date(finalEnd + "-15"), cur = new Date(s);
+      let safety = 0;
+      while (cur <= e && safety < 600) { const ds = cur.toISOString().slice(0, 7); const pr = getPrice(asset, ds + "-15"); chart.push({ date: ds, value: Math.round(shares * pr), principal: Math.round(inv) }); cur.setMonth(cur.getMonth() + 1); safety++; }
       const yrs = (e - s) / (365.25 * 864e5);
       const cagr = yrs > 0 ? (Math.pow(cv / inv, 1 / yrs) - 1) * 100 : 0;
       setRes({ type: "lump", inv, cv: Math.round(cv), profit: Math.round(profit), ret, cagr, chart, yrs: yrs.toFixed(1), startD, endD: finalEnd });
     } else {
       const mo = parseFloat(monthlyAmt) * 1e4; if (!mo || mo <= 0) return;
-      const s = new Date(startD + "-01"), e = new Date(finalEnd + "-01"), chart = []; let ti = 0, ts = 0, cur = new Date(s);
-      while (cur <= e) { const ds = cur.toISOString().slice(0, 7); const pr = getPrice(asset, ds + "-01"); ti += mo; ts += mo / pr; chart.push({ date: ds, value: Math.round(ts * pr), principal: Math.round(ti) }); cur.setMonth(cur.getMonth() + 1); }
-      const ep = getPrice(asset, finalEnd + "-01"), cv = ts * ep, profit = cv - ti, ret = ((cv / ti) - 1) * 100;
-      setRes({ type: "dca", inv: Math.round(ti), cv: Math.round(cv), profit: Math.round(profit), ret, chart, avgP: ti / ts, months: chart.length, startD, endD: finalEnd });
+      const s = new Date(startD + "-15"), e = new Date(finalEnd + "-15"), chart = []; let ti = 0, ts = 0, cur = new Date(s);
+      let safety = 0;
+      while (cur <= e && safety < 600) { const ds = cur.toISOString().slice(0, 7); const pr = getPrice(asset, ds + "-15"); ti += mo; ts += mo / pr; chart.push({ date: ds, value: Math.round(ts * pr), principal: Math.round(ti) }); cur.setMonth(cur.getMonth() + 1); safety++; }
+      const ep = getPrice(asset, finalEnd + "-15"), cv = ts * ep, profit = cv - ti, ret = ti > 0 ? ((cv / ti) - 1) * 100 : 0;
+      setRes({ type: "dca", inv: Math.round(ti), cv: Math.round(cv), profit: Math.round(profit), ret, chart, avgP: ts > 0 ? ti / ts : 0, months: chart.length, startD, endD: finalEnd });
     }
     setPg("result");
   }, [asset, simType, amount, startD, endD, monthlyAmt]);
@@ -345,7 +350,7 @@ export default function InvestSim() {
                   <select value={startD} onChange={e => setStartD(e.target.value)}
                     className="w-full rounded-2xl px-4 py-3 text-[12px] appearance-none transition-all"
                     style={{ background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.06)", color: "#e2e8f0" }}>
-                    {allDates.filter(d => d < endD).map(d => (<option key={d} value={d}>{d.replace("-", ".")}</option>))}
+                    {allDates.filter(d => !endD || d < endD).map(d => (<option key={d} value={d}>{d.replace("-", ".")}</option>))}
                   </select>
                 </div>
                 <div>
@@ -353,7 +358,7 @@ export default function InvestSim() {
                   <select value={endD} onChange={e => setEndD(e.target.value)}
                     className="w-full rounded-2xl px-4 py-3 text-[12px] appearance-none transition-all"
                     style={{ background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.06)", color: "#e2e8f0" }}>
-                    {allDates.filter(d => d > startD).map(d => (<option key={d} value={d}>{d.replace("-", ".")}</option>))}
+                    {allDates.filter(d => !startD || d > startD).map(d => (<option key={d} value={d}>{d.replace("-", ".")}</option>))}
                   </select>
                 </div>
               </div>
