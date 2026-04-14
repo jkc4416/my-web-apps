@@ -26,6 +26,9 @@ const routes = [
   { path: "/wordle-kr", priority: 0.8, changeFrequency: "daily" },
   { path: "/past-life", priority: 0.7, changeFrequency: "monthly" },
   { path: "/tarot", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/minesweeper", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/tictactoe", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/unit-convert", priority: 0.9, changeFrequency: "monthly" },
 ];
 
 export default function sitemap() {

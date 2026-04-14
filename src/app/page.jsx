@@ -209,6 +209,18 @@ const apps = [
     id: 24, name: "연애 타로", description: "3장의 카드로 보는 연애운", href: "/tarot", emoji: "🃏",
     gradient: "from-fuchsia-500/20 to-purple-500/20", border: "hover:border-fuchsia-500/30", glow: "group-hover:shadow-fuchsia-500/10", accent: "text-fuchsia-400", size: "normal",
   },
+  {
+    id: 25, name: "지뢰찾기", description: "클래식 마인스위퍼 3단계 난이도", href: "/minesweeper", emoji: "💣",
+    gradient: "from-blue-500/20 to-violet-500/20", border: "hover:border-blue-500/30", glow: "group-hover:shadow-blue-500/10", accent: "text-blue-400", size: "featured",
+  },
+  {
+    id: 26, name: "틱택토", description: "AI와 대결하는 삼목 게임", href: "/tictactoe", emoji: "❌",
+    gradient: "from-red-500/20 to-amber-500/20", border: "hover:border-red-500/30", glow: "group-hover:shadow-red-500/10", accent: "text-red-400", size: "normal",
+  },
+  {
+    id: 27, name: "단위 변환기", description: "길이·무게·온도·넓이·속도 즉시 변환", href: "/unit-convert", emoji: "🔄",
+    gradient: "from-cyan-500/20 to-green-500/20", border: "hover:border-cyan-500/30", glow: "group-hover:shadow-cyan-500/10", accent: "text-cyan-400", size: "normal",
+  },
 ];
 
 export default function Home() {
@@ -281,7 +293,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              24 Apps Live
+              27 Apps Live
             </span>
           </div>
 
