@@ -78,7 +78,7 @@ export default function PasswordPage() {
 
         {/* Password display */}
         <div className="rounded-2xl p-5 mb-4" style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)" }}>
-          <div className="font-mono text-[18px] font-bold text-center py-3 px-2 rounded-xl mb-3 break-all leading-relaxed select-all" style={{ background: "rgba(0,0,0,.3)", color: "#e2e8f0", letterSpacing: 1 }}>{password}</div>
+          <div className="font-mono text-[18px] font-bold text-center py-3 px-2 rounded-xl mb-3 break-all leading-relaxed select-all" style={{ background: "rgba(0,0,0,.3)", color: "#e2e8f0", letterSpacing: 1 }}>{password || "생성 중..."}</div>
 
           {/* Strength */}
           <div className="flex items-center gap-3 mb-4">

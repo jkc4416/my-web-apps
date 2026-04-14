@@ -147,7 +147,7 @@ export default function MinesweeperPage() {
 
         {/* Board */}
         <div className="flex justify-center">
-          <div className="inline-grid gap-px rounded-xl overflow-hidden" style={{ gridTemplateColumns: `repeat(${cols}, ${cellPx}px)`, background: "rgba(255,255,255,.04)" }}>
+          <div className="inline-grid gap-px rounded-xl overflow-hidden select-none" style={{ gridTemplateColumns: `repeat(${cols}, ${cellPx}px)`, background: "rgba(255,255,255,.04)", touchAction: "manipulation" }}>
             {(board || Array(rows).fill(null).map(() => Array(cols).fill({ mine: false, revealed: false, flagged: false, count: 0 }))).flat().map((cell, idx) => {
               const r = Math.floor(idx / cols), c = idx % cols;
               return (
