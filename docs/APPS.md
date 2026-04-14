@@ -2,7 +2,7 @@
 
 ## Overview
 
-FunAppBox contains 13 mini web apps and games. All apps are client-side only (no API routes, no database) and are deployed as a single Next.js application.
+FunAppBox contains 14 mini web apps and games. All apps are client-side only (no API routes, no database) and are deployed as a single Next.js application.
 
 ---
 
@@ -46,8 +46,15 @@ FunAppBox contains 13 mini web apps and games. All apps are client-side only (no
 
 - **Route:** `/invest`
 - **Source:** `investment-sim.jsx`
-- **Features:** Compound interest simulation, monthly contribution, yearly growth chart, total profit calculation
-- **Key Tech:** Recharts for data visualization
+- **Features:**
+  - 12 assets: Samsung, SK Hynix, Kakao, Naver, KOSPI, S&P 500, Nasdaq, Apple, Tesla, Bitcoin, Ethereum, Gold
+  - Data range: 2005~2026 (varies by asset)
+  - Lump-sum and DCA (dollar-cost averaging) modes
+  - Period presets: 1년, 3년, 5년, 10년, 15년, 20년, 전체
+  - Custom start/end date selection
+  - CAGR calculation, yearly growth chart via Recharts
+  - Result image export and share
+- **Key Tech:** Recharts, linear price interpolation, timezone-safe date handling (day-15)
 - **Dependency:** `recharts` package
 
 ## 7. 컬러크래프트 (Color Craft)
@@ -55,7 +62,7 @@ FunAppBox contains 13 mini web apps and games. All apps are client-side only (no
 - **Route:** `/color`
 - **Source:** `color-craft.jsx`
 - **Features:** Color palette generator with 4 harmony modes (analogous, complementary, triadic, monochromatic), HSL-to-HEX conversion, click-to-copy
-- **Key Tech:** Color theory algorithms, Clipboard API
+- **Key Tech:** Color theory algorithms, Clipboard API (with try/catch)
 
 ## 8. 타이핑 챌린지 (Typing Challenge)
 
@@ -76,8 +83,7 @@ FunAppBox contains 13 mini web apps and games. All apps are client-side only (no
 - **Route:** `/dday`
 - **Source:** `dday-maker.jsx`
 - **Features:** D-Day counter, multiple events, add/remove events, sorted by date, persistent storage
-- **Key Tech:** localStorage for persistence, date arithmetic
-- **Note:** Requires `"use client"` — localStorage is browser-only
+- **Key Tech:** localStorage (with try/catch), date arithmetic
 
 ---
 
@@ -86,14 +92,14 @@ FunAppBox contains 13 mini web apps and games. All apps are client-side only (no
 ## 11. 스네이크 게임 (Snake Game)
 
 - **Route:** `/snake`
-- **Features:** Classic snake game, arrow key + swipe + mobile D-pad controls, score tracking with localStorage high score, speed increases with score
-- **Key Tech:** Canvas API, requestAnimationFrame game loop, touch/swipe detection
+- **Features:** Classic snake game, arrow key + swipe + mobile D-pad controls, score tracking with localStorage high score, speed increases with score, mobile-responsive canvas
+- **Key Tech:** Canvas API, setInterval game loop, touch/swipe detection
 - **Controls:** Arrow keys (desktop), swipe or D-pad buttons (mobile), Space/Enter to start
 
 ## 12. 플래피버드 (Flappy Bird)
 
 - **Route:** `/flappy`
-- **Features:** Flappy Bird clone with neon dark theme, pipe navigation, collision detection, animated bird with wing flap and rotation, star parallax background
+- **Features:** Flappy Bird clone with neon dark theme, pipe navigation, collision detection, animated bird with wing flap and rotation, star parallax background, mobile-responsive canvas
 - **Key Tech:** Canvas API, requestAnimationFrame at 60fps, gravity/jump physics
 - **Controls:** Space/↑ (desktop), tap/click (mobile)
 
@@ -101,16 +107,35 @@ FunAppBox contains 13 mini web apps and games. All apps are client-side only (no
 
 - **Route:** `/hamster`
 - **Features:**
-  - **Pixel art hamster** with 5 growth tiers (아기→꼬마→청소년→어른→왕), each with unique sprite and sleeping expression
-  - **4 stats:** hunger, happiness, energy, cleanliness (decay over time)
-  - **Random roaming:** hamster walks around cage naturally with smooth eased animation
-  - **Actions:** feed, bathe, sleep, pet (tap hamster)
-  - **Wheel mini-game:** wheel appears → hamster walks to it → tap button rapidly to earn coins
-  - **Toy system:** buy toys permanently (ball, tunnel, swing), interactive play sequence with tap mechanic
-  - **Poop system:** hamster poops periodically, tap to clean, affects cleanliness/happiness
-  - **Sawdust system:** degrades over time (turns gray visually), buy new sawdust from shop, covers entire cage floor
+  - **Pixel art hamster** with 5 growth tiers (아기→꼬마→청소년→어른→왕), grows every 5 levels, king has golden crown
+  - **4 stats:** hunger, happiness, energy, cleanliness (decay over time, affected by poop count and sawdust freshness)
+  - **Random roaming:** hamster walks around cage naturally with smooth eased animation via ref-based position tracking
+  - **Actions:** feed, bathe, sleep (ref-managed timer), pet (tap hamster)
+  - **Wheel mini-game:** wheel appears → hamster walks to it → "달려!" button → tap rapidly to earn coins → hamster walks away
+  - **Toy system:** buy toys permanently (200~500 coins), interactive play sequence with tap mechanic
+  - **Poop system:** hamster poops every ~25s (max 8), tap individual or "clean all", affects cleanliness/happiness decay
+  - **Sawdust system:** degrades over time (chips turn gray), buy new sawdust from shop, covers entire cage floor with depth gradient
   - **Shop:** 3 tabs (food, toys, maintenance), 5 foods, 3 toys (permanent), sawdust
-  - **Level/XP system:** 10 title tiers, size grows every 5 levels, king tier has golden crown
-  - **Persistence:** full state saved to localStorage including offline time decay
+  - **Level/XP system:** 10 title tiers, size grows every 5 levels
+  - **Persistence:** full state saved to localStorage (with try/catch) including offline time decay
+  - **Reset safety:** clears all active timers (sleep, wheel, toy) on reset
 - **Key Tech:** CSS pixel art rendering, ref-based position tracking, multi-phase animation sequences, seeded pseudo-random sawdust distribution
-- **Note:** Requires `"use client"` — localStorage and timers are browser-only
+
+---
+
+## 14. 사주 & 오늘의 운세 (Fortune)
+
+- **Route:** `/fortune`
+- **Features:**
+  - **Birth input:** year/month/day (validated 1920~2025, 1~12, 1~31), optional hour, gender
+  - **Saju analysis:** 4 pillars (년주/월주/일주/시주) with 천간지지
+  - **Five elements:** 목화토금수 bar chart, weakest element recommendation
+  - **Yin/yang balance:** visual comparison
+  - **Daily fortune:** 5 categories (총운/애정/재물/건강/직장) with star ratings, deterministic daily hash
+  - **Lucky items:** color, number, direction, food (changes daily)
+  - **Zodiac fortune:** 12 animal zodiac (띠) fortune
+  - **Share:** Web Share API with clipboard fallback (try/catch)
+  - **Persistence:** birth data saved to localStorage (with try/catch), returns to fortune tab on revisit
+  - **Summary card:** average score with 대길/길/보통/소길 rating
+- **Key Tech:** Traditional saju (천간지지) calculation, deterministic hash-based fortune, input validation
+- **Note:** Disclaimer clearly states this is entertainment content
