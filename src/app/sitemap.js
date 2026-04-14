@@ -23,6 +23,9 @@ const routes = [
   { path: "/animal-test", priority: 0.8, changeFrequency: "monthly" },
   { path: "/age-calc", priority: 0.9, changeFrequency: "monthly" },
   { path: "/password", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/wordle-kr", priority: 0.8, changeFrequency: "daily" },
+  { path: "/past-life", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/tarot", priority: 0.8, changeFrequency: "monthly" },
 ];
 
 export default function sitemap() {

@@ -197,6 +197,18 @@ const apps = [
     id: 21, name: "비밀번호 생성기", description: "안전한 랜덤 비밀번호 즉시 생성", href: "/password", emoji: "🔐",
     gradient: "from-emerald-500/20 to-cyan-500/20", border: "hover:border-emerald-500/30", glow: "group-hover:shadow-emerald-500/10", accent: "text-emerald-400", size: "normal",
   },
+  {
+    id: 22, name: "한글 워들", description: "매일 새로운 한글 단어 맞추기", href: "/wordle-kr", emoji: "🟩",
+    gradient: "from-green-500/20 to-yellow-500/20", border: "hover:border-green-500/30", glow: "group-hover:shadow-green-500/10", accent: "text-green-400", size: "featured",
+  },
+  {
+    id: 23, name: "전생 테스트", description: "생년월일로 알아보는 나의 전생", href: "/past-life", emoji: "🔮",
+    gradient: "from-violet-500/20 to-pink-500/20", border: "hover:border-violet-500/30", glow: "group-hover:shadow-violet-500/10", accent: "text-violet-400", size: "normal",
+  },
+  {
+    id: 24, name: "연애 타로", description: "3장의 카드로 보는 연애운", href: "/tarot", emoji: "🃏",
+    gradient: "from-fuchsia-500/20 to-purple-500/20", border: "hover:border-fuchsia-500/30", glow: "group-hover:shadow-fuchsia-500/10", accent: "text-fuchsia-400", size: "normal",
+  },
 ];
 
 export default function Home() {
@@ -269,7 +281,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              21 Apps Live
+              24 Apps Live
             </span>
           </div>
 
