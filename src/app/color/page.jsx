@@ -272,6 +272,132 @@ function ImgExtract(){
   );
 }
 
+// ===== TOOL 9: SLIDE PALETTE =====
+function SlidePalette(){
+  const[hex,setHex]=useState("#4f46e5");
+  const{copied,copy}=useCopy();
+
+  const palette=useMemo(()=>{
+    if(!/^#[0-9a-fA-F]{6}$/.test(hex))return null;
+    const{r,g,b}=hexToRgb(hex);
+    const{h,s,l}=rgbToHsl(r,g,b);
+
+    // Generate 5 companion colors for a trendy presentation slide
+    // Strategy: base + dark bg + light accent + muted + contrast pop + neutral
+    const base=hex;
+
+    // 1. 어두운 배경색 — 메인 색상의 매우 어둡고 채도 낮은 버전
+    const darkBg=(()=>{const{r:dr,g:dg,b:db}=hslToRgb(h,Math.max(10,s*0.3),8);return rgbToHex(dr,dg,db);})();
+
+    // 2. 밝은 강조색 — 메인 색상의 밝고 가벼운 버전
+    const lightAccent=(()=>{const{r:lr,g:lg,b:lb}=hslToRgb((h+15)%360,Math.min(90,s*0.8),85);return rgbToHex(lr,lg,lb);})();
+
+    // 3. 뮤트 서브색 — 보색 방향에서 채도 낮은 톤
+    const mutedSub=(()=>{const{r:mr,g:mg,b:mb}=hslToRgb((h+150)%360,20,45);return rgbToHex(mr,mg,mb);})();
+
+    // 4. 포인트 팝 — 대비되는 밝은 강조
+    const popAccent=(()=>{const{r:pr,g:pg,b:pb}=hslToRgb((h+40)%360,Math.min(95,s+20),60);return rgbToHex(pr,pg,pb);})();
+
+    // 5. 중성 텍스트 — 메인 색상 틴트가 살짝 들어간 밝은 회색
+    const neutralText=(()=>{const{r:nr,g:ng,b:nb}=hslToRgb(h,8,88);return rgbToHex(nr,ng,nb);})();
+
+    return [
+      {hex:base,role:"메인 컬러",desc:"제목, CTA, 핵심 강조"},
+      {hex:darkBg,role:"배경색",desc:"슬라이드 배경, 다크 섹션"},
+      {hex:lightAccent,role:"밝은 강조",desc:"하이라이트, 배지, 태그"},
+      {hex:mutedSub,role:"서브 컬러",desc:"보조 요소, 아이콘 배경"},
+      {hex:popAccent,role:"포인트",desc:"차트 강조, 버튼, 링크"},
+      {hex:neutralText,role:"텍스트",desc:"본문, 캡션, 설명 텍스트"},
+    ];
+  },[hex]);
+
+  const presets=[
+    {name:"인디고",hex:"#4f46e5"},{name:"에메랄드",hex:"#10b981"},
+    {name:"로즈",hex:"#f43f5e"},{name:"앰버",hex:"#f59e0b"},
+    {name:"바이올렛",hex:"#8b5cf6"},{name:"시안",hex:"#06b6d4"},
+    {name:"슬레이트",hex:"#475569"},{name:"오렌지",hex:"#f97316"},
+  ];
+
+  const cssVars=palette?`:root {\n${palette.map((c,i)=>`  --slide-${c.role.replace(/\s/g,"-")}: ${c.hex};`).join("\n")}\n}`:"";
+
+  return (
+    <div>
+      <p className="text-[11px] mb-4 leading-relaxed" style={{color:"rgba(255,255,255,.25)"}}>
+        메인 컬러를 입력하면 발표자료에 어울리는 6색 팔레트를 생성합니다.
+      </p>
+
+      {/* Input */}
+      <div className="flex items-center gap-2 mb-3">
+        <input type="color" value={hex} onChange={e=>setHex(e.target.value)} className="w-10 h-10 rounded-lg cursor-pointer border-0 bg-transparent"/>
+        <input type="text" value={hex} onChange={e=>{if(/^#[0-9a-fA-F]{0,6}$/.test(e.target.value))setHex(e.target.value);}} maxLength={7} aria-label="메인 컬러 코드"
+          className="flex-1 rounded-2xl px-4 py-2.5 text-[14px] font-mono font-bold" style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",color:"#e2e8f0",outline:"none"}}/>
+      </div>
+
+      {/* Presets */}
+      <div className="flex gap-1.5 overflow-x-auto mb-5 pb-1">
+        {presets.map(p=>(
+          <button key={p.name} onClick={()=>setHex(p.hex)} className="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[10px] font-medium transition-all active:scale-95"
+            style={{background:"rgba(255,255,255,.03)",border:`1px solid ${hex===p.hex?"rgba(168,85,247,.3)":"rgba(255,255,255,.06)"}`,color:hex===p.hex?"#c084fc":"rgba(255,255,255,.25)"}}>
+            <div className="w-3 h-3 rounded-full" style={{background:p.hex}}/>{p.name}
+          </button>
+        ))}
+      </div>
+
+      {palette&&(<>
+        {/* Slide preview */}
+        <div className="rounded-2xl overflow-hidden mb-4" style={{border:"1px solid rgba(255,255,255,.06)"}}>
+          {/* Mini slide mockup */}
+          <div className="p-5 relative" style={{background:palette[1].hex,minHeight:180}}>
+            <div className="text-[18px] font-black mb-2" style={{color:palette[0].hex}}>프레젠테이션 제목</div>
+            <div className="text-[11px] leading-relaxed mb-3" style={{color:palette[5].hex}}>
+              이 슬라이드는 입력하신 메인 컬러를 기반으로 자동 생성된 팔레트 미리보기입니다.
+            </div>
+            <div className="flex gap-2 mb-3">
+              <span className="px-2.5 py-1 rounded-full text-[9px] font-bold" style={{background:palette[2].hex,color:palette[1].hex}}>태그 1</span>
+              <span className="px-2.5 py-1 rounded-full text-[9px] font-bold" style={{background:palette[4].hex,color:"#fff"}}>태그 2</span>
+            </div>
+            <div className="flex gap-2">
+              <div className="flex-1 h-8 rounded-lg" style={{background:palette[3].hex,opacity:0.6}}/>
+              <div className="flex-1 h-8 rounded-lg" style={{background:palette[3].hex,opacity:0.4}}/>
+              <div className="flex-1 h-8 rounded-lg" style={{background:palette[3].hex,opacity:0.25}}/>
+            </div>
+            <button className="absolute bottom-4 right-4 px-3 py-1.5 rounded-lg text-[10px] font-bold" style={{background:palette[4].hex,color:"#fff"}}>자세히 보기 →</button>
+          </div>
+        </div>
+
+        {/* Color swatches */}
+        <div className="space-y-2 mb-4">
+          {palette.map((c,i)=>(
+            <button key={i} onClick={()=>copy(c.hex)} className="w-full flex items-center gap-3 p-3 rounded-xl transition-all active:scale-[0.98] hover:bg-white/[0.02]"
+              style={{background:"rgba(255,255,255,.02)",border:"1px solid rgba(255,255,255,.04)"}}>
+              <div className="w-10 h-10 rounded-lg flex-shrink-0" style={{background:c.hex,border:"1px solid rgba(255,255,255,.08)"}}/>
+              <div className="flex-1 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="text-[12px] font-bold" style={{color:"rgba(255,255,255,.6)"}}>{c.role}</span>
+                  <span className="text-[10px] font-mono" style={{color:"rgba(255,255,255,.25)"}}>{c.hex.toUpperCase()}</span>
+                </div>
+                <div className="text-[10px]" style={{color:"rgba(255,255,255,.15)"}}>{c.desc}</div>
+              </div>
+              <span className="text-[10px]" style={{color:"rgba(255,255,255,.15)"}}>{copied?"✓":"복사"}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Full palette strip */}
+        <div className="flex rounded-xl overflow-hidden h-10 mb-4">
+          {palette.map((c,i)=>(
+            <div key={i} className="flex-1 flex items-center justify-center cursor-pointer group" style={{background:c.hex}} onClick={()=>copy(c.hex)}>
+              <span className="text-[8px] font-mono font-bold opacity-0 group-hover:opacity-80 transition-opacity" style={{color:txtCol(c.hex)}}>{c.hex}</span>
+            </div>
+          ))}
+        </div>
+
+        <CodeBox code={cssVars} copied={copied} onCopy={()=>copy(cssVars)}/>
+      </>)}
+    </div>
+  );
+}
+
 // ===== SHARED: CODE BOX =====
 function CodeBox({code,copied,onCopy}){
   return (
@@ -295,6 +421,7 @@ const TOOLS=[
   {id:"button",name:"버튼 생성기",emoji:"🔘",desc:"커스텀 CSS 버튼",C:BtnGen},
   {id:"font",name:"폰트 조합",emoji:"🔤",desc:"Google Fonts 페어링",C:FontPair},
   {id:"extract",name:"색상 추출",emoji:"🖼️",desc:"이미지에서 팔레트",C:ImgExtract},
+  {id:"slide",name:"슬라이드 팔레트",emoji:"📊",desc:"발표자료용 6색 조합",C:SlidePalette},
 ];
 
 // ===== MAIN =====
