@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 
 const DIFFS = [
@@ -52,6 +52,9 @@ export default function MinesweeperPage() {
   const [timerRef, setTimerRef] = useState(null);
 
   const { rows, cols, mines } = DIFFS[diff];
+
+  // Cleanup timer on unmount
+  useEffect(() => { return () => { if (timerRef) clearInterval(timerRef); }; }, [timerRef]);
 
   const startGame = useCallback((firstR, firstC) => {
     const b = createBoard(rows, cols, mines, firstR, firstC);

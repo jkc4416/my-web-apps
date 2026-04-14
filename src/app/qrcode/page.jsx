@@ -89,7 +89,7 @@ export default function QRCodePage() {
         {qrUrl && (
           <div className="rounded-2xl p-6 mb-4 text-center" style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)" }}>
             <div className="bg-white rounded-xl p-4 inline-block mb-4">
-              <img ref={imgRef} src={qrUrl} alt="QR Code" width={200} height={200} className="block" />
+              <img ref={imgRef} src={qrUrl} alt="QR Code" width={200} height={200} className="block" onError={(e) => { e.target.style.display = "none"; }} />
             </div>
             <div className="text-[11px] mb-4 px-4 truncate" style={{ color: "rgba(255,255,255,.25)" }}>{input}</div>
             <div className="flex gap-2">

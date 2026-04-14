@@ -41,6 +41,8 @@ export default function AgeCalcPage() {
 
     const today = new Date();
     const birth = new Date(y, m - 1, d);
+    // Validate actual date (catches Feb 30, etc.)
+    if (birth.getFullYear() !== y || birth.getMonth() !== m - 1 || birth.getDate() !== d) return null;
     if (birth > today) return null;
 
     // 만 나이

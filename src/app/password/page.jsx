@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 
 function generatePassword(length, options) {
@@ -38,9 +38,11 @@ function getStrength(pw) {
 export default function PasswordPage() {
   const [length, setLength] = useState(16);
   const [options, setOptions] = useState({ lower: true, upper: true, numbers: true, symbols: true });
-  const [password, setPassword] = useState(() => generatePassword(16, { lower: true, upper: true, numbers: true, symbols: true }));
+  const [password, setPassword] = useState("");
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState([]);
+
+  useEffect(() => { setPassword(generatePassword(16, { lower: true, upper: true, numbers: true, symbols: true })); }, []);
 
   const generate = useCallback(() => {
     const pw = generatePassword(length, options);
