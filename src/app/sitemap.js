@@ -16,6 +16,10 @@ const routes = [
   { path: "/flappy", priority: 0.7, changeFrequency: "monthly" },
   { path: "/hamster", priority: 0.8, changeFrequency: "monthly" },
   { path: "/fortune", priority: 0.9, changeFrequency: "daily" },
+  { path: "/balance", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/qrcode", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/game2048", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/charcount", priority: 0.9, changeFrequency: "monthly" },
 ];
 
 export default function sitemap() {

@@ -169,6 +169,22 @@ const apps = [
     accent: "text-purple-400",
     size: "featured",
   },
+  {
+    id: 15, name: "밸런스 게임", description: "어려운 양자택일 30제", href: "/balance", emoji: "⚖️",
+    gradient: "from-pink-500/20 to-purple-500/20", border: "hover:border-pink-500/30", glow: "group-hover:shadow-pink-500/10", accent: "text-pink-400", size: "normal",
+  },
+  {
+    id: 16, name: "QR코드 생성기", description: "텍스트·URL을 QR코드로 변환", href: "/qrcode", emoji: "📱",
+    gradient: "from-blue-500/20 to-green-500/20", border: "hover:border-blue-500/30", glow: "group-hover:shadow-blue-500/10", accent: "text-blue-400", size: "normal",
+  },
+  {
+    id: 17, name: "2048", description: "타일을 합쳐 2048을 만드세요!", href: "/game2048", emoji: "🔢",
+    gradient: "from-amber-500/20 to-orange-500/20", border: "hover:border-amber-500/30", glow: "group-hover:shadow-amber-500/10", accent: "text-amber-400", size: "featured",
+  },
+  {
+    id: 18, name: "글자수 세기", description: "실시간 글자수·단어수·바이트 카운터", href: "/charcount", emoji: "📝",
+    gradient: "from-sky-500/20 to-indigo-500/20", border: "hover:border-sky-500/30", glow: "group-hover:shadow-sky-500/10", accent: "text-sky-400", size: "normal",
+  },
 ];
 
 export default function Home() {
@@ -241,7 +257,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              14 Apps Live
+              18 Apps Live
             </span>
           </div>
 
