@@ -246,7 +246,7 @@ export default function Home() {
           </div>
 
           <h1
-            className="text-5xl sm:text-7xl font-black tracking-tight leading-[1.05] mb-4"
+            className="text-4xl sm:text-6xl font-black tracking-tight leading-[1.1] mb-4"
             style={{
               background:
                 "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 50%, rgba(168,85,247,0.8) 100%)",
@@ -254,18 +254,17 @@ export default function Home() {
               WebkitTextFillColor: "transparent",
             }}
           >
-            Web Tools
+            무료 온라인 도구
             <br />
-            Collection
+            & 게임 모음
           </h1>
 
           <p
-            className="text-base sm:text-lg max-w-md leading-relaxed"
+            className="text-base sm:text-lg max-w-lg leading-relaxed"
             style={{ color: "rgba(255,255,255,0.3)" }}
           >
-            유용하고 재미있는 미니 웹 앱 & 게임.
-            <br />
-            클릭 한 번으로 바로 사용하세요.
+            이름궁합, MBTI, 계산기, 맞춤법 퀴즈, 오늘의 운세부터
+            스네이크, 햄스터 키우기까지 — 설치 없이 바로 사용하세요.
           </p>
         </header>
 
@@ -361,22 +360,51 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Footer */}
-        <footer
-          className="pb-12 text-center"
-          style={{ color: "rgba(255,255,255,0.12)" }}
-        >
-          <div
-            className="h-px max-w-xs mx-auto mb-6"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-            }}
-          />
-          <p className="text-xs tracking-widest uppercase">
-            Built with Next.js
+        {/* SEO text block — visible to crawlers, subtle for users */}
+        <section className="pb-8 max-w-2xl mx-auto" style={{ color: "rgba(255,255,255,0.15)" }}>
+          <div className="h-px max-w-xs mx-auto mb-8" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)" }} />
+          <h2 className="text-sm font-semibold mb-3" style={{ color: "rgba(255,255,255,0.2)" }}>FunAppBox — 무료 온라인 도구 & 게임</h2>
+          <p className="text-xs leading-relaxed mb-3">
+            FunAppBox는 설치 없이 브라우저에서 바로 사용할 수 있는 무료 웹 도구와 게임 모음입니다.
+            이름궁합 테스트로 두 사람의 궁합을 확인하고, 만능 계산기로 연봉 실수령액이나 BMI를 계산하세요.
+            MBTI 인사이트에서 16가지 성격 유형을 분석하고, 맞춤법 왕 퀴즈로 헷갈리는 한국어 맞춤법을 마스터하세요.
           </p>
+          <p className="text-xs leading-relaxed mb-3">
+            사운드포커스로 공부할 때 집중력을 높이고, 투자 시뮬레이터로 복리의 마법을 체험하세요.
+            컬러크래프트에서 나만의 색상 팔레트를 만들고, 타이핑 챌린지로 타자 속도를 측정하세요.
+            밥뭐먹지 룰렛으로 오늘의 메뉴를 정하고, 디데이 메이커로 중요한 날을 카운트다운하세요.
+          </p>
+          <p className="text-xs leading-relaxed mb-3">
+            사주팔자와 오늘의 운세로 매일의 운세를 확인하고, 스네이크 게임과 플래피버드로 잠시 쉬어가세요.
+            햄스터 키우기에서 귀여운 도트 햄스터를 돌보며 레벨업시켜보세요.
+            모든 도구는 회원가입 없이 무료로 이용 가능합니다.
+          </p>
+        </section>
+
+        {/* Footer */}
+        <footer className="pb-12 text-center" style={{ color: "rgba(255,255,255,0.08)" }}>
+          <p className="text-xs">© 2026 FunAppBox. All tools are free.</p>
         </footer>
+
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "FunAppBox",
+              url: "https://www.funappbox.com",
+              description: "무료 온라인 도구와 게임 모음 — 이름궁합, MBTI, 계산기, 운세, 스네이크, 햄스터 키우기 등 14가지",
+              inLanguage: "ko",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://www.funappbox.com/?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
       </div>
     </div>
   );
