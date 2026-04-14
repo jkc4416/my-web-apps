@@ -103,7 +103,7 @@ export default function PasswordPage() {
               <span className="text-[12px]" style={{ color: "rgba(255,255,255,.3)" }}>길이</span>
               <span className="text-[14px] font-black tabular-nums" style={{ color: "#4ade80" }}>{length}</span>
             </div>
-            <input type="range" min={4} max={64} value={length} onChange={(e) => setLength(Number(e.target.value))} className="w-full accent-emerald-400" />
+            <input type="range" min={4} max={64} value={length} onChange={(e) => setLength(Number(e.target.value))} aria-label="비밀번호 길이" className="w-full accent-emerald-400" />
             <div className="flex justify-between text-[9px] mt-1" style={{ color: "rgba(255,255,255,.1)" }}><span>4</span><span>64</span></div>
           </div>
 

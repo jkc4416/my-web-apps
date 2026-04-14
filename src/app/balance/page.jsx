@@ -45,7 +45,7 @@ function hashSeed(str) {
 export default function BalancePage() {
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState(null); // "a" | "b"
-  const [votes, setVotes] = useState(() => QUESTIONS.map(() => ({ a: 50 + (hashSeed(`q${0}`) % 30), b: 50 + (hashSeed(`q${1}`) % 30) })));
+  const [votes, setVotes] = useState(() => QUESTIONS.map((_, i) => ({ a: 50 + (hashSeed(`qa${i}`) % 40), b: 50 + (hashSeed(`qb${i}`) % 40) })));
   const [history, setHistory] = useState([]);
   const [showResult, setShowResult] = useState(false);
 
@@ -83,7 +83,7 @@ export default function BalancePage() {
 
   const share = () => {
     const text = `밸런스 게임 ${history.length}문제 완료!\n내 선택: ${history.map((h) => h.side === "a" ? "A" : "B").join("")}\n\n나도 해보기 → funappbox.com/balance`;
-    if (navigator.share) navigator.share({ title: "밸런스 게임", text });
+    if(navigator.share)try{navigator.share({ title: "밸런스 게임", text });}catch{}
     else { try { navigator.clipboard.writeText(text); } catch {} alert("복사되었습니다!"); }
   };
 

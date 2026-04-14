@@ -37,7 +37,7 @@ export default function PastLifePage() {
   const share = () => {
     if (!result) return;
     const text = `나의 전생은 ${result.emoji} ${result.era}의 ${result.name}!\n${result.traits.join(", ")}\n\n나도 알아보기 → funappbox.com/past-life`;
-    if (navigator.share) navigator.share({ title: "전생 테스트", text });
+    if(navigator.share)try{navigator.share({ title: "전생 테스트", text });}catch{}
     else { try { navigator.clipboard.writeText(text); } catch {} alert("복사되었습니다!"); }
   };
 

@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 
-const WORDS = ["사과나무","행복하다","대한민국","컴퓨터실","도서관에","아이스크림","치킨집에","학교가자","고양이가","강아지가","햄버거를","떡볶이를","김치찌개","된장찌개","불고기를","비빔밥을","냉면먹자","삼겹살을","피자한판","초밥먹자","커피한잔","아메리카","라떼한잔","주말여행","바다가자","산책하자","운동하자","음악듣자","영화보자","게임하자","공부하자","청소하자","요리하자","장보러가","편의점에","마트가자","카페가자","서울시내","부산가자","제주도로","봄바람이","여름날씨","가을하늘","겨울눈이","벚꽃피다","단풍나무","눈사람을","크리스마","생일축하","새해복을"];
+const WORDS = ["사과나무","행복하다","대한민국","컴퓨터실","도서관에","치킨집에","학교가자","고양이가","강아지가","햄버거를","떡볶이를","김치찌개","된장찌개","불고기를","비빔밥을","냉면먹자","삼겹살을","피자한판","초밥먹자","커피한잔","라떼한잔","주말여행","바다가자","산책하자","운동하자","음악듣자","영화보자","게임하자","공부하자","청소하자","요리하자","장보러가","편의점에","마트가자","카페가자","서울시내","부산가자","제주도로","봄바람이","여름날씨","가을하늘","겨울눈이","벚꽃피다","단풍나무","눈사람을","생일축하","새해복을","토요일에","일요일에","월요일에"];
 
 function getDaily() {
   const d = new Date();
@@ -78,7 +78,7 @@ export default function WordleKrPage() {
   const share = () => {
     const grid = guesses.map((g) => g.result.map((r) => r === "correct" ? "🟩" : r === "present" ? "🟨" : "⬛").join("")).join("\n");
     const text = `한글 워들 ${gameState === "won" ? guesses.length : "X"}/${maxTries}\n\n${grid}\n\n나도 도전 → funappbox.com/wordle-kr`;
-    if (navigator.share) navigator.share({ title: "한글 워들", text });
+    if(navigator.share)try{navigator.share({ title: "한글 워들", text });}catch{}
     else { try { navigator.clipboard.writeText(text); } catch {} alert("복사되었습니다!"); }
   };
 
