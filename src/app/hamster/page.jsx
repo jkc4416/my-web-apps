@@ -489,7 +489,10 @@ export default function HamsterPage() {
   const saveName = useCallback(() => { if (nameInput.trim()) setState((s) => ({ ...s, name: nameInput.trim() })); setNameEditing(false); }, [nameInput]);
 
   const resetGame = useCallback(() => {
-    localStorage.removeItem(SAVE_KEY);
+    try { localStorage.removeItem(SAVE_KEY); } catch {}
+    if (sleepTimerRef.current) { clearInterval(sleepTimerRef.current); sleepTimerRef.current = null; }
+    if (wheelTimerRef.current) { clearInterval(wheelTimerRef.current); wheelTimerRef.current = null; }
+    if (toyTimerRef.current) { clearInterval(toyTimerRef.current); toyTimerRef.current = null; }
     setState(getDefaultState()); setIsSleeping(false); setWheelPhase("none"); setToyPhase("none"); setShowShop(false);
     updatePos(CAGE_W / 2, CAGE_H / 2);
     showBubble("새 햄스터를 입양했어요!"); spawnParticles("🎀", 6);
@@ -540,7 +543,7 @@ export default function HamsterPage() {
           <div>
             {nameEditing ? (
               <div className="flex items-center gap-2">
-                <input type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)} maxLength={8} autoFocus onKeyDown={(e) => e.key === "Enter" && saveName()} className="bg-transparent border-b border-amber-500/50 text-lg font-black text-amber-300 w-28 outline-none" />
+                <input type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)} maxLength={8} autoFocus onKeyDown={(e) => e.key === "Enter" && saveName()} aria-label="햄스터 이름" className="bg-transparent border-b border-amber-500/50 text-lg font-black text-amber-300 w-28 outline-none" />
                 <button onClick={saveName} className="text-xs text-amber-400">확인</button>
               </div>
             ) : (

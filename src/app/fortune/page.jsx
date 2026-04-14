@@ -317,15 +317,15 @@ export default function FortunePage() {
                 <label className="block text-[10px] uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,.2)" }}>생년월일</label>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <input type="number" placeholder="년 (1950~)" value={birthYear} onChange={(e) => setBirthYear(e.target.value)} min="1920" max="2025" required inputMode="numeric" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    <input type="number" placeholder="년 (1950~)" value={birthYear} onChange={(e) => setBirthYear(e.target.value)} min="1920" max="2025" required inputMode="numeric" aria-label="태어난 년도" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>년</span>
                   </div>
                   <div>
-                    <input type="number" placeholder="월" value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)} min="1" max="12" required inputMode="numeric" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    <input type="number" placeholder="월" value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)} min="1" max="12" required inputMode="numeric" aria-label="태어난 월" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>월</span>
                   </div>
                   <div>
-                    <input type="number" placeholder="일" value={birthDay} onChange={(e) => setBirthDay(e.target.value)} min="1" max="31" required inputMode="numeric" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    <input type="number" placeholder="일" value={birthDay} onChange={(e) => setBirthDay(e.target.value)} min="1" max="31" required inputMode="numeric" aria-label="태어난 일" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>일</span>
                   </div>
                 </div>
