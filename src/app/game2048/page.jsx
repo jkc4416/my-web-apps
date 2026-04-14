@@ -176,12 +176,17 @@ export default function Game2048Page() {
         </div>
 
         {/* Game Over / Won overlay */}
-        {(gameOver || won) && (
+        {(gameOver || (won && !gameOver)) && (
           <div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl" style={{ background: "rgba(0,0,0,.6)", backdropFilter: "blur(4px)" }}>
-            <div className="text-4xl mb-2">{won ? "🎉" : "💀"}</div>
-            <div className="text-2xl font-black mb-1">{won ? "2048 달성!" : "게임 오버"}</div>
+            <div className="text-4xl mb-2">{gameOver ? "💀" : "🎉"}</div>
+            <div className="text-2xl font-black mb-1">{gameOver ? "게임 오버" : "2048 달성!"}</div>
             <div className="text-[13px] mb-4" style={{ color: "rgba(255,255,255,.4)" }}>점수: {score}</div>
-            <button onClick={restart} className="px-6 py-2.5 rounded-xl font-bold text-[14px] transition-all active:scale-95" style={{ background: "linear-gradient(135deg, #edc22e, #f59563)" }}>다시 하기</button>
+            <div className="flex gap-2">
+              {won && !gameOver && (
+                <button onClick={() => setWon(false)} className="px-5 py-2.5 rounded-xl font-bold text-[13px] transition-all active:scale-95" style={{ background: "rgba(255,255,255,.08)", border: "1px solid rgba(255,255,255,.15)", color: "rgba(255,255,255,.6)" }}>계속 플레이</button>
+              )}
+              <button onClick={restart} className="px-5 py-2.5 rounded-xl font-bold text-[14px] transition-all active:scale-95" style={{ background: "linear-gradient(135deg, #edc22e, #f59563)" }}>다시 하기</button>
+            </div>
           </div>
         )}
       </div>
