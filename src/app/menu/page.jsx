@@ -358,7 +358,7 @@ export default function MenuRoulette() {
 
             {/* Actions */}
             <div className="grid grid-cols-3 gap-2.5 mt-6 mb-5">
-              {[["🔄 다시", () => { setPg("home"); setTimeout(spin, 300); }], [result.desc ? "📋 상세" : "📸 저장", result.desc ? () => openDetail(result) : saveImg], ["🔗 공유", () => { const t = `오늘의 메뉴: ${result.emoji} ${result.name}!`; if (navigator.share) navigator.share({ title: "밥뭐먹지?", text: t, url: location.href }); else { navigator.clipboard.writeText(t); alert("복사됨!"); } }]].map(([l, fn], i) => (
+              {[["🔄 다시", () => { setPg("home"); setTimeout(spin, 300); }], [result.desc ? "📋 상세" : "📸 저장", result.desc ? () => openDetail(result) : saveImg], ["🔗 공유", () => { const t = `오늘의 메뉴: ${result.emoji} ${result.name}!`; if (navigator.share) navigator.share({ title: "밥뭐먹지?", text: t, url: location.href }); else { try{navigator.clipboard.writeText(t);}catch{} alert("복사됨!"); } }]].map(([l, fn], i) => (
                 <button key={i} onClick={fn}
                   className={`py-3.5 rounded-2xl text-[11px] font-semibold tracking-[0.05em] transition-all active:scale-95 ${i === 1 ? "" : "gl hover:bg-white/[0.05]"}`}
                   style={i === 1 ? { background: "linear-gradient(135deg, #f97316, #ef4444)", color: "#fff", boxShadow: "0 8px 20px -5px rgba(249,115,22,.2)" } : { color: "rgba(255,255,255,.35)" }}>

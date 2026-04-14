@@ -86,7 +86,7 @@ export default function App(){
     if(!res)return;
     const t=`${n1} ♥ ${n2} 궁합: ${res.score}% — ${gg(res.score).label}`;
     if(navigator.share)navigator.share({title:"이름궁합",text:t,url:location.href});
-    else{navigator.clipboard.writeText(t);alert("복사됨!");}
+    else{try{navigator.clipboard.writeText(t);}catch{}alert("복사됨!");}
   };
 
   const save=useCallback(()=>{

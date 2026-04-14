@@ -42,8 +42,7 @@ export default function SnakePage() {
   const touchRef = useRef(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("snake-high-score");
-    if (saved) setHighScore(Number(saved));
+    try { const saved = localStorage.getItem("snake-high-score"); if (saved) setHighScore(Number(saved)); } catch {}
   }, []);
 
   const draw = useCallback(() => {
@@ -169,7 +168,7 @@ export default function SnakePage() {
       const finalScore = scoreRef.current;
       setHighScore((prev) => {
         const best = Math.max(prev, finalScore);
-        localStorage.setItem("snake-high-score", String(best));
+        try { localStorage.setItem("snake-high-score", String(best)); } catch {}
         return best;
       });
       return;

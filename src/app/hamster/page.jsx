@@ -155,7 +155,7 @@ export default function HamsterPage() {
 
   // Load
   useEffect(() => {
-    const saved = localStorage.getItem(SAVE_KEY);
+    let saved; try { saved = localStorage.getItem(SAVE_KEY); } catch {}
     if (saved) {
       const parsed = JSON.parse(saved);
       const elapsed = (Date.now() - (parsed.lastSaved || Date.now())) / 1000;
@@ -180,7 +180,7 @@ export default function HamsterPage() {
   // Save
   useEffect(() => {
     if (!state) return;
-    localStorage.setItem(SAVE_KEY, JSON.stringify({ ...state, lastSaved: Date.now() }));
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify({ ...state, lastSaved: Date.now() })); } catch {}
   }, [state]);
 
   // Animate to position

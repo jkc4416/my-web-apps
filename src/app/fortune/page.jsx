@@ -203,7 +203,7 @@ export default function FortunePage() {
 
   // Load saved data
   useEffect(() => {
-    const saved = localStorage.getItem(SAVE_KEY);
+    let saved; try { saved = localStorage.getItem(SAVE_KEY); } catch {}
     if (saved) {
       const d = JSON.parse(saved);
       setBirthYear(d.year || ""); setBirthMonth(d.month || ""); setBirthDay(d.day || "");
@@ -215,12 +215,12 @@ export default function FortunePage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!birthYear || !birthMonth || !birthDay) return;
-    localStorage.setItem(SAVE_KEY, JSON.stringify({ year: birthYear, month: birthMonth, day: birthDay, hour: birthHour, gender }));
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify({ year: birthYear, month: birthMonth, day: birthDay, hour: birthHour, gender })); } catch {}
     setShowResult(true);
     setActiveTab("saju");
   };
 
-  const reset = () => { setShowResult(false); localStorage.removeItem(SAVE_KEY); };
+  const reset = () => { setShowResult(false); try { localStorage.removeItem(SAVE_KEY); } catch {} };
 
   // 사주 계산
   const saju = useMemo(() => {

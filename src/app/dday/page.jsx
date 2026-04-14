@@ -398,7 +398,7 @@ export default function DdayMaker() {
             <div className="grid grid-cols-2 gap-2 mb-5">
               <button onClick={() => {
                 const t = `${viewing.emoji} ${viewing.name}: ${days === 0 ? "D-DAY!" : days > 0 ? `D-${days}` : `D+${Math.abs(days)}`}`;
-                if (navigator.share) navigator.share({ title: "디데이", text: t, url: location.href }); else { navigator.clipboard.writeText(t); alert("복사됨!"); }
+                if (navigator.share) navigator.share({ title: "디데이", text: t, url: location.href }); else { try{navigator.clipboard.writeText(t);}catch{} alert("복사됨!"); }
               }} className="py-3 rounded-2xl gl text-[11px] font-medium transition-all active:scale-95" style={{ color: "rgba(255,255,255,.35)" }}>🔗 공유</button>
               <button onClick={() => { if (confirm("삭제할까요?")) removeDday(viewing.id); }}
                 className="py-3 rounded-2xl text-[11px] font-medium transition-all active:scale-95" style={{ background: "rgba(248,113,113,.06)", border: "1px solid rgba(248,113,113,.1)", color: "rgba(248,113,113,.5)" }}>🗑️ 삭제</button>

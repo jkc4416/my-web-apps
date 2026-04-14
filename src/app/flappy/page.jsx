@@ -34,8 +34,7 @@ export default function FlappyPage() {
   const gameStateRef = useRef("idle");
 
   useEffect(() => {
-    const saved = localStorage.getItem("flappy-high-score");
-    if (saved) setHighScore(Number(saved));
+    try { const saved = localStorage.getItem("flappy-high-score"); if (saved) setHighScore(Number(saved)); } catch {}
   }, []);
 
   const draw = useCallback(() => {
@@ -249,7 +248,7 @@ export default function FlappyPage() {
       const finalScore = scoreRef.current;
       setHighScore((prev) => {
         const best = Math.max(prev, finalScore);
-        localStorage.setItem("flappy-high-score", String(best));
+        try { localStorage.setItem("flappy-high-score", String(best)); } catch {}
         return best;
       });
       return;

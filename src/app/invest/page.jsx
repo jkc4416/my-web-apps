@@ -433,7 +433,7 @@ export default function InvestSim() {
             </div>
 
             <div className="grid grid-cols-3 gap-2.5 mb-5">
-              {[["다시하기", () => { setPg("sim"); setRes(null); }], ["📸 저장", saveImg], ["공유", () => { const t = `${asset.name}에 ${fm(res.inv)}원 (${res.startD}~${res.endD}) → ${res.profit >= 0 ? "+" : ""}${ff(res.profit)}원 (${res.ret.toFixed(1)}%)`; if (navigator.share) navigator.share({ title: "투자 시뮬", text: t, url: location.href }); else { navigator.clipboard.writeText(t); alert("복사됨!"); } }]].map(([l, fn], i) => (
+              {[["다시하기", () => { setPg("sim"); setRes(null); }], ["📸 저장", saveImg], ["공유", () => { const t = `${asset.name}에 ${fm(res.inv)}원 (${res.startD}~${res.endD}) → ${res.profit >= 0 ? "+" : ""}${ff(res.profit)}원 (${res.ret.toFixed(1)}%)`; if (navigator.share) navigator.share({ title: "투자 시뮬", text: t, url: location.href }); else { try{navigator.clipboard.writeText(t);}catch{} alert("복사됨!"); } }]].map(([l, fn], i) => (
                 <button key={i} onClick={fn}
                   className={`py-3.5 rounded-2xl text-[11px] font-semibold tracking-[0.05em] transition-all active:scale-95 ${i === 1 ? "" : "gl hover:bg-white/[0.05]"}`}
                   style={i === 1 ? { background: "linear-gradient(135deg, #2dd4bf, #14b8a6)", color: "#fff", boxShadow: "0 8px 20px -5px rgba(45,212,191,.2)" } : { color: "rgba(255,255,255,.35)" }}>

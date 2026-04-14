@@ -396,7 +396,7 @@ export default function MBTIInsight(){
 
           {/* Actions */}
           <div className="grid grid-cols-3 gap-2.5 mb-5">
-            {[["다시하기",()=>{setPg("select");setResType(null);}],["📸 저장",save],["공유",()=>{const t=`나의 ${test.name} MBTI: ${resType} (${ti.name})`;if(navigator.share)navigator.share({title:"MBTI 인사이트",text:t,url:location.href});else{navigator.clipboard.writeText(t);alert("복사됨!");}}]].map(([l,fn],i)=>(
+            {[["다시하기",()=>{setPg("select");setResType(null);}],["📸 저장",save],["공유",()=>{const t=`나의 ${test.name} MBTI: ${resType} (${ti.name})`;if(navigator.share)navigator.share({title:"MBTI 인사이트",text:t,url:location.href});else{try{navigator.clipboard.writeText(t);}catch{}alert("복사됨!");}}]].map(([l,fn],i)=>(
               <button key={i} onClick={fn} className={`py-3.5 rounded-2xl text-[11px] font-semibold tracking-[0.05em] transition-all active:scale-95 ${i===1?`bg-gradient-to-r ${test.grad}`:"gl hover:bg-white/[0.05]"}`}
                 style={i===1?{boxShadow:`0 8px 20px -5px ${test.color}20`}:{color:"rgba(255,255,255,.35)"}}>{l}</button>
             ))}

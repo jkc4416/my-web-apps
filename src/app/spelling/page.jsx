@@ -372,7 +372,7 @@ export default function SpellingQuiz(){
 
           {/* Actions */}
           <div className="grid grid-cols-3 gap-2.5 mb-5">
-            {[["🏠 홈",()=>setPg("home")],["📸 저장",saveImg],["🔗 공유",()=>{const t=`맞춤법 왕: ${pct}점 (${grade.label})`;if(navigator.share)navigator.share({title:"맞춤법 왕",text:t,url:location.href});else{navigator.clipboard.writeText(t);alert("복사됨!");}}]].map(([l,fn],i)=>
+            {[["🏠 홈",()=>setPg("home")],["📸 저장",saveImg],["🔗 공유",()=>{const t=`맞춤법 왕: ${pct}점 (${grade.label})`;if(navigator.share)navigator.share({title:"맞춤법 왕",text:t,url:location.href});else{try{navigator.clipboard.writeText(t);}catch{}alert("복사됨!");}}]].map(([l,fn],i)=>
               <button key={i} onClick={fn} className={`py-3.5 rounded-2xl text-[11px] font-semibold tracking-[0.05em] transition-all active:scale-95 ${i===1?"bg-gradient-to-r from-amber-400 to-yellow-500 text-black":"gl hover:bg-white/[0.05]"}`}
                 style={i!==1?{color:"rgba(255,255,255,.35)"}:{boxShadow:"0 8px 20px -5px rgba(251,191,36,.2)"}}>{l}</button>
             )}
