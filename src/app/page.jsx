@@ -185,6 +185,18 @@ const apps = [
     id: 18, name: "글자수 세기", description: "실시간 글자수·단어수·바이트 카운터", href: "/charcount", emoji: "📝",
     gradient: "from-sky-500/20 to-indigo-500/20", border: "hover:border-sky-500/30", glow: "group-hover:shadow-sky-500/10", accent: "text-sky-400", size: "normal",
   },
+  {
+    id: 19, name: "닮은 동물 테스트", description: "나와 닮은 동물은?", href: "/animal-test", emoji: "🐾",
+    gradient: "from-amber-500/20 to-orange-500/20", border: "hover:border-amber-500/30", glow: "group-hover:shadow-amber-500/10", accent: "text-amber-400", size: "featured",
+  },
+  {
+    id: 20, name: "나이 계산기", description: "만 나이, 띠, 별자리, 생일 계산", href: "/age-calc", emoji: "🎂",
+    gradient: "from-pink-500/20 to-purple-500/20", border: "hover:border-pink-500/30", glow: "group-hover:shadow-pink-500/10", accent: "text-pink-400", size: "normal",
+  },
+  {
+    id: 21, name: "비밀번호 생성기", description: "안전한 랜덤 비밀번호 즉시 생성", href: "/password", emoji: "🔐",
+    gradient: "from-emerald-500/20 to-cyan-500/20", border: "hover:border-emerald-500/30", glow: "group-hover:shadow-emerald-500/10", accent: "text-emerald-400", size: "normal",
+  },
 ];
 
 export default function Home() {
@@ -257,7 +269,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              18 Apps Live
+              21 Apps Live
             </span>
           </div>
 

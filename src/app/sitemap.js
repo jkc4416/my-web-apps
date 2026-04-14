@@ -20,6 +20,9 @@ const routes = [
   { path: "/qrcode", priority: 0.9, changeFrequency: "monthly" },
   { path: "/game2048", priority: 0.7, changeFrequency: "monthly" },
   { path: "/charcount", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/animal-test", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/age-calc", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/password", priority: 0.8, changeFrequency: "monthly" },
 ];
 
 export default function sitemap() {
