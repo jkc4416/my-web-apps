@@ -116,9 +116,9 @@ export default function TypingChallenge() {
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
-  const handleInput = useCallback((e) => {
-    if (finished) return;
-    const v = e.target.value;
+  const composingRef = useRef(false);
+
+  const processInput = useCallback((v) => {
     if (!started && v.length > 0) { setStarted(true); setStartT(Date.now()); }
     setTyped(v);
     let ok = 0; for (let i = 0; i < v.length && i < target.length; i++) { if (v[i] === target[i]) ok++; }
@@ -127,7 +127,24 @@ export default function TypingChallenge() {
     if ((mode === "timed" || mode === "practice") && v.length > target.length - 30) {
       setTarget(p => p + " " + getRandText(cat, 3));
     }
-  }, [started, finished, target, mode, cat]);
+  }, [started, target, mode, cat]);
+
+  const handleInput = useCallback((e) => {
+    if (finished) return;
+    const v = e.target.value;
+    // During IME composition, only update the display but don't process
+    if (composingRef.current) {
+      setTyped(v);
+      return;
+    }
+    processInput(v);
+  }, [finished, processInput]);
+
+  const handleCompositionEnd = useCallback((e) => {
+    composingRef.current = false;
+    if (finished) return;
+    processInput(e.target.value);
+  }, [finished, processInput]);
 
   const doFinish = useCallback((ft) => {
     const t = ft || typed;
@@ -342,6 +359,8 @@ export default function TypingChallenge() {
 
             {/* Hidden input */}
             <textarea ref={inputRef} value={typed} onChange={handleInput} disabled={finished}
+              onCompositionStart={() => { composingRef.current = true; }}
+              onCompositionEnd={handleCompositionEnd}
               className="w-full h-0 opacity-0 absolute" autoFocus autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" />
 
             <button onClick={() => inputRef.current?.focus()}

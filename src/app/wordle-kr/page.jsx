@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 
 const WORDS = ["사과나무","행복하다","대한민국","컴퓨터실","도서관에","치킨집에","학교가자","고양이가","강아지가","햄버거를","떡볶이를","김치찌개","된장찌개","불고기를","비빔밥을","냉면먹자","삼겹살을","피자한판","초밥먹자","커피한잔","라떼한잔","주말여행","바다가자","산책하자","운동하자","음악듣자","영화보자","게임하자","공부하자","청소하자","요리하자","장보러가","편의점에","마트가자","카페가자","서울시내","부산가자","제주도로","봄바람이","여름날씨","가을하늘","겨울눈이","벚꽃피다","단풍나무","눈사람을","생일축하","새해복을","토요일에","일요일에","월요일에"];
@@ -45,6 +45,7 @@ export default function WordleKrPage() {
   const [guesses, setGuesses] = useState([]);
   const [current, setCurrent] = useState("");
   const [gameState, setGameState] = useState("playing"); // playing, won, lost
+  const composingRef = useRef(false);
   const maxTries = 6;
 
   const submit = useCallback(() => {
@@ -122,11 +123,14 @@ export default function WordleKrPage() {
         {/* Input for mobile */}
         {gameState === "playing" && (
           <div className="space-y-2">
-            <input type="text" value={current} onChange={(e) => { const v = e.target.value; if (v.length <= answer.length) setCurrent(v); }}
+            <input type="text" value={current}
+              onChange={(e) => { const v = e.target.value; if (v.length <= answer.length + 1) setCurrent(v.slice(0, answer.length)); }}
+              onCompositionStart={() => { composingRef.current = true; }}
+              onCompositionEnd={(e) => { composingRef.current = false; const v = e.target.value; setCurrent(v.slice(0, answer.length)); }}
               placeholder={`${answer.length}글자 입력...`} aria-label="단어 입력"
               className="w-full rounded-xl px-4 py-3 text-center text-[16px] font-bold outline-none"
               style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", color: "#e2e8f0" }}
-              onKeyDown={(e) => { if (e.key === "Enter") submit(); }} />
+              onKeyDown={(e) => { if (e.key === "Enter" && !composingRef.current) submit(); }} />
             <button onClick={submit} disabled={current.length !== answer.length}
               className="w-full py-3 rounded-xl font-bold text-[14px] transition-all active:scale-[0.97] disabled:opacity-30"
               style={{ background: "linear-gradient(135deg, #4ade80, #22d3ee)" }}>
