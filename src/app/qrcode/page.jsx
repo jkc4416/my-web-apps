@@ -33,13 +33,21 @@ export default function QRCodePage() {
     });
   }, [input]);
 
-  const download = useCallback(() => {
+  const download = useCallback(async () => {
     if (!qrUrl) return;
-    const a = document.createElement("a");
-    a.href = qrUrl;
-    a.download = `qr-${Date.now()}.png`;
-    a.target = "_blank";
-    a.click();
+    try {
+      const res = await fetch(qrUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `qr-${Date.now()}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // Fallback: open in new tab
+      window.open(qrUrl, "_blank");
+    }
   }, [qrUrl]);
 
   const copyUrl = useCallback(() => {

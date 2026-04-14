@@ -49,7 +49,7 @@ export default function AnimalTestPage() {
 
   const share = () => {
     if (!result) return;
-    const text = `나의 닮은 동물은 ${result.emoji} ${result.name}!\n${result.traits.join(", ")}\n\n나도 테스트하기 → funappbox.com/animal-test`;
+    const text = `나의 닮은 동물은 ${result.emoji} ${result.name}!\n${result.traits.join(", ")}\n\n나도 테스트하기 → www.funappbox.com/animal-test`;
     if(navigator.share)try{navigator.share({ title: "닮은 동물 테스트", text });}catch{}
     else { try { navigator.clipboard.writeText(text); } catch {} alert("복사되었습니다!"); }
   };

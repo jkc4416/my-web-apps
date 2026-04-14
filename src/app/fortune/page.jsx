@@ -562,7 +562,7 @@ export default function FortunePage() {
         {/* Share */}
         {showResult && (
           <button onClick={() => {
-            const text = `🔮 ${birthYear}년 ${birthMonth}월 ${birthDay}일생 오늘의 운세\n총운: ${"★".repeat(fortune?.총운?.score || 0)}${"☆".repeat(5 - (fortune?.총운?.score || 0))}\n${fortune?.총운?.text}\n\n나도 보러가기 → funappbox.com/fortune`;
+            const text = `🔮 ${birthYear}년 ${birthMonth}월 ${birthDay}일생 오늘의 운세\n총운: ${"★".repeat(fortune?.총운?.score || 0)}${"☆".repeat(5 - (fortune?.총운?.score || 0))}\n${fortune?.총운?.text}\n\n나도 보러가기 → www.funappbox.com/fortune`;
             if (navigator.share) navigator.share({ title: "오늘의 운세", text });
             else { try { navigator.clipboard.writeText(text); alert("복사되었습니다!"); } catch { alert("복사에 실패했습니다."); } }
           }} className="w-full rounded-2xl py-3 mt-4 text-center text-[13px] font-semibold transition-all active:scale-[0.98]" style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.15)", color: "#c084fc" }}>

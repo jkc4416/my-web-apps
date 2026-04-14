@@ -46,7 +46,7 @@ export default function TarotPage() {
 
   const share = () => {
     const text = picked.map((c, i) => `${labels[i]}: ${c.emoji} ${c.name}`).join("\n");
-    const msg = `🔮 나의 연애 타로 결과\n\n${text}\n\n나도 보기 → funappbox.com/tarot`;
+    const msg = `🔮 나의 연애 타로 결과\n\n${text}\n\n나도 보기 → www.funappbox.com/tarot`;
     if(navigator.share)try{navigator.share({ title: "연애 타로", text: msg });}catch{}
     else { try { navigator.clipboard.writeText(msg); } catch {} alert("복사되었습니다!"); }
   };

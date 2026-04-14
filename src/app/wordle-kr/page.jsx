@@ -77,7 +77,7 @@ export default function WordleKrPage() {
 
   const share = () => {
     const grid = guesses.map((g) => g.result.map((r) => r === "correct" ? "🟩" : r === "present" ? "🟨" : "⬛").join("")).join("\n");
-    const text = `한글 워들 ${gameState === "won" ? guesses.length : "X"}/${maxTries}\n\n${grid}\n\n나도 도전 → funappbox.com/wordle-kr`;
+    const text = `한글 워들 ${gameState === "won" ? guesses.length : "X"}/${maxTries}\n\n${grid}\n\n나도 도전 → www.funappbox.com/wordle-kr`;
     if(navigator.share)try{navigator.share({ title: "한글 워들", text });}catch{}
     else { try { navigator.clipboard.writeText(text); } catch {} alert("복사되었습니다!"); }
   };
