@@ -121,12 +121,15 @@ export default function HamsterPage() {
   // Toy play
   const [toyPhase, setToyPhase] = useState("none"); // none | appearing | approaching | ready | playing
   const [activeToy, setActiveToy] = useState(null);
+  // Ball billiards mini-game
+  const [ballGame, setBallGame] = useState(null); // null | { phase: "aiming"|"rolling"|"done", ball, goal, obstacles, shots, successful }
   const [toyTaps, setToyTaps] = useState(0);
   const [toyTime, setToyTime] = useState(0);
 
   const wheelActive = wheelPhase !== "none";
   const toyActive = toyPhase !== "none";
-  const busy = wheelActive || toyActive;
+  const ballActive = ballGame !== null;
+  const busy = wheelActive || toyActive || ballActive;
 
   const [isSleeping, setIsSleeping] = useState(false);
   const [bubbleMsg, setBubbleMsg] = useState("");
@@ -332,6 +335,35 @@ export default function HamsterPage() {
   const playToy = useCallback((toy) => {
     if (!state || isSleeping || busy) return;
     if (state.energy < 10) { showBubble("너무 피곤해요..."); return; }
+    // Ball → billiards mini-game
+    if (toy.id === "ball") {
+      const level = state.level;
+      // Difficulty scales: 1-3 obstacles based on level
+      const obstacleCount = Math.min(1 + Math.floor(level / 3), 4);
+      const obstacles = [];
+      for (let i = 0; i < obstacleCount; i++) {
+        // Place in middle area, avoiding ball start and goal zones
+        const w = 14 + Math.random() * 10;
+        const h = 14 + Math.random() * 10;
+        const x = CAGE_W * 0.3 + Math.random() * (CAGE_W * 0.4 - w);
+        const y = CAGE_H * 0.2 + Math.random() * (CAGE_H * 0.5 - h);
+        obstacles.push({ x, y, w, h });
+      }
+      const goalX = CAGE_W - 40 - Math.random() * 20;
+      const goalY = 30 + Math.random() * (CAGE_H * 0.6);
+      setActiveToy(toy);
+      setBallGame({
+        phase: "aiming",
+        ball: { x: 40, y: CAGE_H * 0.4, vx: 0, vy: 0 },
+        goal: { x: goalX, y: goalY, r: 14 },
+        obstacles,
+        shots: 3,
+        shotsUsed: 0,
+        successful: false,
+      });
+      showBubble("⚽ 공을 드래그해서 골인시켜봐!");
+      return;
+    }
     setActiveToy(toy);
     setToyPhase("appearing");
     showBubble(`${toy.emoji} ${toy.name}이다!`);
@@ -493,10 +525,159 @@ export default function HamsterPage() {
     if (sleepTimerRef.current) { clearInterval(sleepTimerRef.current); sleepTimerRef.current = null; }
     if (wheelTimerRef.current) { clearInterval(wheelTimerRef.current); wheelTimerRef.current = null; }
     if (toyTimerRef.current) { clearInterval(toyTimerRef.current); toyTimerRef.current = null; }
-    setState(getDefaultState()); setIsSleeping(false); setWheelPhase("none"); setToyPhase("none"); setShowShop(false);
+    setState(getDefaultState()); setIsSleeping(false); setWheelPhase("none"); setToyPhase("none"); setShowShop(false); setBallGame(null);
     updatePos(CAGE_W / 2, CAGE_H / 2);
     showBubble("새 햄스터를 입양했어요!"); spawnParticles("🎀", 6);
   }, [showBubble, spawnParticles, updatePos]);
+
+  // ===== BILLIARDS BALL MINI-GAME =====
+  const BALL_R = 8;
+  const BALL_FRICTION = 0.97;
+  const BALL_STOP = 0.15;
+  const ballRafRef = useRef(null);
+  const ballAimRef = useRef(null); // {startX, startY, curX, curY}
+  const [, forceRender] = useState(0);
+
+  const endBallGame = useCallback((success, firstTry) => {
+    setBallGame((g) => g ? { ...g, phase: "done", successful: success } : null);
+    if (success) {
+      const bonusCoin = firstTry ? 15 : 8;
+      const bonusXP = firstTry ? XP_PER_ACTION * 3 : XP_PER_ACTION * 2;
+      setState((s) => ({
+        ...s,
+        happiness: clamp(s.happiness + (firstTry ? 40 : 25)),
+        energy: clamp(s.energy - 5),
+        coins: s.coins + bonusCoin,
+      }));
+      showBubble(firstTry ? `🎯 원샷 성공! +${bonusCoin}🪙` : `⚽ 성공! +${bonusCoin}🪙`);
+      spawnParticles(firstTry ? "⭐" : "✨", firstTry ? 10 : 6);
+      gainXP(bonusXP);
+    } else {
+      setState((s) => ({ ...s, happiness: clamp(s.happiness + 8), energy: clamp(s.energy - 3) }));
+      showBubble("아쉬워요... 다음엔 성공!");
+      spawnParticles("💨", 3);
+      gainXP(XP_PER_ACTION);
+    }
+    setTimeout(() => { setBallGame(null); setActiveToy(null); }, 1800);
+  }, [showBubble, spawnParticles, gainXP]);
+
+  const ballPhysicsStep = useCallback(() => {
+    setBallGame((g) => {
+      if (!g || g.phase !== "rolling") return g;
+      const ball = { ...g.ball };
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      ball.vx *= BALL_FRICTION;
+      ball.vy *= BALL_FRICTION;
+
+      // Wall bouncing (use 15% damping on walls for realism)
+      if (ball.x - BALL_R < 5) { ball.x = 5 + BALL_R; ball.vx = -ball.vx * 0.85; }
+      if (ball.x + BALL_R > CAGE_W - 5) { ball.x = CAGE_W - 5 - BALL_R; ball.vx = -ball.vx * 0.85; }
+      if (ball.y - BALL_R < 5) { ball.y = 5 + BALL_R; ball.vy = -ball.vy * 0.85; }
+      if (ball.y + BALL_R > CAGE_H - 5) { ball.y = CAGE_H - 5 - BALL_R; ball.vy = -ball.vy * 0.85; }
+
+      // Obstacle collisions (AABB with closest-point resolution)
+      for (const ob of g.obstacles) {
+        const closestX = Math.max(ob.x, Math.min(ball.x, ob.x + ob.w));
+        const closestY = Math.max(ob.y, Math.min(ball.y, ob.y + ob.h));
+        const dx = ball.x - closestX;
+        const dy = ball.y - closestY;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < BALL_R * BALL_R) {
+          // Resolve: push out along normal, reflect velocity
+          const dist = Math.sqrt(distSq) || 0.01;
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const penetration = BALL_R - dist;
+          ball.x += nx * penetration;
+          ball.y += ny * penetration;
+          const vdotn = ball.vx * nx + ball.vy * ny;
+          ball.vx = (ball.vx - 2 * vdotn * nx) * 0.85;
+          ball.vy = (ball.vy - 2 * vdotn * ny) * 0.85;
+        }
+      }
+
+      // Goal check
+      const gdx = ball.x - g.goal.x;
+      const gdy = ball.y - g.goal.y;
+      if (Math.sqrt(gdx * gdx + gdy * gdy) < g.goal.r) {
+        setTimeout(() => endBallGame(true, g.shotsUsed === 1), 0);
+        return { ...g, ball, phase: "done", successful: true };
+      }
+
+      // Stopped?
+      const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+      if (speed < BALL_STOP) {
+        ball.vx = 0; ball.vy = 0;
+        if (g.shotsUsed >= g.shots) {
+          setTimeout(() => endBallGame(false, false), 0);
+          return { ...g, ball, phase: "done" };
+        }
+        return { ...g, ball, phase: "aiming" };
+      }
+      return { ...g, ball };
+    });
+  }, [endBallGame]);
+
+  // Ball physics loop
+  useEffect(() => {
+    if (!ballGame || ballGame.phase !== "rolling") return;
+    const loop = () => {
+      ballPhysicsStep();
+      ballRafRef.current = requestAnimationFrame(loop);
+    };
+    ballRafRef.current = requestAnimationFrame(loop);
+    return () => { if (ballRafRef.current) cancelAnimationFrame(ballRafRef.current); };
+  }, [ballGame?.phase, ballPhysicsStep]);
+
+  // Ball aim pointer handlers (attach to cage element in render)
+  const getCagePoint = (e, cageEl) => {
+    const rect = cageEl.getBoundingClientRect();
+    const scaleX = CAGE_W / rect.width;
+    const scaleY = CAGE_H / rect.height;
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    return { x: cx * scaleX, y: cy * scaleY };
+  };
+
+  const ballPointerDown = useCallback((e) => {
+    if (!ballGame || ballGame.phase !== "aiming") return;
+    const cageEl = e.currentTarget;
+    const p = getCagePoint(e, cageEl);
+    const dx = p.x - ballGame.ball.x;
+    const dy = p.y - ballGame.ball.y;
+    // Allow clicking anywhere — drag sets direction
+    ballAimRef.current = { startX: p.x, startY: p.y, curX: p.x, curY: p.y, cageEl };
+    forceRender((n) => n + 1);
+    e.preventDefault();
+  }, [ballGame]);
+
+  const ballPointerMove = useCallback((e) => {
+    if (!ballAimRef.current || !ballGame || ballGame.phase !== "aiming") return;
+    const p = getCagePoint(e, ballAimRef.current.cageEl);
+    ballAimRef.current.curX = p.x;
+    ballAimRef.current.curY = p.y;
+    forceRender((n) => n + 1);
+    e.preventDefault();
+  }, [ballGame]);
+
+  const ballPointerUp = useCallback(() => {
+    if (!ballAimRef.current || !ballGame || ballGame.phase !== "aiming") return;
+    const aim = ballAimRef.current;
+    // Launch: direction = from startPoint → currentPoint (natural slingshot from start)
+    // We treat start as anchor; ball launches in the drag direction from start
+    const dx = aim.curX - aim.startX;
+    const dy = aim.curY - aim.startY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    ballAimRef.current = null;
+    if (dist < 8) { forceRender((n) => n + 1); return; } // too small, cancel
+    // Power proportional to drag distance, capped
+    const maxPower = 12;
+    const power = Math.min(dist / 12, maxPower);
+    const vx = (dx / dist) * power;
+    const vy = (dy / dist) * power;
+    setBallGame((g) => g ? { ...g, phase: "rolling", ball: { ...g.ball, vx, vy }, shotsUsed: g.shotsUsed + 1 } : null);
+  }, [ballGame]);
 
   if (!state) return null;
 
@@ -572,7 +753,17 @@ export default function HamsterPage() {
         </div>
 
         {/* ===== CAGE ===== */}
-        <div className="relative rounded-3xl mb-4 overflow-hidden" style={{ background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.05)", animation: "glow 4s ease-in-out infinite", height: CAGE_H + 80 }}>
+        <div
+          className="relative rounded-3xl mb-4 overflow-hidden"
+          style={{ background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.05)", animation: "glow 4s ease-in-out infinite", height: CAGE_H + 80, touchAction: ballActive ? "none" : "auto", cursor: ballActive && ballGame?.phase === "aiming" ? "crosshair" : "default" }}
+          onMouseDown={ballActive ? ballPointerDown : undefined}
+          onMouseMove={ballActive ? ballPointerMove : undefined}
+          onMouseUp={ballActive ? ballPointerUp : undefined}
+          onMouseLeave={ballActive ? ballPointerUp : undefined}
+          onTouchStart={ballActive ? ballPointerDown : undefined}
+          onTouchMove={ballActive ? ballPointerMove : undefined}
+          onTouchEnd={ballActive ? ballPointerUp : undefined}
+        >
 
           {/* Sawdust bedding — covers entire cage like a real hamster home */}
           <div className="absolute inset-0 rounded-3xl" style={{ background: `${sawdustColor}08` }} />
@@ -637,6 +828,74 @@ export default function HamsterPage() {
             <div className="absolute z-5 text-3xl" style={{ left: 55, top: CAGE_H * 0.38, animation: toyPhase === "playing" ? "toyBob 0.4s ease infinite" : "none", transition: "opacity 0.5s", opacity: toyPhase === "appearing" ? 0.5 : 1 }}>
               {activeToy.emoji}
             </div>
+          )}
+
+          {/* ===== BILLIARDS BALL MINI-GAME ===== */}
+          {ballGame && (
+            <>
+              {/* Overlay to show SVG-based game scaled to CAGE_W/CAGE_H */}
+              <svg viewBox={`0 0 ${CAGE_W} ${CAGE_H + 80}`} preserveAspectRatio="none" className="absolute inset-0 z-20 pointer-events-none" style={{ width: "100%", height: "100%" }}>
+                {/* Obstacles */}
+                {ballGame.obstacles.map((ob, i) => (
+                  <rect key={i} x={ob.x} y={ob.y} width={ob.w} height={ob.h} rx="3" fill="rgba(120,80,200,0.25)" stroke="rgba(168,85,247,0.5)" strokeWidth="1.5" />
+                ))}
+                {/* Goal (glowing hole) */}
+                <circle cx={ballGame.goal.x} cy={ballGame.goal.y} r={ballGame.goal.r + 4} fill="none" stroke="rgba(74,222,128,0.3)" strokeWidth="2">
+                  <animate attributeName="r" values={`${ballGame.goal.r + 4};${ballGame.goal.r + 10};${ballGame.goal.r + 4}`} dur="1.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx={ballGame.goal.x} cy={ballGame.goal.y} r={ballGame.goal.r} fill="rgba(74,222,128,0.2)" stroke="#4ade80" strokeWidth="2" />
+                <text x={ballGame.goal.x} y={ballGame.goal.y + 4} textAnchor="middle" fontSize="12" fill="#4ade80" fontWeight="bold">🎯</text>
+
+                {/* Aim line (while dragging) */}
+                {ballGame.phase === "aiming" && ballAimRef.current && (() => {
+                  const aim = ballAimRef.current;
+                  const dx = aim.curX - aim.startX;
+                  const dy = aim.curY - aim.startY;
+                  const dist = Math.sqrt(dx * dx + dy * dy);
+                  if (dist < 5) return null;
+                  const power = Math.min(dist / 12, 12);
+                  const powerPct = (power / 12) * 100;
+                  const lineLen = Math.min(dist, 80);
+                  const endX = ballGame.ball.x + (dx / dist) * lineLen;
+                  const endY = ballGame.ball.y + (dy / dist) * lineLen;
+                  const powerColor = powerPct > 80 ? "#ef4444" : powerPct > 50 ? "#fbbf24" : "#4ade80";
+                  return (
+                    <>
+                      <line x1={ballGame.ball.x} y1={ballGame.ball.y} x2={endX} y2={endY} stroke={powerColor} strokeWidth="2" strokeDasharray="4 3" opacity="0.8" />
+                      <polygon points={`${endX},${endY} ${endX - (dx / dist) * 8 - (dy / dist) * 4},${endY - (dy / dist) * 8 + (dx / dist) * 4} ${endX - (dx / dist) * 8 + (dy / dist) * 4},${endY - (dy / dist) * 8 - (dx / dist) * 4}`} fill={powerColor} opacity="0.8" />
+                    </>
+                  );
+                })()}
+
+                {/* Ball */}
+                <circle cx={ballGame.ball.x} cy={ballGame.ball.y} r={BALL_R + 2} fill="rgba(251,191,36,0.3)" />
+                <circle cx={ballGame.ball.x} cy={ballGame.ball.y} r={BALL_R} fill="url(#ballGrad)" stroke="#f59e0b" strokeWidth="1" />
+                <defs>
+                  <radialGradient id="ballGrad" cx="30%" cy="30%">
+                    <stop offset="0%" stopColor="#fde68a" />
+                    <stop offset="100%" stopColor="#f59e0b" />
+                  </radialGradient>
+                </defs>
+              </svg>
+
+              {/* HUD */}
+              <div className="absolute top-3 left-3 z-30 px-2.5 py-1 rounded-lg text-[10px] font-bold pointer-events-none" style={{ background: "rgba(0,0,0,0.4)", color: "#fff", backdropFilter: "blur(6px)" }}>
+                🎯 {ballGame.shots - ballGame.shotsUsed}/{ballGame.shots}샷
+              </div>
+              {ballGame.phase === "aiming" && ballGame.shotsUsed === 0 && (
+                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 px-3 py-1 rounded-full text-[10px] pointer-events-none" style={{ background: "rgba(168,85,247,0.2)", color: "#c084fc", border: "1px solid rgba(168,85,247,0.3)" }}>
+                  공을 드래그해서 방향·파워 조절
+                </div>
+              )}
+              {ballGame.phase === "done" && (
+                <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+                  <div className="px-4 py-2 rounded-xl text-center" style={{ background: ballGame.successful ? "rgba(74,222,128,0.2)" : "rgba(248,113,113,0.15)", border: `1px solid ${ballGame.successful ? "rgba(74,222,128,0.4)" : "rgba(248,113,113,0.3)"}`, backdropFilter: "blur(8px)" }}>
+                    <div className="text-2xl">{ballGame.successful ? "🎉" : "😢"}</div>
+                    <div className="text-[11px] font-bold" style={{ color: ballGame.successful ? "#4ade80" : "#f87171" }}>{ballGame.successful ? "골인!" : "실패..."}</div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* Poops — clickable to clean */}
