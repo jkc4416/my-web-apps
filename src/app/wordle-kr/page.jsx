@@ -95,19 +95,19 @@ export default function WordleKrPage() {
     }
   }, [current, answer, guesses, gameState, maxTries]);
 
-  // Keyboard
+  // Global keyboard shortcuts only — character input is handled by the <input> onChange
+  // (having both caused each character to be entered twice)
   useEffect(() => {
     const handleKey = (e) => {
       if (gameState !== "playing") return;
+      // Skip if the input itself is focused — input's own handlers manage Enter
+      if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+      if (composingRef.current) return;
       if (e.key === "Enter") submit();
-      else if (e.key === "Backspace") setCurrent((c) => c.slice(0, -1));
-      else if (/^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]$/.test(e.key) && current.length < answer.length) {
-        setCurrent((c) => c + e.key);
-      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [gameState, submit, current, answer.length]);
+  }, [gameState, submit]);
 
   const share = () => {
     const grid = guesses.map((g) => g.result.map((r) => r === "correct" ? "🟩" : r === "present" ? "🟨" : "⬛").join("")).join("\n");
@@ -156,7 +156,7 @@ export default function WordleKrPage() {
         {/* Input for mobile */}
         {gameState === "playing" && (
           <div className="space-y-2">
-            <input type="text" value={current}
+            <input type="text" value={current} autoFocus
               onChange={(e) => { const v = e.target.value; if (v.length <= answer.length + 1) setCurrent(v.slice(0, answer.length)); }}
               onCompositionStart={() => { composingRef.current = true; }}
               onCompositionEnd={(e) => { composingRef.current = false; const v = e.target.value; setCurrent(v.slice(0, answer.length)); }}
