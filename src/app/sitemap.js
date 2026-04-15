@@ -32,9 +32,10 @@ const routes = [
 ];
 
 export default function sitemap() {
+  const today = new Date().toISOString().slice(0, 10);
   return routes.map((route) => ({
     url: `${BASE_URL}${route.path}`,
-    lastModified: "2026-04-14",
+    lastModified: today,
     changeFrequency: route.changeFrequency,
     priority: route.priority,
   }));

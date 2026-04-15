@@ -55,7 +55,7 @@ const EMOJIS = ["📌","📝","🎂","💕","🎓","✈️","💼","🏋️","�
 
 export default function DdayMaker() {
   const [pg, setPg] = useState("home");
-  const [ddays, setDdays] = useState(() => { try { return JSON.parse(localStorage.getItem("dd-list") || "[]"); } catch { return []; } });
+  const [ddays, setDdays] = useState(() => { if (typeof window === "undefined") return []; try { return JSON.parse(localStorage.getItem("dd-list") || "[]"); } catch { return []; } });
   const [viewing, setViewing] = useState(null);
   const [theme, setTheme] = useState("night");
   const [cd, setCd] = useState({ d: 0, h: 0, m: 0, s: 0, passed: false });
@@ -65,7 +65,7 @@ export default function DdayMaker() {
   const [newEmoji, setNewEmoji] = useState("📌");
   const cvs = useRef(null);
 
-  useEffect(() => { localStorage.setItem("dd-list", JSON.stringify(ddays)); }, [ddays]);
+  useEffect(() => { try { localStorage.setItem("dd-list", JSON.stringify(ddays)); } catch {} }, [ddays]);
 
   useEffect(() => {
     if (!viewing) return;
