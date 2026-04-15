@@ -128,7 +128,7 @@ export default function Game2048Page() {
   const [prevBoard, setPrevBoard] = useState(null);
   const [prevScore, setPrevScore] = useState(0);
   const [score, setScore] = useState(0);
-  const [best, setBest] = useState(0);
+  const [best, setBest] = useState(() => { try { const s = typeof window !== "undefined" && localStorage.getItem("2048-best"); return s ? Number(s) : 0; } catch { return 0; } });
   const [gameOver, setGameOver] = useState(false);
   const [won, setWon] = useState(false);
   const [keepPlaying, setKeepPlaying] = useState(false);
@@ -137,9 +137,7 @@ export default function Game2048Page() {
   const touchRef = useRef(null);
   const movingRef = useRef(false);
 
-  useEffect(() => {
-    try { const s = localStorage.getItem("2048-best"); if (s) setBest(Number(s)); } catch {}
-  }, []);
+  // best loaded synchronously via useState initializer to prevent race
 
   const doMove = useCallback((dir) => {
     if (gameOver) return;
@@ -158,10 +156,13 @@ export default function Game2048Page() {
     setBoard(result.board);
     const newScore = score + result.score;
     setScore(newScore);
-    if (newScore > best) {
-      setBest(newScore);
-      try { localStorage.setItem("2048-best", String(newScore)); } catch {}
-    }
+    setBest((prev) => {
+      if (newScore > prev) {
+        try { localStorage.setItem("2048-best", String(newScore)); } catch {}
+        return newScore;
+      }
+      return prev;
+    });
 
     // Check 2048
     if (!won && result.board.some((row) => row.some((t) => t && t.value >= 2048))) {

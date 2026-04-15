@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 
 // ===== CONSTANTS =====
@@ -861,7 +861,7 @@ export default function HamsterPage() {
     const totalDuration = RHYTHM_DURATION - 2000; // start delay
     const interval = 450; // ms between notes
     for (let t = 1000; t < totalDuration; t += interval + (Math.random() * 150 - 75)) {
-      notes.push({ id: Math.random(), lane: Math.floor(Math.random() * lanes), time: t, hit: false, missed: false });
+      notes.push({ id: `n${notes.length}-${Math.floor(t)}`, lane: Math.floor(Math.random() * lanes), time: t, hit: false, missed: false });
     }
     setRhythmGame({
       phase: "playing",
@@ -1015,7 +1015,14 @@ export default function HamsterPage() {
     });
   }, [state]);
 
-  if (!state) return null;
+  if (!state) return (
+    <div className="min-h-screen flex items-center justify-center text-white" style={{ background: "radial-gradient(ellipse at 50% 30%, #2a1810 0%, #1a0e08 40%, #0c0604 100%)" }}>
+      <div className="text-center">
+        <div className="text-5xl mb-3" style={{ animation: "pulse 1.5s ease-in-out infinite" }}>🐹</div>
+        <div className="text-[11px]" style={{ color: "rgba(255,255,255,.3)" }}>햄스터를 깨우는 중...</div>
+      </div>
+    </div>
+  );
 
   const moodData = MOODS[mood] || MOODS.idle;
   const overallHealth = Math.round((state.hunger + state.happiness + state.energy + state.cleanliness) / 4);
@@ -1028,6 +1035,43 @@ export default function HamsterPage() {
   const sawdustG = Math.round(168 - (100 - state.sawdustFresh) * 0.32);
   const sawdustB = Math.round(108 + (100 - state.sawdustFresh) * 0.28);
   const sawdustColor = `rgb(${sawdustR},${sawdustG},${sawdustB})`;
+
+  // Memoize sawdust chips — only re-render when freshness changes (prevents re-render on every hamster move)
+  const sawdustChips = useMemo(() => {
+    const fresh = state.sawdustFresh;
+    const r = Math.round(196 - (100 - fresh) * 0.68);
+    const g = Math.round(168 - (100 - fresh) * 0.32);
+    const b = Math.round(108 + (100 - fresh) * 0.28);
+    const small = Array.from({ length: 140 }).map((_, i) => {
+      const isDirty = (i * 31 + 7) % 100 > fresh;
+      const seed = i * 17 + 3;
+      const x = (seed * 7.3) % 97;
+      const yPct = (seed * 3.7) % 85 + 8;
+      const w = 3 + (seed % 5);
+      const h = 1.5 + (seed % 3) * 0.5;
+      const rot = (seed * 13) % 180;
+      const depthFade = 0.5 + (yPct / 100) * 0.5;
+      const baseAlpha = (0.08 + (seed % 4) * 0.025) * depthFade;
+      const freshColor = `rgba(${r},${g},${b},${baseAlpha})`;
+      const dirtyAlpha = (0.06 + (seed % 3) * 0.02) * depthFade;
+      const dirtyColor = `rgba(${90 + (seed % 20)},${85 + (seed % 15)},${80 + (seed % 10)},${dirtyAlpha})`;
+      return <div key={i} className="absolute" style={{ width: w, height: h, borderRadius: 1, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, top: `${yPct}%`, transform: `rotate(${rot}deg)` }} />;
+    });
+    const big = Array.from({ length: 40 }).map((_, i) => {
+      const isDirty = (i * 43 + 11) % 100 > fresh;
+      const seed = i * 23 + 5;
+      const x = (seed * 4.7) % 92 + 2;
+      const yPct = (seed * 2.9) % 80 + 12;
+      const w = 5 + (seed % 5);
+      const h = 2 + (seed % 3);
+      const rot = (seed * 9) % 160;
+      const depthFade = 0.4 + (yPct / 100) * 0.6;
+      const freshColor = `rgba(${r - 10},${g - 5},${b - 15},${(0.1 + (seed % 3) * 0.03) * depthFade})`;
+      const dirtyColor = `rgba(${80 + (seed % 15)},${78 + (seed % 12)},${75 + (seed % 10)},${(0.08 + (seed % 3) * 0.025) * depthFade})`;
+      return <div key={`clump${i}`} className="absolute" style={{ width: w, height: h, borderRadius: 2, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, top: `${yPct}%`, transform: `rotate(${rot}deg)` }} />;
+    });
+    return <>{small}{big}</>;
+  }, [Math.floor(state.sawdustFresh / 2)]); // only re-render on ≥2% change
 
   return (
     <div className="min-h-screen text-white relative overflow-hidden" style={{ background: "radial-gradient(ellipse at 50% 30%, #2a1810 0%, #1a0e08 40%, #0c0604 100%)", fontFamily: "'Pretendard Variable','Pretendard',-apple-system,sans-serif" }}>
@@ -1105,37 +1149,8 @@ export default function HamsterPage() {
           {/* Sawdust bedding — covers entire cage like a real hamster home */}
           <div className="absolute inset-0 rounded-3xl" style={{ background: `${sawdustColor}08` }} />
           <div className="absolute bottom-0 left-0 right-0" style={{ height: "70%", background: `linear-gradient(to top, ${sawdustColor}18, ${sawdustColor}0a, transparent)` }} />
-          {/* Dense sawdust chips — spread across entire cage */}
-          {Array.from({ length: 140 }).map((_, i) => {
-            const isDirty = (i * 31 + 7) % 100 > state.sawdustFresh;
-            const seed = i * 17 + 3;
-            const x = (seed * 7.3) % 97;
-            const yPct = (seed * 3.7) % 85 + 8; // 8%~93% of cage height
-            const w = 3 + (seed % 5);
-            const h = 1.5 + (seed % 3) * 0.5;
-            const rot = (seed * 13) % 180;
-            // Bottom-heavy opacity: denser at bottom, sparser at top
-            const depthFade = 0.5 + (yPct / 100) * 0.5;
-            const baseAlpha = (0.08 + (seed % 4) * 0.025) * depthFade;
-            const freshColor = `rgba(${sawdustR},${sawdustG},${sawdustB},${baseAlpha})`;
-            const dirtyAlpha = (0.06 + (seed % 3) * 0.02) * depthFade;
-            const dirtyColor = `rgba(${90 + (seed % 20)},${85 + (seed % 15)},${80 + (seed % 10)},${dirtyAlpha})`;
-            return <div key={i} className="absolute" style={{ width: w, height: h, borderRadius: 1, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, top: `${yPct}%`, transform: `rotate(${rot}deg)` }} />;
-          })}
-          {/* Bigger sawdust clumps — also spread across whole cage */}
-          {Array.from({ length: 40 }).map((_, i) => {
-            const isDirty = (i * 43 + 11) % 100 > state.sawdustFresh;
-            const seed = i * 23 + 5;
-            const x = (seed * 4.7) % 92 + 2;
-            const yPct = (seed * 2.9) % 80 + 12;
-            const w = 5 + (seed % 5);
-            const h = 2 + (seed % 3);
-            const rot = (seed * 9) % 160;
-            const depthFade = 0.4 + (yPct / 100) * 0.6;
-            const freshColor = `rgba(${sawdustR - 10},${sawdustG - 5},${sawdustB - 15},${(0.1 + (seed % 3) * 0.03) * depthFade})`;
-            const dirtyColor = `rgba(${80 + (seed % 15)},${78 + (seed % 12)},${75 + (seed % 10)},${(0.08 + (seed % 3) * 0.025) * depthFade})`;
-            return <div key={`clump${i}`} className="absolute" style={{ width: w, height: h, borderRadius: 2, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, top: `${yPct}%`, transform: `rotate(${rot}deg)` }} />;
-          })}
+          {/* Memoized sawdust chips (re-render only on ≥2% freshness change) */}
+          {sawdustChips}
 
           {/* Sawdust freshness indicator */}
           <div className="absolute bottom-1 right-2 text-[9px] flex items-center gap-1" style={{ color: state.sawdustFresh > 50 ? "rgba(255,255,255,.12)" : state.sawdustFresh > 20 ? "rgba(255,200,100,.25)" : "rgba(255,100,100,.35)" }}>
