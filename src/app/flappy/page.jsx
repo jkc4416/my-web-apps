@@ -408,7 +408,7 @@ export default function FlappyPage() {
     effectsRef.current = []; invincibleRef.current = 0; speedMultRef.current = 1;
     birdSizeRef.current = 1; gapOverrideRef.current = null; seedMultRef.current = 1;
     hasReviveRef.current = false;
-    setScore(0); setHp(MAX_HP); setActiveEffects([]); setShopOpen(false);
+    setScore(0); setHp(MAX_HP); setActiveEffects([]); setShopOpen(false); setShopMsg("");
     gameStateRef.current = "playing"; setGameState("playing");
     draw();
   }, [draw]);

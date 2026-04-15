@@ -13,7 +13,7 @@ export const metadata = {
     template: "%s | FunAppBox",
   },
   description:
-    "이름궁합 테스트, 만능 계산기, MBTI 분석, 맞춤법 퀴즈, 타이핑 테스트, 투자 시뮬레이터, 오늘의 운세, 스네이크 게임, 햄스터 키우기 등 14가지 무료 온라인 도구와 게임을 지금 바로 사용하세요.",
+    "이름궁합 테스트, 만능 계산기, MBTI 분석, 맞춤법 퀴즈, 타이핑 테스트, 투자 시뮬레이터, 오늘의 운세, 스네이크 게임, 햄스터 키우기 등 27가지 무료 온라인 도구와 게임을 지금 바로 사용하세요.",
   keywords: [
     "무료 온라인 도구",
     "웹 도구 모음",
@@ -42,13 +42,13 @@ export const metadata = {
     locale: "ko_KR",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "FunAppBox — 무료 온라인 도구 & 게임 14종",
+    title: "FunAppBox — 무료 온라인 도구 & 게임 27종",
     description:
-      "이름궁합, MBTI, 계산기, 맞춤법, 운세, 스네이크, 햄스터 키우기 등 14가지 무료 웹 도구와 게임",
+      "이름궁합, MBTI, 계산기, 맞춤법, 운세, 스네이크, 햄스터 키우기 등 27가지 무료 웹 도구와 게임",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FunAppBox — 무료 온라인 도구 & 게임 14종",
+    title: "FunAppBox — 무료 온라인 도구 & 게임 27종",
     description:
       "이름궁합, MBTI, 계산기, 맞춤법, 운세, 스네이크, 햄스터 키우기 등 무료 웹 도구와 게임",
   },

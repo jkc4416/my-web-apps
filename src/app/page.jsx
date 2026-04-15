@@ -447,7 +447,7 @@ export default function Home() {
               "@type": "WebSite",
               name: "FunAppBox",
               url: "https://www.funappbox.com",
-              description: "무료 온라인 도구와 게임 모음 — 이름궁합, MBTI, 계산기, 운세, 스네이크, 햄스터 키우기 등 14가지",
+              description: "무료 온라인 도구와 게임 모음 — 이름궁합, MBTI, 계산기, 운세, 스네이크, 햄스터 키우기 등 27가지",
               inLanguage: "ko",
               potentialAction: {
                 "@type": "SearchAction",
