@@ -261,7 +261,7 @@ function ImgExtract(){
       <canvas ref={cvs} className="hidden"/>
       <label className="block w-full p-6 rounded-2xl cursor-pointer text-center mb-4 transition-all hover:bg-white/[0.03]" style={{border:"2px dashed rgba(255,255,255,.06)"}}>
         <input type="file" accept="image/*" onChange={handle} className="hidden"/>
-        {url?(<img src={url} alt="" className="max-h-36 mx-auto rounded-xl object-cover"/>):(<div><div className="text-3xl mb-2">🖼️</div><div className="text-[11px]" style={{color:"rgba(255,255,255,.2)"}}>이미지 업로드</div></div>)}
+        {url?(<img src={url} alt="업로드한 이미지 미리보기" className="max-h-36 mx-auto rounded-xl object-cover"/>):(<div><div className="text-3xl mb-2">🖼️</div><div className="text-[11px]" style={{color:"rgba(255,255,255,.2)"}}>이미지 업로드</div></div>)}
       </label>
       {cols.length>0&&(<>
         <div className="flex rounded-xl overflow-hidden h-14 mb-3">{cols.map((c,i)=>(<div key={i} className="flex-1 flex items-end justify-center pb-1 cursor-pointer group" style={{background:c}} onClick={()=>copy(c)}>

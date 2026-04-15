@@ -226,7 +226,8 @@ export default function FortunePage() {
   const saju = useMemo(() => {
     if (!birthYear || !birthMonth || !birthDay) return null;
     const y = parseInt(birthYear), m = parseInt(birthMonth), d = parseInt(birthDay);
-    if (isNaN(y) || isNaN(m) || isNaN(d) || y < 1920 || y > 2025 || m < 1 || m > 12 || d < 1 || d > 31) return null;
+    const currentYear = new Date().getFullYear();
+    if (isNaN(y) || isNaN(m) || isNaN(d) || y < 1920 || y > currentYear || m < 1 || m > 12 || d < 1 || d > 31) return null;
     const h = parseInt(birthHour);
     const 년 = calc년주(y);
     const 월 = calc월주(y, m);
@@ -317,7 +318,7 @@ export default function FortunePage() {
                 <label className="block text-[10px] uppercase tracking-widest mb-2" style={{ color: "rgba(255,255,255,.2)" }}>생년월일</label>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <input type="number" placeholder="년 (1950~)" value={birthYear} onChange={(e) => setBirthYear(e.target.value)} min="1920" max="2025" required inputMode="numeric" aria-label="태어난 년도" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    <input type="number" placeholder="년 (1950~)" value={birthYear} onChange={(e) => setBirthYear(e.target.value)} min="1920" max={new Date().getFullYear()} required inputMode="numeric" aria-label="태어난 년도" className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold bg-white/[0.03] border border-white/[0.06] outline-none focus:border-purple-500/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                     <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>년</span>
                   </div>
                   <div>

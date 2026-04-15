@@ -30,6 +30,7 @@ export default function PastLifePage() {
   const result = useMemo(() => {
     const y = parseInt(year), m = parseInt(month), d = parseInt(day);
     if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    if (y < 1900 || y > new Date().getFullYear() || m < 1 || m > 12 || d < 1 || d > 31) return null;
     const hash = hashBirth(y, m, d);
     return LIVES[hash % LIVES.length];
   }, [year, month, day]);
