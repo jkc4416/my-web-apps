@@ -187,7 +187,7 @@ export default function App(){
             <div className="relative space-y-6">
               <div>
                 <label className="block text-[9px] uppercase tracking-[0.2em] mb-2 ml-0.5" style={{color:"rgba(255,255,255,.2)"}}>첫 번째 이름</label>
-                <input type="text" value={n1} onChange={e=>setN1(e.target.value)} placeholder="이름 입력" maxLength={4}
+                <input type="text" value={n1} onChange={e=>setN1(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&ok(n1)&&ok(n2))go();}} placeholder="이름 입력" maxLength={4}
                   className="w-full rounded-2xl px-5 py-4 text-center text-lg font-bold transition-all duration-300" style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)"}} onFocus={e=>e.target.style.borderColor=`${theme.ring}40`} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,.06)"}/>
               </div>
 
@@ -199,7 +199,7 @@ export default function App(){
 
               <div>
                 <label className="block text-[9px] uppercase tracking-[0.2em] mb-2 ml-0.5" style={{color:"rgba(255,255,255,.2)"}}>두 번째 이름</label>
-                <input type="text" value={n2} onChange={e=>setN2(e.target.value)} placeholder="이름 입력" maxLength={4}
+                <input type="text" value={n2} onChange={e=>setN2(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&ok(n1)&&ok(n2))go();}} placeholder="이름 입력" maxLength={4}
                   className="w-full rounded-2xl px-5 py-4 text-center text-lg font-bold transition-all duration-300" style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)"}} onFocus={e=>e.target.style.borderColor=`${theme.ring}40`} onBlur={e=>e.target.style.borderColor="rgba(255,255,255,.06)"}/>
               </div>
 

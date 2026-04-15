@@ -139,6 +139,16 @@ export default function MenuRoulette() {
   const [particles, setParticles] = useState(false);
   const cvs = useRef(null);
 
+  // Persist history + custom items
+  useEffect(() => {
+    try {
+      const h = localStorage.getItem("menu-history"); if (h) setHistory(JSON.parse(h));
+      const c = localStorage.getItem("menu-custom"); if (c) setCustomItems(JSON.parse(c));
+    } catch {}
+  }, []);
+  useEffect(() => { try { localStorage.setItem("menu-history", JSON.stringify(history)); } catch {} }, [history]);
+  useEffect(() => { try { localStorage.setItem("menu-custom", JSON.stringify(customItems)); } catch {} }, [customItems]);
+
   const filtered = useMemo(() => {
     if (selCats.includes("all")) return MENUS;
     return MENUS.filter(m => selCats.includes(m.cat));

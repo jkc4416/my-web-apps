@@ -57,7 +57,7 @@ export default function PastLifePage() {
           <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)" }}>
             <div className="grid grid-cols-3 gap-2 mb-4">
               {[{ v: year, s: setYear, p: "년", l: "년" }, { v: month, s: setMonth, p: "월", l: "월" }, { v: day, s: setDay, p: "일", l: "일" }].map((f) => (
-                <div key={f.l}><input type="number" placeholder={f.p} value={f.v} onChange={(e) => f.s(e.target.value)} inputMode="numeric" aria-label={f.l}
+                <div key={f.l}><input type="number" placeholder={f.p} value={f.v} onChange={(e) => f.s(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && result) setShowResult(true); }} inputMode="numeric" aria-label={f.l}
                   className="w-full rounded-xl px-3 py-3 text-center text-[15px] font-bold outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
                   style={{ background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.06)", color: "#e2e8f0" }} />
                 <span className="block text-center text-[9px] mt-1" style={{ color: "rgba(255,255,255,.15)" }}>{f.l}</span></div>

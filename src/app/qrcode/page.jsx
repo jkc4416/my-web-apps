@@ -76,7 +76,7 @@ export default function QRCodePage() {
 
         {/* Input */}
         <div className="rounded-2xl p-5 mb-4" style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)" }}>
-          <textarea value={input} onChange={(e) => setInput(e.target.value)} placeholder="URL, 텍스트, 전화번호 등을 입력하세요" rows={3} aria-label="QR코드 내용"
+          <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); generate(); } }} placeholder="URL, 텍스트, 전화번호 등을 입력하세요 (Ctrl/Cmd+Enter로 생성)" rows={3} aria-label="QR코드 내용"
             className="w-full rounded-xl px-4 py-3 text-[14px] resize-none outline-none" style={{ background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.06)", color: "#e2e8f0" }}
             onFocus={(e) => e.target.style.borderColor = "rgba(96,165,250,.3)"} onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,.06)"} />
           <div className="flex gap-1.5 mt-2 overflow-x-auto">

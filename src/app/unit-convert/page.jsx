@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 
 const CATEGORIES = [
@@ -82,6 +82,11 @@ function convertTemp(value, from, to) {
 
 export default function UnitConvertPage() {
   const [catIdx, setCatIdx] = useState(0);
+  // Load saved category
+  useEffect(() => {
+    try { const c = localStorage.getItem("unit-convert-cat"); if (c !== null) { const i = Number(c); if (i >= 0 && i < CATEGORIES.length) setCatIdx(i); } } catch {}
+  }, []);
+  useEffect(() => { try { localStorage.setItem("unit-convert-cat", String(catIdx)); } catch {} }, [catIdx]);
   const [fromIdx, setFromIdx] = useState(0);
   const [toIdx, setToIdx] = useState(1);
   const [value, setValue] = useState("1");
