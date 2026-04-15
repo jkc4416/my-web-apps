@@ -6,7 +6,7 @@ import Link from "next/link";
 // ===== CONSTANTS =====
 const DECAY_INTERVAL = 3000;
 const DECAY_AMOUNT = 0.4;
-const SAVE_KEY = "hamster-save-v4";
+const SAVE_KEY = "hamster-save-v5";
 const XP_PER_ACTION = 8;
 const XP_PER_LEVEL = 100;
 const WHEEL_DURATION = 8000;
@@ -33,6 +33,59 @@ const TOYS = [
 ];
 
 const SAWDUST_ITEM = { id: "sawdust", name: "새 톱밥", emoji: "🪵", cost: 15 };
+
+// 30 decoration items — 5 slots (hat, face, neck, back, aura)
+const DECOR_ITEMS = [
+  // Hat (10) - rendered above head
+  { id: "flower_pin", name: "꽃 핀", emoji: "🌸", slot: "hat", cost: 30 },
+  { id: "cap", name: "야구 모자", emoji: "🧢", slot: "hat", cost: 40 },
+  { id: "bow", name: "리본", emoji: "🎀", slot: "hat", cost: 35 },
+  { id: "crown", name: "왕관", emoji: "👑", slot: "hat", cost: 120 },
+  { id: "party_hat", name: "고깔 모자", emoji: "🥳", slot: "hat", cost: 50 },
+  { id: "top_hat", name: "실크 해트", emoji: "🎩", slot: "hat", cost: 80 },
+  { id: "graduation", name: "학사모", emoji: "🎓", slot: "hat", cost: 70 },
+  { id: "santa_hat", name: "산타 모자", emoji: "🎅", slot: "hat", cost: 55 },
+  { id: "wizard_hat", name: "마법사 모자", emoji: "🧙", slot: "hat", cost: 90 },
+  { id: "star_hairpin", name: "별 머리핀", emoji: "⭐", slot: "hat", cost: 45 },
+
+  // Face (6) - rendered on face area
+  { id: "sunglasses", name: "선글라스", emoji: "🕶️", slot: "face", cost: 50 },
+  { id: "glasses", name: "동그란 안경", emoji: "👓", slot: "face", cost: 35 },
+  { id: "mask", name: "의료 마스크", emoji: "😷", slot: "face", cost: 25 },
+  { id: "mustache", name: "멋쟁이 콧수염", emoji: "🥸", slot: "face", cost: 40 },
+  { id: "monocle", name: "단안경", emoji: "🧐", slot: "face", cost: 60 },
+  { id: "cherry", name: "체리 볼터치", emoji: "🍒", slot: "face", cost: 30 },
+
+  // Neck (7) - rendered below head
+  { id: "scarf", name: "목도리", emoji: "🧣", slot: "neck", cost: 40 },
+  { id: "necktie", name: "넥타이", emoji: "👔", slot: "neck", cost: 45 },
+  { id: "bell", name: "방울 목걸이", emoji: "🔔", slot: "neck", cost: 20 },
+  { id: "pearl", name: "진주 목걸이", emoji: "📿", slot: "neck", cost: 70 },
+  { id: "bow_tie", name: "나비 넥타이", emoji: "🎗️", slot: "neck", cost: 50 },
+  { id: "medal", name: "금메달", emoji: "🏅", slot: "neck", cost: 100 },
+  { id: "headphones", name: "헤드폰", emoji: "🎧", slot: "neck", cost: 65 },
+
+  // Back (4) - rendered behind body
+  { id: "angel_wings", name: "천사 날개", emoji: "👼", slot: "back", cost: 110 },
+  { id: "fairy_wings", name: "요정 날개", emoji: "🧚", slot: "back", cost: 130 },
+  { id: "hero_cape", name: "히어로 망토", emoji: "🦸", slot: "back", cost: 150 },
+  { id: "backpack", name: "미니 백팩", emoji: "🎒", slot: "back", cost: 60 },
+
+  // Aura (3) - rendered around hamster
+  { id: "halo", name: "반짝 후광", emoji: "✨", slot: "aura", cost: 80 },
+  { id: "hearts", name: "하트 오라", emoji: "💕", slot: "aura", cost: 75 },
+  { id: "stars_aura", name: "별 오라", emoji: "🌟", slot: "aura", cost: 85 },
+];
+
+const DECOR_SLOTS = [
+  { id: "hat", label: "모자" },
+  { id: "face", label: "얼굴" },
+  { id: "neck", label: "목" },
+  { id: "back", label: "등" },
+  { id: "aura", label: "오라" },
+];
+
+const RHYTHM_TOY = { id: "microphone", name: "노래방 마이크", emoji: "🎤", slot: "toy_rhythm", cost: 250 };
 
 const HAMSTER_NAMES = ["몽실이", "뭉치", "콩이", "도토리", "솜이", "밤이", "쪼꼬", "구름이"];
 
@@ -90,7 +143,8 @@ function getDefaultState() {
     name: HAMSTER_NAMES[Math.floor(Math.random() * HAMSTER_NAMES.length)],
     hunger: 80, happiness: 80, energy: 80, cleanliness: 80,
     coins: 10, xp: 0, level: 1, totalActions: 0,
-    ownedToys: [], poops: [], sawdustFresh: 100,
+    ownedToys: [], ownedDecor: [], equippedDecor: {}, ownedRhythm: false,
+    poops: [], sawdustFresh: 100,
     createdAt: Date.now(), lastSaved: Date.now(),
   };
 }
@@ -123,13 +177,18 @@ export default function HamsterPage() {
   const [activeToy, setActiveToy] = useState(null);
   // Ball billiards mini-game
   const [ballGame, setBallGame] = useState(null); // null | { phase: "aiming"|"rolling"|"done", ball, goal, obstacles, shots, successful }
+  const [swingGame, setSwingGame] = useState(null); // null | { phase, angle, velocity, momentum, taps: {perfect,good,miss}, timeLeft, bestHeight }
+  const [rhythmGame, setRhythmGame] = useState(null); // null | { phase, notes, combo, score, perfect, good, miss, timeLeft }
+  const [decorPreviewOpen, setDecorPreviewOpen] = useState(false);
   const [toyTaps, setToyTaps] = useState(0);
   const [toyTime, setToyTime] = useState(0);
 
   const wheelActive = wheelPhase !== "none";
   const toyActive = toyPhase !== "none";
   const ballActive = ballGame !== null;
-  const busy = wheelActive || toyActive || ballActive;
+  const swingActive = swingGame !== null;
+  const rhythmActive = rhythmGame !== null;
+  const busy = wheelActive || toyActive || ballActive || swingActive || rhythmActive;
 
   const [isSleeping, setIsSleeping] = useState(false);
   const [bubbleMsg, setBubbleMsg] = useState("");
@@ -173,6 +232,9 @@ export default function HamsterPage() {
         cleanliness: clamp((parsed.cleanliness || 80) - decay * 0.6),
         sawdustFresh: clamp((parsed.sawdustFresh ?? 100) - sawdustDecay),
         ownedToys: parsed.ownedToys || [],
+        ownedDecor: parsed.ownedDecor || [],
+        equippedDecor: parsed.equippedDecor || {},
+        ownedRhythm: parsed.ownedRhythm || false,
         poops: parsed.poops || [],
       });
     } else {
@@ -364,6 +426,24 @@ export default function HamsterPage() {
       showBubble("⚽ 공을 드래그해서 골인시켜봐!");
       return;
     }
+    // Swing → pendulum rhythm mini-game
+    if (toy.id === "swing") {
+      setActiveToy(toy);
+      setSwingGame({
+        phase: "playing",
+        angle: 0, // -90 to 90 degrees
+        velocity: 0,
+        momentum: 20, // current amplitude target (0-100)
+        peakAngle: 10,
+        taps: { perfect: 0, good: 0, miss: 0 },
+        bestAmplitude: 0,
+        timeLeft: 20000,
+        startTime: Date.now(),
+        lastTapTime: 0,
+      });
+      showBubble("🎠 그네 타이밍 맞춰 탭하세요!");
+      return;
+    }
     setActiveToy(toy);
     setToyPhase("appearing");
     showBubble(`${toy.emoji} ${toy.name}이다!`);
@@ -525,7 +605,7 @@ export default function HamsterPage() {
     if (sleepTimerRef.current) { clearInterval(sleepTimerRef.current); sleepTimerRef.current = null; }
     if (wheelTimerRef.current) { clearInterval(wheelTimerRef.current); wheelTimerRef.current = null; }
     if (toyTimerRef.current) { clearInterval(toyTimerRef.current); toyTimerRef.current = null; }
-    setState(getDefaultState()); setIsSleeping(false); setWheelPhase("none"); setToyPhase("none"); setShowShop(false); setBallGame(null);
+    setState(getDefaultState()); setIsSleeping(false); setWheelPhase("none"); setToyPhase("none"); setShowShop(false); setBallGame(null); setSwingGame(null); setRhythmGame(null);
     updatePos(CAGE_W / 2, CAGE_H / 2);
     showBubble("새 햄스터를 입양했어요!"); spawnParticles("🎀", 6);
   }, [showBubble, spawnParticles, updatePos]);
@@ -679,6 +759,262 @@ export default function HamsterPage() {
     setBallGame((g) => g ? { ...g, phase: "rolling", ball: { ...g.ball, vx, vy }, shotsUsed: g.shotsUsed + 1 } : null);
   }, [ballGame]);
 
+  // ===== SWING RHYTHM MINI-GAME =====
+  const swingRafRef = useRef(null);
+  const swingStartRef = useRef(0);
+
+  const endSwingGame = useCallback((bestAmp, tapStats) => {
+    // Score based on peak amplitude reached
+    const successTier = bestAmp >= 70 ? "perfect" : bestAmp >= 40 ? "great" : bestAmp >= 20 ? "good" : "poor";
+    const rewards = {
+      perfect: { coins: 25, xp: XP_PER_ACTION * 4, hap: 50, msg: "🌟 환상적! 최고 높이 달성!" },
+      great: { coins: 15, xp: XP_PER_ACTION * 3, hap: 40, msg: "✨ 멋진 스윙!" },
+      good: { coins: 8, xp: XP_PER_ACTION * 2, hap: 25, msg: "😊 잘했어요!" },
+      poor: { coins: 3, xp: XP_PER_ACTION, hap: 10, msg: "💨 아쉬워요..." },
+    };
+    const r = rewards[successTier];
+    setState((s) => ({
+      ...s,
+      happiness: clamp(s.happiness + r.hap),
+      energy: clamp(s.energy - 10),
+      coins: s.coins + r.coins,
+    }));
+    showBubble(`${r.msg} +${r.coins}🪙`);
+    spawnParticles(successTier === "perfect" ? "⭐" : "✨", successTier === "perfect" ? 10 : 5);
+    gainXP(r.xp);
+    setTimeout(() => { setSwingGame(null); setActiveToy(null); }, 2200);
+  }, [showBubble, spawnParticles, gainXP]);
+
+  // Swing physics loop — pendulum motion
+  useEffect(() => {
+    if (!swingGame || swingGame.phase !== "playing") return;
+    const loop = () => {
+      setSwingGame((g) => {
+        if (!g || g.phase !== "playing") return g;
+        const now = Date.now();
+        const elapsed = now - g.startTime;
+        const timeLeft = 20000 - elapsed;
+        if (timeLeft <= 0) {
+          setTimeout(() => endSwingGame(g.bestAmplitude, g.taps), 0);
+          return { ...g, phase: "done", timeLeft: 0 };
+        }
+        // Pendulum physics: angle oscillates using sine with decaying momentum
+        // Peak angle = momentum / 100 * 80 degrees (max)
+        const peakAngle = (g.momentum / 100) * 80;
+        // Natural decay of momentum
+        const momentum = Math.max(5, g.momentum - 0.15);
+        // Angle = peakAngle * sin(2π * t / period)
+        const period = 2000; // 2 second period
+        const phase = (elapsed / period) * 2 * Math.PI;
+        const angle = peakAngle * Math.sin(phase);
+        const bestAmplitude = Math.max(g.bestAmplitude, Math.abs(angle));
+        return { ...g, angle, peakAngle, momentum, bestAmplitude, timeLeft };
+      });
+      swingRafRef.current = requestAnimationFrame(loop);
+    };
+    swingRafRef.current = requestAnimationFrame(loop);
+    return () => { if (swingRafRef.current) cancelAnimationFrame(swingRafRef.current); };
+  }, [swingGame?.phase, endSwingGame]);
+
+  const swingTap = useCallback(() => {
+    if (!swingGame || swingGame.phase !== "playing") return;
+    const now = Date.now();
+    setSwingGame((g) => {
+      if (!g || g.phase !== "playing") return g;
+      if (now - g.lastTapTime < 150) return g; // tap throttle
+      const absAngle = Math.abs(g.angle);
+      const peakAngle = g.peakAngle;
+      // Perfect: near peak (>70% of peak). Good: mid (30-70%). Miss: near center.
+      const ratio = peakAngle > 0 ? absAngle / peakAngle : 0;
+      let momentumDelta, tapType;
+      if (ratio > 0.7) { momentumDelta = 18; tapType = "perfect"; }
+      else if (ratio > 0.3) { momentumDelta = 8; tapType = "good"; }
+      else { momentumDelta = -8; tapType = "miss"; }
+      const newMomentum = clamp(g.momentum + momentumDelta, 5, 100);
+      doBounce();
+      return {
+        ...g,
+        momentum: newMomentum,
+        taps: { ...g.taps, [tapType]: g.taps[tapType] + 1 },
+        lastTapTime: now,
+        lastTapType: tapType,
+        lastTapAt: now,
+      };
+    });
+  }, [swingGame, doBounce]);
+
+  // ===== RHYTHM MINI-GAME =====
+  const rhythmRafRef = useRef(null);
+  const RHYTHM_DURATION = 18000;
+  const NOTE_SPEED = 150; // px/sec
+  const HIT_LINE_Y = CAGE_H - 40;
+  const PERFECT_WINDOW = 30;
+  const GOOD_WINDOW = 60;
+
+  const startRhythmGame = useCallback(() => {
+    if (!state || isSleeping || busy) return;
+    if (state.energy < 10) { showBubble("너무 피곤해요..."); return; }
+    if (!state.ownedRhythm) { showBubble("🎤 마이크를 먼저 구매하세요!"); return; }
+    // Generate note pattern: 18 seconds of notes, one per lane at rhythmic intervals
+    const notes = [];
+    const lanes = 3;
+    const totalDuration = RHYTHM_DURATION - 2000; // start delay
+    const interval = 450; // ms between notes
+    for (let t = 1000; t < totalDuration; t += interval + (Math.random() * 150 - 75)) {
+      notes.push({ id: Math.random(), lane: Math.floor(Math.random() * lanes), time: t, hit: false, missed: false });
+    }
+    setRhythmGame({
+      phase: "playing",
+      notes, hits: 0, combo: 0, maxCombo: 0,
+      perfect: 0, good: 0, miss: 0,
+      score: 0,
+      startTime: Date.now(),
+      timeLeft: RHYTHM_DURATION,
+    });
+    showBubble("🎤 음표를 타이밍 맞춰 탭하세요!");
+  }, [state, isSleeping, busy, showBubble]);
+
+  const endRhythmGame = useCallback(() => {
+    setRhythmGame((g) => {
+      if (!g) return g;
+      const total = g.perfect + g.good + g.miss;
+      const acc = total > 0 ? (g.perfect + g.good * 0.5) / total : 0;
+      const tier = g.perfect + g.good >= 30 ? "perfect" : acc >= 0.7 ? "great" : acc >= 0.4 ? "good" : "poor";
+      const rewards = {
+        perfect: { coins: 35, xp: XP_PER_ACTION * 5, hap: 55, msg: "🎉 환상적인 무대!" },
+        great: { coins: 20, xp: XP_PER_ACTION * 3, hap: 40, msg: "🎵 멋진 공연!" },
+        good: { coins: 10, xp: XP_PER_ACTION * 2, hap: 25, msg: "🎶 잘했어요!" },
+        poor: { coins: 3, xp: XP_PER_ACTION, hap: 10, msg: "연습이 필요해요..." },
+      };
+      const r = rewards[tier];
+      setState((s) => ({
+        ...s,
+        happiness: clamp(s.happiness + r.hap),
+        energy: clamp(s.energy - 12),
+        coins: s.coins + r.coins,
+      }));
+      showBubble(`${r.msg} +${r.coins}🪙`);
+      spawnParticles(tier === "perfect" ? "⭐" : "🎵", tier === "perfect" ? 12 : 6);
+      gainXP(r.xp);
+      setTimeout(() => setRhythmGame(null), 2400);
+      return { ...g, phase: "done", finalTier: tier };
+    });
+  }, [showBubble, spawnParticles, gainXP]);
+
+  // Rhythm game loop
+  useEffect(() => {
+    if (!rhythmGame || rhythmGame.phase !== "playing") return;
+    const loop = () => {
+      setRhythmGame((g) => {
+        if (!g || g.phase !== "playing") return g;
+        const elapsed = Date.now() - g.startTime;
+        const timeLeft = RHYTHM_DURATION - elapsed;
+        if (timeLeft <= 0) {
+          setTimeout(() => endRhythmGame(), 0);
+          return { ...g, phase: "ending", timeLeft: 0 };
+        }
+        // Mark missed notes (past hit line without tap)
+        const updatedNotes = g.notes.map((n) => {
+          if (n.hit || n.missed) return n;
+          if (elapsed > n.time + GOOD_WINDOW) {
+            return { ...n, missed: true };
+          }
+          return n;
+        });
+        const newMisses = updatedNotes.filter((n) => n.missed && !g.notes.find((o) => o.id === n.id && o.missed)).length;
+        return {
+          ...g,
+          notes: updatedNotes,
+          miss: g.miss + newMisses,
+          combo: newMisses > 0 ? 0 : g.combo,
+          timeLeft,
+        };
+      });
+      rhythmRafRef.current = requestAnimationFrame(loop);
+    };
+    rhythmRafRef.current = requestAnimationFrame(loop);
+    return () => { if (rhythmRafRef.current) cancelAnimationFrame(rhythmRafRef.current); };
+  }, [rhythmGame?.phase, endRhythmGame]);
+
+  const rhythmTap = useCallback((lane) => {
+    if (!rhythmGame || rhythmGame.phase !== "playing") return;
+    const elapsed = Date.now() - rhythmGame.startTime;
+    // Find the closest unhit note in this lane
+    setRhythmGame((g) => {
+      if (!g || g.phase !== "playing") return g;
+      let bestIdx = -1;
+      let bestDelta = Infinity;
+      g.notes.forEach((n, i) => {
+        if (n.hit || n.missed || n.lane !== lane) return;
+        const delta = Math.abs(elapsed - n.time);
+        if (delta < bestDelta && delta < GOOD_WINDOW + 50) {
+          bestDelta = delta;
+          bestIdx = i;
+        }
+      });
+      if (bestIdx === -1) return g; // no note — wasted tap
+      const newNotes = [...g.notes];
+      newNotes[bestIdx] = { ...newNotes[bestIdx], hit: true };
+      let type = "miss";
+      if (bestDelta <= PERFECT_WINDOW) type = "perfect";
+      else if (bestDelta <= GOOD_WINDOW) type = "good";
+      const scoreGain = type === "perfect" ? 100 : type === "good" ? 50 : 0;
+      const newCombo = type !== "miss" ? g.combo + 1 : 0;
+      doBounce();
+      return {
+        ...g,
+        notes: newNotes,
+        [type]: g[type] + 1,
+        score: g.score + scoreGain + newCombo * 5,
+        combo: newCombo,
+        maxCombo: Math.max(g.maxCombo, newCombo),
+        lastHitType: type,
+        lastHitAt: Date.now(),
+      };
+    });
+  }, [rhythmGame, doBounce]);
+
+  // Buy decor
+  const buyDecor = useCallback((decor) => {
+    if (!state || state.coins < decor.cost) { showBubble("코인이 부족해요!"); return; }
+    if (state.ownedDecor.includes(decor.id)) { showBubble("이미 보유 중"); return; }
+    setState((s) => ({ ...s, coins: s.coins - decor.cost, ownedDecor: [...s.ownedDecor, decor.id] }));
+    showBubble(`${decor.emoji} ${decor.name} 구매 완료!`);
+    spawnParticles(decor.emoji, 4);
+  }, [state, showBubble, spawnParticles]);
+
+  // Buy rhythm toy
+  const buyRhythmToy = useCallback(() => {
+    if (!state || state.coins < RHYTHM_TOY.cost) { showBubble("코인이 부족해요!"); return; }
+    if (state.ownedRhythm) { showBubble("이미 보유 중"); return; }
+    setState((s) => ({ ...s, coins: s.coins - RHYTHM_TOY.cost, ownedRhythm: true }));
+    showBubble(`🎤 마이크 구매 완료! 리듬놀이 가능!`);
+    spawnParticles("🎤", 5);
+  }, [state, showBubble, spawnParticles]);
+
+  // Rhythm keyboard controls
+  useEffect(() => {
+    if (!rhythmGame || rhythmGame.phase !== "playing") return;
+    const handleKey = (e) => {
+      if (e.key === "1" || e.key === "d" || e.key === "D") { e.preventDefault(); rhythmTap(0); }
+      else if (e.key === "2" || e.key === "f" || e.key === "F" || e.key === " ") { e.preventDefault(); rhythmTap(1); }
+      else if (e.key === "3" || e.key === "j" || e.key === "J") { e.preventDefault(); rhythmTap(2); }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [rhythmGame, rhythmTap]);
+
+  // Toggle equip decor (click equipped → unequip; click owned → equip)
+  const toggleEquipDecor = useCallback((decor) => {
+    if (!state || !state.ownedDecor.includes(decor.id)) return;
+    setState((s) => {
+      const eq = { ...s.equippedDecor };
+      if (eq[decor.slot] === decor.id) { delete eq[decor.slot]; }
+      else { eq[decor.slot] = decor.id; }
+      return { ...s, equippedDecor: eq };
+    });
+  }, [state]);
+
   if (!state) return null;
 
   const moodData = MOODS[mood] || MOODS.idle;
@@ -715,6 +1051,7 @@ export default function HamsterPage() {
         @keyframes glow { 0%,100% { box-shadow:0 0 20px rgba(251,191,36,0.05); } 50% { box-shadow:0 0 30px rgba(251,191,36,0.12); } }
         @keyframes wheelSpin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
         @keyframes toyBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-4px); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes poopAppear { from { transform:scale(0); } to { transform:scale(1); } }
       `}</style>
 
@@ -898,6 +1235,138 @@ export default function HamsterPage() {
             </>
           )}
 
+          {/* ===== SWING MINI-GAME ===== */}
+          {swingGame && (
+            <>
+              <svg viewBox={`0 0 ${CAGE_W} ${CAGE_H + 80}`} preserveAspectRatio="none" className="absolute inset-0 z-20 pointer-events-none" style={{ width: "100%", height: "100%" }}>
+                {/* Swing pivot + rope */}
+                {(() => {
+                  const pivotX = CAGE_W / 2;
+                  const pivotY = 30;
+                  const ropeLen = 100;
+                  const hamsterX = pivotX + Math.sin(swingGame.angle * Math.PI / 180) * ropeLen;
+                  const hamsterY = pivotY + Math.cos(swingGame.angle * Math.PI / 180) * ropeLen;
+                  return (
+                    <>
+                      {/* Pivot point */}
+                      <rect x={pivotX - 15} y={0} width={30} height={6} fill="rgba(180,140,100,0.5)" />
+                      {/* Rope */}
+                      <line x1={pivotX - 4} y1={pivotY} x2={hamsterX - 10} y2={hamsterY - 6} stroke="rgba(200,180,140,0.6)" strokeWidth="1.5" />
+                      <line x1={pivotX + 4} y1={pivotY} x2={hamsterX + 10} y2={hamsterY - 6} stroke="rgba(200,180,140,0.6)" strokeWidth="1.5" />
+                      {/* Swing seat */}
+                      <rect x={hamsterX - 18} y={hamsterY - 4} width={36} height={6} rx={2} fill="#8b5a2b" stroke="#6b3f1e" strokeWidth="1" />
+                      {/* Hamster on swing (simple circle with face) */}
+                      <circle cx={hamsterX} cy={hamsterY - 18} r={14} fill="#e8a87c" stroke="#c4844c" strokeWidth="1.5" />
+                      <circle cx={hamsterX - 5} cy={hamsterY - 20} r={2} fill="#2a1a0a" />
+                      <circle cx={hamsterX + 5} cy={hamsterY - 20} r={2} fill="#2a1a0a" />
+                      <circle cx={hamsterX - 6} cy={hamsterY - 15} r={3} fill="rgba(255,100,100,0.3)" />
+                      <circle cx={hamsterX + 6} cy={hamsterY - 15} r={3} fill="rgba(255,100,100,0.3)" />
+                      {/* Timing zones */}
+                      <text x={pivotX} y={CAGE_H - 50} textAnchor="middle" fontSize="10" fill="rgba(255,255,255,0.3)">
+                        {Math.abs(swingGame.angle) > swingGame.peakAngle * 0.7 ? "🎯 지금!" : "..."}
+                      </text>
+                    </>
+                  );
+                })()}
+              </svg>
+
+              {/* HUD */}
+              <div className="absolute top-3 left-3 z-30 px-2.5 py-1 rounded-lg text-[10px] font-bold pointer-events-none" style={{ background: "rgba(0,0,0,0.4)", color: "#fff", backdropFilter: "blur(6px)" }}>
+                💪 {Math.round(swingGame.momentum)}% | ⏱ {Math.ceil(swingGame.timeLeft / 1000)}s
+              </div>
+              <div className="absolute top-3 right-3 z-30 px-2.5 py-1 rounded-lg text-[10px] pointer-events-none" style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}>
+                <span className="text-amber-400">P {swingGame.taps.perfect}</span> <span className="text-emerald-400">G {swingGame.taps.good}</span> <span className="text-red-400">M {swingGame.taps.miss}</span>
+              </div>
+
+              {/* Tap button below swing */}
+              {swingGame.phase === "playing" && (
+                <button onClick={swingTap} className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-8 py-3 rounded-2xl font-black text-[14px] transition-all active:scale-95"
+                  style={{
+                    background: Math.abs(swingGame.angle) > swingGame.peakAngle * 0.7 ? "linear-gradient(135deg, #fbbf24, #f59e0b)" : "rgba(255,255,255,0.1)",
+                    color: Math.abs(swingGame.angle) > swingGame.peakAngle * 0.7 ? "#1a1408" : "rgba(255,255,255,.6)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    boxShadow: Math.abs(swingGame.angle) > swingGame.peakAngle * 0.7 ? "0 0 20px rgba(251,191,36,0.4)" : "none",
+                  }}>
+                  🎠 탭!
+                </button>
+              )}
+            </>
+          )}
+
+          {/* ===== RHYTHM MINI-GAME ===== */}
+          {rhythmGame && (
+            <>
+              <svg viewBox={`0 0 ${CAGE_W} ${CAGE_H}`} preserveAspectRatio="none" className="absolute inset-0 z-20 pointer-events-none" style={{ width: "100%", height: CAGE_H + "px" }}>
+                {/* Lanes */}
+                {[0, 1, 2].map((lane) => {
+                  const laneW = CAGE_W / 3;
+                  const laneX = lane * laneW;
+                  const laneColors = ["#f472b6", "#c084fc", "#60a5fa"];
+                  return (
+                    <g key={lane}>
+                      <rect x={laneX + 2} y={0} width={laneW - 4} height={CAGE_H} fill="rgba(255,255,255,0.02)" stroke={`${laneColors[lane]}30`} strokeWidth="1" />
+                      {/* Hit line */}
+                      <line x1={laneX + 4} y1={HIT_LINE_Y} x2={laneX + laneW - 4} y2={HIT_LINE_Y} stroke={laneColors[lane]} strokeWidth="2" opacity="0.6" />
+                    </g>
+                  );
+                })}
+                {/* Notes */}
+                {(() => {
+                  const elapsed = rhythmGame.phase === "playing" ? Date.now() - rhythmGame.startTime : 0;
+                  return rhythmGame.notes.filter((n) => !n.hit && !n.missed).map((n) => {
+                    // Note is at HIT_LINE_Y at time n.time. Before that, it's above. Speed: travels visibleDistance in approachTime ms.
+                    const approachTime = 1500; // ms for note to travel from spawn to hit line
+                    const spawnY = -20;
+                    const progress = (elapsed - (n.time - approachTime)) / approachTime;
+                    if (progress < 0 || progress > 1.2) return null;
+                    const y = spawnY + (HIT_LINE_Y - spawnY) * progress;
+                    const laneW = CAGE_W / 3;
+                    const x = n.lane * laneW + laneW / 2;
+                    const colors = ["#f472b6", "#c084fc", "#60a5fa"];
+                    return (
+                      <g key={n.id}>
+                        <circle cx={x} cy={y} r={12} fill={colors[n.lane]} opacity="0.8" />
+                        <circle cx={x} cy={y} r={12} fill="none" stroke={colors[n.lane]} strokeWidth="2" />
+                        <text x={x} y={y + 4} textAnchor="middle" fontSize="14" fill="#fff">♪</text>
+                      </g>
+                    );
+                  });
+                })()}
+              </svg>
+
+              {/* HUD */}
+              <div className="absolute top-3 left-3 z-30 px-2.5 py-1 rounded-lg text-[10px] font-bold pointer-events-none" style={{ background: "rgba(0,0,0,0.4)", color: "#fff", backdropFilter: "blur(6px)" }}>
+                🎵 {rhythmGame.score} | ⏱ {Math.ceil(rhythmGame.timeLeft / 1000)}s
+              </div>
+              {rhythmGame.combo > 3 && (
+                <div className="absolute top-3 right-3 z-30 px-2.5 py-1 rounded-lg text-[11px] font-black pointer-events-none" style={{ background: "rgba(251,191,36,0.2)", color: "#fbbf24", backdropFilter: "blur(6px)" }}>
+                  🔥 {rhythmGame.combo} COMBO
+                </div>
+              )}
+              {rhythmGame.lastHitType && rhythmGame.lastHitAt > Date.now() - 400 && (
+                <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 text-lg font-black pointer-events-none" style={{
+                  color: rhythmGame.lastHitType === "perfect" ? "#fbbf24" : rhythmGame.lastHitType === "good" ? "#4ade80" : "#f87171",
+                  textShadow: "0 0 8px currentColor",
+                }}>
+                  {rhythmGame.lastHitType === "perfect" ? "PERFECT!" : rhythmGame.lastHitType === "good" ? "GOOD" : "MISS"}
+                </div>
+              )}
+
+              {/* Lane tap buttons at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 z-30 flex" style={{ height: 44 }}>
+                {[0, 1, 2].map((lane) => {
+                  const colors = ["#f472b6", "#c084fc", "#60a5fa"];
+                  return (
+                    <button key={lane} onPointerDown={(e) => { e.preventDefault(); rhythmTap(lane); }} className="flex-1 font-black text-[18px] active:scale-95 transition-transform"
+                      style={{ background: `${colors[lane]}15`, border: `1px solid ${colors[lane]}40`, color: colors[lane], borderRadius: 0 }}>
+                      ♪
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
           {/* Poops — clickable to clean */}
           {state.poops.map((poop) => (
             <button key={poop.id} onClick={() => cleanPoop(poop.id)} className="absolute cursor-pointer hover:scale-125 transition-transform active:scale-90 z-10" style={{ left: poop.x, top: poop.y, animation: "poopAppear 0.3s ease", fontSize: 14 }} title="탭하여 치우기">
@@ -927,7 +1396,38 @@ export default function HamsterPage() {
             animation: bounce ? "hamsterBounce 0.5s ease" : isSleeping ? "hamsterSleep 3s ease-in-out infinite" : (wheelPhase === "running" || toyPhase === "playing") ? "hamsterWalk 0.15s ease infinite" : (wheelPhase === "approaching" || toyPhase === "approaching") ? "hamsterWalk 0.3s ease infinite" : hamAction === "walk" ? "hamsterWalk 0.3s ease infinite" : hamAction === "sniff" ? "hamsterSniff 0.6s ease infinite" : "none",
             zIndex: 10,
           }}>
-            <PixelHamster tier={tier} sleeping={isSleeping} flip={hamFlip} />
+            <div className="relative inline-block">
+              <PixelHamster tier={tier} sleeping={isSleeping} flip={hamFlip} />
+              {/* Equipped decorations */}
+              {(() => {
+                const getDecor = (slot) => {
+                  const id = state.equippedDecor[slot];
+                  return id ? DECOR_ITEMS.find((d) => d.id === id) : null;
+                };
+                const hat = getDecor("hat");
+                const face = getDecor("face");
+                const neck = getDecor("neck");
+                const back = getDecor("back");
+                const aura = getDecor("aura");
+                const spriteCols = SPRITES[tier].normal[0].length;
+                const spriteRows = SPRITES[tier].normal.length;
+                const px = SIZES[tier].pixel;
+                const spriteW = spriteCols * px;
+                const spriteH = spriteRows * px;
+                return (
+                  <>
+                    {back && <span className="absolute pointer-events-none" style={{ left: -14, top: spriteH * 0.35, fontSize: spriteW * 0.55, zIndex: -1, opacity: 0.85 }}>{back.emoji}</span>}
+                    {hat && <span className="absolute pointer-events-none" style={{ left: "50%", top: -spriteH * 0.15, transform: "translateX(-50%)", fontSize: spriteW * 0.5 }}>{hat.emoji}</span>}
+                    {face && <span className="absolute pointer-events-none" style={{ left: "50%", top: spriteH * 0.35, transform: "translateX(-50%)", fontSize: spriteW * 0.4 }}>{face.emoji}</span>}
+                    {neck && <span className="absolute pointer-events-none" style={{ left: "50%", top: spriteH * 0.65, transform: "translateX(-50%)", fontSize: spriteW * 0.45 }}>{neck.emoji}</span>}
+                    {aura && <>
+                      <span className="absolute pointer-events-none" style={{ left: -8, top: -8, fontSize: spriteW * 0.3, animation: "spin 4s linear infinite" }}>{aura.emoji}</span>
+                      <span className="absolute pointer-events-none" style={{ right: -8, bottom: -8, fontSize: spriteW * 0.3, animation: "spin 4s linear infinite reverse" }}>{aura.emoji}</span>
+                    </>}
+                  </>
+                );
+              })()}
+            </div>
           </button>
 
           {/* Mood */}
@@ -1018,6 +1518,13 @@ export default function HamsterPage() {
           ))}
         </div>
 
+        {/* Rhythm game button (if owned) */}
+        {state.ownedRhythm && (
+          <button onClick={startRhythmGame} disabled={isSleeping || busy} className="w-full rounded-2xl py-3 mb-3 text-center font-semibold text-[13px] transition-all active:scale-[0.98] disabled:opacity-30" style={{ background: "linear-gradient(135deg, rgba(244,114,182,0.12), rgba(192,132,252,0.12))", border: "1px solid rgba(244,114,182,0.2)", color: "#f472b6" }}>
+            🎤 리듬놀이 시작
+          </button>
+        )}
+
         {/* Owned toys */}
         {state.ownedToys.length > 0 && (
           <div className="mb-4">
@@ -1044,9 +1551,9 @@ export default function HamsterPage() {
 
         {showShop && (
           <div className="rounded-2xl p-4 mb-4" style={{ background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.05)" }}>
-            <div className="flex gap-2 mb-3">
-              {[{ id: "food", label: "🍽️ 먹이" }, { id: "toy", label: "🎮 장난감" }, { id: "etc", label: "🧹 관리" }].map((tab) => (
-                <button key={tab.id} onClick={() => setShopTab(tab.id)} className="flex-1 py-2 rounded-xl text-[12px] font-medium transition-all" style={{ background: shopTab === tab.id ? "rgba(251,191,36,0.1)" : "transparent", color: shopTab === tab.id ? "#fbbf24" : "rgba(255,255,255,.3)", border: shopTab === tab.id ? "1px solid rgba(251,191,36,0.15)" : "1px solid transparent" }}>{tab.label}</button>
+            <div className="flex gap-1.5 mb-3 overflow-x-auto">
+              {[{ id: "food", label: "🍽️ 먹이" }, { id: "toy", label: "🎮 장난감" }, { id: "decor", label: "🎀 꾸미기" }, { id: "etc", label: "🧹 관리" }].map((tab) => (
+                <button key={tab.id} onClick={() => setShopTab(tab.id)} className="flex-shrink-0 px-3 py-2 rounded-xl text-[11px] font-medium transition-all whitespace-nowrap" style={{ background: shopTab === tab.id ? "rgba(251,191,36,0.1)" : "transparent", color: shopTab === tab.id ? "#fbbf24" : "rgba(255,255,255,.3)", border: shopTab === tab.id ? "1px solid rgba(251,191,36,0.15)" : "1px solid transparent" }}>{tab.label}</button>
               ))}
             </div>
             <div className="space-y-2">
@@ -1056,15 +1563,48 @@ export default function HamsterPage() {
                   <span className="text-[12px] font-bold" style={{ color: state.coins >= item.cost ? "#fbbf24" : "#ef4444" }}>{item.cost === 0 ? "무료" : `🪙 ${item.cost}`}</span>
                 </button>
               ))}
-              {shopTab === "toy" && TOYS.map((item) => {
-                const owned = state.ownedToys.includes(item.id);
-                return (
-                  <button key={item.id} onClick={() => !owned && buyToy(item)} disabled={owned || state.coins < item.cost || isSleeping || busy} className="w-full flex items-center justify-between p-3 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40" style={{ background: "rgba(255,255,255,.02)", border: `1px solid ${owned ? "rgba(74,222,128,0.15)" : "rgba(255,255,255,.04)"}` }}>
-                    <div className="flex items-center gap-3"><span className="text-2xl">{item.emoji}</span><div className="text-left"><div className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,.6)" }}>{item.name}</div><div className="text-[10px]" style={{ color: "rgba(255,255,255,.2)" }}>행복 +{item.happiness} 에너지 {item.energy} · 영구 소유</div></div></div>
-                    <span className="text-[12px] font-bold" style={{ color: owned ? "#4ade80" : state.coins >= item.cost ? "#fbbf24" : "#ef4444" }}>{owned ? "✓ 보유" : `🪙 ${item.cost}`}</span>
-                  </button>
-                );
-              })}
+              {shopTab === "toy" && <>
+                {TOYS.map((item) => {
+                  const owned = state.ownedToys.includes(item.id);
+                  return (
+                    <button key={item.id} onClick={() => !owned && buyToy(item)} disabled={owned || state.coins < item.cost || isSleeping || busy} className="w-full flex items-center justify-between p-3 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40" style={{ background: "rgba(255,255,255,.02)", border: `1px solid ${owned ? "rgba(74,222,128,0.15)" : "rgba(255,255,255,.04)"}` }}>
+                      <div className="flex items-center gap-3"><span className="text-2xl">{item.emoji}</span><div className="text-left"><div className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,.6)" }}>{item.name}</div><div className="text-[10px]" style={{ color: "rgba(255,255,255,.2)" }}>{item.id === "ball" ? "당구 미니게임" : item.id === "swing" ? "타이밍 리듬게임" : `행복 +${item.happiness} 에너지 ${item.energy}`} · 영구 소유</div></div></div>
+                      <span className="text-[12px] font-bold" style={{ color: owned ? "#4ade80" : state.coins >= item.cost ? "#fbbf24" : "#ef4444" }}>{owned ? "✓ 보유" : `🪙 ${item.cost}`}</span>
+                    </button>
+                  );
+                })}
+                <button onClick={() => !state.ownedRhythm && buyRhythmToy()} disabled={state.ownedRhythm || state.coins < RHYTHM_TOY.cost || isSleeping || busy} className="w-full flex items-center justify-between p-3 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40" style={{ background: "rgba(255,255,255,.02)", border: `1px solid ${state.ownedRhythm ? "rgba(74,222,128,0.15)" : "rgba(255,255,255,.04)"}` }}>
+                  <div className="flex items-center gap-3"><span className="text-2xl">{RHYTHM_TOY.emoji}</span><div className="text-left"><div className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,.6)" }}>{RHYTHM_TOY.name}</div><div className="text-[10px]" style={{ color: "rgba(255,255,255,.2)" }}>3라인 리듬게임 · 영구 소유</div></div></div>
+                  <span className="text-[12px] font-bold" style={{ color: state.ownedRhythm ? "#4ade80" : state.coins >= RHYTHM_TOY.cost ? "#fbbf24" : "#ef4444" }}>{state.ownedRhythm ? "✓ 보유" : `🪙 ${RHYTHM_TOY.cost}`}</span>
+                </button>
+              </>}
+              {shopTab === "decor" && <>
+                <div className="text-[10px] mb-2 px-1" style={{ color: "rgba(255,255,255,.3)" }}>💡 구매한 아이템은 '꾸미기' 버튼에서 착용/해제 가능</div>
+                {DECOR_SLOTS.map((slot) => (
+                  <div key={slot.id}>
+                    <div className="text-[9px] uppercase tracking-widest mt-3 mb-1.5 px-1" style={{ color: "rgba(255,255,255,.2)" }}>{slot.label}</div>
+                    {DECOR_ITEMS.filter((d) => d.slot === slot.id).map((decor) => {
+                      const owned = state.ownedDecor.includes(decor.id);
+                      const equipped = state.equippedDecor[decor.slot] === decor.id;
+                      return (
+                        <button key={decor.id}
+                          onClick={() => owned ? toggleEquipDecor(decor) : buyDecor(decor)}
+                          disabled={!owned && state.coins < decor.cost}
+                          className="w-full flex items-center justify-between p-2.5 mb-1 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40"
+                          style={{ background: equipped ? "rgba(251,191,36,0.08)" : "rgba(255,255,255,.02)", border: `1px solid ${equipped ? "rgba(251,191,36,0.25)" : owned ? "rgba(74,222,128,0.12)" : "rgba(255,255,255,.04)"}` }}>
+                          <div className="flex items-center gap-2.5"><span className="text-xl">{decor.emoji}</span>
+                            <div className="text-left"><div className="text-[12px] font-medium" style={{ color: "rgba(255,255,255,.6)" }}>{decor.name}</div>
+                              {owned && <div className="text-[9px]" style={{ color: equipped ? "#fbbf24" : "#4ade80" }}>{equipped ? "🌟 착용 중 (탭하여 해제)" : "탭하여 착용"}</div>}
+                            </div></div>
+                          <span className="text-[11px] font-bold" style={{ color: equipped ? "#fbbf24" : owned ? "#4ade80" : state.coins >= decor.cost ? "#fbbf24" : "#ef4444" }}>
+                            {equipped ? "✓ 착용" : owned ? "보유" : `🪙 ${decor.cost}`}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </>}
               {shopTab === "etc" && (
                 <button onClick={changeSawdust} disabled={state.coins < SAWDUST_ITEM.cost} className="w-full flex items-center justify-between p-3 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40" style={{ background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)" }}>
                   <div className="flex items-center gap-3"><span className="text-2xl">{SAWDUST_ITEM.emoji}</span><div className="text-left"><div className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,.6)" }}>{SAWDUST_ITEM.name}</div><div className="text-[10px]" style={{ color: "rgba(255,255,255,.2)" }}>톱밥 신선도 100%로 교체 (현재 {Math.round(state.sawdustFresh)}%)</div></div></div>
