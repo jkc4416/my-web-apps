@@ -847,7 +847,7 @@ export default function HamsterPage() {
   const rhythmRafRef = useRef(null);
   const RHYTHM_DURATION = 18000;
   const NOTE_SPEED = 150; // px/sec
-  const HIT_LINE_Y = CAGE_H - 40;
+  const HIT_LINE_Y = CAGE_H - 20;
   const PERFECT_WINDOW = 30;
   const GOOD_WINDOW = 60;
 
@@ -1296,7 +1296,7 @@ export default function HamsterPage() {
           {/* ===== RHYTHM MINI-GAME ===== */}
           {rhythmGame && (
             <>
-              <svg viewBox={`0 0 ${CAGE_W} ${CAGE_H}`} preserveAspectRatio="none" className="absolute inset-0 z-20 pointer-events-none" style={{ width: "100%", height: CAGE_H + "px" }}>
+              <svg viewBox={`0 0 ${CAGE_W} ${CAGE_H}`} preserveAspectRatio="none" className="absolute z-20 pointer-events-none" style={{ left: 0, right: 0, top: 0, height: CAGE_H + "px", width: "100%" }}>
                 {/* Lanes */}
                 {[0, 1, 2].map((lane) => {
                   const laneW = CAGE_W / 3;
@@ -1416,7 +1416,7 @@ export default function HamsterPage() {
                 const spriteH = spriteRows * px;
                 return (
                   <>
-                    {back && <span className="absolute pointer-events-none" style={{ left: -14, top: spriteH * 0.35, fontSize: spriteW * 0.55, zIndex: -1, opacity: 0.85 }}>{back.emoji}</span>}
+                    {back && <span className="absolute pointer-events-none" style={{ left: -spriteW * 0.4, top: spriteH * 0.2, fontSize: spriteW * 0.6, opacity: 0.7, filter: "blur(0.5px)" }}>{back.emoji}</span>}
                     {hat && <span className="absolute pointer-events-none" style={{ left: "50%", top: -spriteH * 0.15, transform: "translateX(-50%)", fontSize: spriteW * 0.5 }}>{hat.emoji}</span>}
                     {face && <span className="absolute pointer-events-none" style={{ left: "50%", top: spriteH * 0.35, transform: "translateX(-50%)", fontSize: spriteW * 0.4 }}>{face.emoji}</span>}
                     {neck && <span className="absolute pointer-events-none" style={{ left: "50%", top: spriteH * 0.65, transform: "translateX(-50%)", fontSize: spriteW * 0.45 }}>{neck.emoji}</span>}
