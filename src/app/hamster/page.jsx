@@ -1015,30 +1015,12 @@ export default function HamsterPage() {
     });
   }, [state]);
 
-  if (!state) return (
-    <div className="min-h-screen flex items-center justify-center text-white" style={{ background: "radial-gradient(ellipse at 50% 30%, #2a1810 0%, #1a0e08 40%, #0c0604 100%)" }}>
-      <div className="text-center">
-        <div className="text-5xl mb-3" style={{ animation: "pulse 1.5s ease-in-out infinite" }}>🐹</div>
-        <div className="text-[11px]" style={{ color: "rgba(255,255,255,.3)" }}>햄스터를 깨우는 중...</div>
-      </div>
-    </div>
-  );
+  // Sawdust freshness quantized to 2% for memo stability (null → 100 default)
+  const freshBucket = Math.floor((state?.sawdustFresh ?? 100) / 2);
 
-  const moodData = MOODS[mood] || MOODS.idle;
-  const overallHealth = Math.round((state.hunger + state.happiness + state.energy + state.cleanliness) / 4);
-  const xpInLevel = state.xp % XP_PER_LEVEL;
-  const title = TITLES[Math.min(state.level - 1, TITLES.length - 1)];
-  const tier = getSizeTier(state.level);
-  const spriteInfo = SIZES[tier];
-  // Sawdust color interpolation: fresh=#c4a86c, dirty=#888
-  const sawdustR = Math.round(196 - (100 - state.sawdustFresh) * 0.68);
-  const sawdustG = Math.round(168 - (100 - state.sawdustFresh) * 0.32);
-  const sawdustB = Math.round(108 + (100 - state.sawdustFresh) * 0.28);
-  const sawdustColor = `rgb(${sawdustR},${sawdustG},${sawdustB})`;
-
-  // Memoize sawdust chips — only re-render when freshness changes (prevents re-render on every hamster move)
+  // Memoize sawdust chips — MUST be called before any early return (Rules of Hooks)
   const sawdustChips = useMemo(() => {
-    const fresh = state.sawdustFresh;
+    const fresh = freshBucket * 2;
     const r = Math.round(196 - (100 - fresh) * 0.68);
     const g = Math.round(168 - (100 - fresh) * 0.32);
     const b = Math.round(108 + (100 - fresh) * 0.28);
@@ -1071,7 +1053,28 @@ export default function HamsterPage() {
       return <div key={`clump${i}`} className="absolute" style={{ width: w, height: h, borderRadius: 2, background: isDirty ? dirtyColor : freshColor, left: `${x}%`, top: `${yPct}%`, transform: `rotate(${rot}deg)` }} />;
     });
     return <>{small}{big}</>;
-  }, [Math.floor(state.sawdustFresh / 2)]); // only re-render on ≥2% change
+  }, [freshBucket]); // only re-render on ≥2% change
+
+  if (!state) return (
+    <div className="min-h-screen flex items-center justify-center text-white" style={{ background: "radial-gradient(ellipse at 50% 30%, #2a1810 0%, #1a0e08 40%, #0c0604 100%)" }}>
+      <div className="text-center">
+        <div className="text-5xl mb-3" style={{ animation: "pulse 1.5s ease-in-out infinite" }}>🐹</div>
+        <div className="text-[11px]" style={{ color: "rgba(255,255,255,.3)" }}>햄스터를 깨우는 중...</div>
+      </div>
+    </div>
+  );
+
+  const moodData = MOODS[mood] || MOODS.idle;
+  const overallHealth = Math.round((state.hunger + state.happiness + state.energy + state.cleanliness) / 4);
+  const xpInLevel = state.xp % XP_PER_LEVEL;
+  const title = TITLES[Math.min(state.level - 1, TITLES.length - 1)];
+  const tier = getSizeTier(state.level);
+  const spriteInfo = SIZES[tier];
+  // Sawdust color interpolation: fresh=#c4a86c, dirty=#888
+  const sawdustR = Math.round(196 - (100 - state.sawdustFresh) * 0.68);
+  const sawdustG = Math.round(168 - (100 - state.sawdustFresh) * 0.32);
+  const sawdustB = Math.round(108 + (100 - state.sawdustFresh) * 0.28);
+  const sawdustColor = `rgb(${sawdustR},${sawdustG},${sawdustB})`;
 
   return (
     <div className="min-h-screen text-white relative overflow-hidden" style={{ background: "radial-gradient(ellipse at 50% 30%, #2a1810 0%, #1a0e08 40%, #0c0604 100%)", fontFamily: "'Pretendard Variable','Pretendard',-apple-system,sans-serif" }}>
