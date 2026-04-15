@@ -82,6 +82,18 @@ export default function TypingChallenge() {
   const wpmRef = useRef(null);
   const cvs = useRef(null);
 
+  // Persist stats + ranks + nick
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem("typing-stats"); if (s) setStats(JSON.parse(s));
+      const r = localStorage.getItem("typing-ranks"); if (r) setRanks(JSON.parse(r));
+      const n = localStorage.getItem("typing-nick"); if (n) setNick(n);
+    } catch {}
+  }, []);
+  useEffect(() => { try { localStorage.setItem("typing-stats", JSON.stringify(stats)); } catch {} }, [stats]);
+  useEffect(() => { try { localStorage.setItem("typing-ranks", JSON.stringify(ranks)); } catch {} }, [ranks]);
+  useEffect(() => { try { if (nick) localStorage.setItem("typing-nick", nick); } catch {} }, [nick]);
+
   // Timer
   useEffect(() => {
     if (started && !finished && mode === "timed") {

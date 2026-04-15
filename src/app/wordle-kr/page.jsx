@@ -45,8 +45,28 @@ export default function WordleKrPage() {
   const [guesses, setGuesses] = useState([]);
   const [current, setCurrent] = useState("");
   const [gameState, setGameState] = useState("playing"); // playing, won, lost
+  const [stats, setStats] = useState({ played: 0, wins: 0, streak: 0, bestStreak: 0, distribution: [0, 0, 0, 0, 0, 0] });
+  const [todayKey] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; });
   const composingRef = useRef(false);
+  const recordedRef = useRef(false);
   const maxTries = 6;
+
+  // Load + persist stats
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem("wordle-kr-stats"); if (s) setStats(JSON.parse(s));
+      const lastDay = localStorage.getItem("wordle-kr-last-day");
+      const lastGuesses = localStorage.getItem("wordle-kr-last-guesses");
+      const lastState = localStorage.getItem("wordle-kr-last-state");
+      // Restore today's progress
+      if (lastDay === todayKey) {
+        if (lastGuesses) setGuesses(JSON.parse(lastGuesses));
+        if (lastState && lastState !== "playing") { setGameState(lastState); recordedRef.current = true; }
+      }
+    } catch {}
+  }, [todayKey]);
+  useEffect(() => { try { localStorage.setItem("wordle-kr-stats", JSON.stringify(stats)); } catch {} }, [stats]);
+  useEffect(() => { try { localStorage.setItem("wordle-kr-last-day", todayKey); localStorage.setItem("wordle-kr-last-guesses", JSON.stringify(guesses)); localStorage.setItem("wordle-kr-last-state", gameState); } catch {} }, [todayKey, guesses, gameState]);
 
   const submit = useCallback(() => {
     if (current.length !== answer.length || gameState !== "playing") return;
@@ -57,8 +77,21 @@ export default function WordleKrPage() {
 
     if (current === answer) {
       setGameState("won");
+      if (!recordedRef.current) {
+        recordedRef.current = true;
+        setStats((s) => {
+          const dist = [...s.distribution];
+          dist[newGuesses.length - 1]++;
+          const newStreak = s.streak + 1;
+          return { played: s.played + 1, wins: s.wins + 1, streak: newStreak, bestStreak: Math.max(s.bestStreak, newStreak), distribution: dist };
+        });
+      }
     } else if (newGuesses.length >= maxTries) {
       setGameState("lost");
+      if (!recordedRef.current) {
+        recordedRef.current = true;
+        setStats((s) => ({ ...s, played: s.played + 1, streak: 0 }));
+      }
     }
   }, [current, answer, guesses, gameState, maxTries]);
 
@@ -145,6 +178,38 @@ export default function WordleKrPage() {
             <div className="text-4xl mb-2">{gameState === "won" ? "🎉" : "😢"}</div>
             <h2 className="text-xl font-black mb-1">{gameState === "won" ? `${guesses.length}번 만에 맞췄어요!` : "아쉬워요!"}</h2>
             {gameState === "lost" && <p className="text-[13px] mb-3" style={{ color: "rgba(255,255,255,.3)" }}>정답: <strong className="text-emerald-400">{answer}</strong></p>}
+
+            {/* Stats */}
+            {stats.played > 0 && (
+              <div className="mt-4 mb-3 grid grid-cols-4 gap-2">
+                {[["플레이", stats.played, "#fbbf24"], ["승률", `${Math.round(stats.wins / stats.played * 100)}%`, "#4ade80"], ["연승", stats.streak, "#60a5fa"], ["최고연승", stats.bestStreak, "#a78bfa"]].map(([l, v, c]) => (
+                  <div key={l} className="rounded-lg p-2" style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)" }}>
+                    <div className="text-base font-black tabular-nums" style={{ color: c }}>{v}</div>
+                    <div className="text-[9px]" style={{ color: "rgba(255,255,255,.3)" }}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Distribution */}
+            {stats.wins > 0 && (
+              <div className="rounded-xl p-3 mb-3" style={{ background: "rgba(255,255,255,.02)" }}>
+                <div className="text-[10px] text-left mb-1.5" style={{ color: "rgba(255,255,255,.3)" }}>시도 분포</div>
+                {stats.distribution.map((c, i) => {
+                  const max = Math.max(...stats.distribution, 1);
+                  const pct = (c / max) * 100;
+                  return (
+                    <div key={i} className="flex items-center gap-2 mb-0.5">
+                      <span className="text-[10px] w-3" style={{ color: "rgba(255,255,255,.4)" }}>{i + 1}</span>
+                      <div className="flex-1 h-4 rounded relative" style={{ background: "rgba(255,255,255,.04)" }}>
+                        <div className="h-full rounded flex items-center justify-end px-1.5 text-[9px] font-bold" style={{ width: `${Math.max(pct, c > 0 ? 8 : 0)}%`, background: i + 1 === guesses.length && gameState === "won" ? "#4ade80" : "rgba(255,255,255,.15)", color: c > 0 ? "#fff" : "transparent" }}>{c || ""}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             <div className="flex gap-2 mt-4">
               <button onClick={() => window.location.reload()} className="flex-1 py-3 rounded-xl text-[13px] font-semibold" style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", color: "rgba(255,255,255,.4)" }}>내일 다시</button>
               <button onClick={share} className="flex-1 py-3 rounded-xl text-[13px] font-semibold" style={{ background: "linear-gradient(135deg, #4ade80, #fbbf24)" }}>결과 공유</button>

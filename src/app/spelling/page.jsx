@@ -83,6 +83,16 @@ export default function SpellingQuiz(){
   const tmr=useRef(null);
   const cvs=useRef(null);
 
+  // Load persisted stats
+  useEffect(()=>{
+    try{
+      const b=localStorage.getItem("spelling-best");if(b)setBestS(Number(b));
+      const s=localStorage.getItem("spelling-stats");if(s)setStats(JSON.parse(s));
+    }catch{}
+  },[]);
+  useEffect(()=>{try{localStorage.setItem("spelling-best",String(bestS));}catch{}},[bestS]);
+  useEffect(()=>{try{localStorage.setItem("spelling-stats",JSON.stringify(stats));}catch{}},[stats]);
+
   useEffect(()=>{
     if(ta&&tl>0&&!show){tmr.current=setTimeout(()=>setTl(t=>t-1),1000);return()=>clearTimeout(tmr.current);}
     if(ta&&tl===0&&!show){

@@ -50,6 +50,13 @@ export default function MinesweeperPage() {
   const [flagMode, setFlagMode] = useState(false);
   const [time, setTime] = useState(0);
   const [timerRef, setTimerRef] = useState(null);
+  const [bestTimes, setBestTimes] = useState([null, null, null]); // best per difficulty (seconds), null = no record
+
+  // Load + persist best times
+  useEffect(() => {
+    try { const s = localStorage.getItem("minesweeper-best"); if (s) setBestTimes(JSON.parse(s)); } catch {}
+  }, []);
+  useEffect(() => { try { localStorage.setItem("minesweeper-best", JSON.stringify(bestTimes)); } catch {} }, [bestTimes]);
 
   const { rows, cols, mines } = DIFFS[diff];
 
@@ -95,8 +102,14 @@ export default function MinesweeperPage() {
     if (unrevealed === 0) {
       setGameState("won");
       if (timerRef) clearInterval(timerRef);
+      // Record best time for current difficulty
+      setBestTimes((prev) => {
+        const next = [...prev];
+        if (next[diff] === null || time < next[diff]) next[diff] = time;
+        return next;
+      });
     }
-  }, [board, gameState, flagMode, startGame, timerRef]);
+  }, [board, gameState, flagMode, startGame, timerRef, diff, time]);
 
   const reset = () => {
     setBoard(null);
@@ -132,6 +145,7 @@ export default function MinesweeperPage() {
           <div className="flex items-center gap-3 text-[11px]">
             <span style={{ color: "rgba(255,255,255,.25)" }}>💣 {mines - flagCount}</span>
             <span style={{ color: "rgba(255,255,255,.25)" }}>⏱ {time}s</span>
+            {bestTimes[diff] !== null && <span style={{ color: "#fbbf24" }}>🏆 {bestTimes[diff]}s</span>}
           </div>
         </div>
 
@@ -170,7 +184,10 @@ export default function MinesweeperPage() {
           <div className="mt-4 text-center rounded-2xl p-5" style={{ background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)" }}>
             <div className="text-3xl mb-2">{gameState === "won" ? "🎉" : "💥"}</div>
             <div className="text-lg font-black mb-1">{gameState === "won" ? "클리어!" : "게임 오버"}</div>
-            <div className="text-[12px] mb-3" style={{ color: "rgba(255,255,255,.3)" }}>{time}초 · {DIFFS[diff].name}</div>
+            <div className="text-[12px] mb-1" style={{ color: "rgba(255,255,255,.3)" }}>{time}초 · {DIFFS[diff].name}</div>
+            {gameState === "won" && bestTimes[diff] === time && <div className="text-[11px] mb-2 text-amber-400 font-bold">🏆 최고 기록!</div>}
+            {gameState === "won" && bestTimes[diff] !== null && bestTimes[diff] !== time && <div className="text-[10px] mb-2" style={{ color: "rgba(255,255,255,.3)" }}>최고 기록: {bestTimes[diff]}초</div>}
+            <div className="mb-3" />
             <button onClick={reset} className="px-6 py-2.5 rounded-xl font-bold text-[13px] transition-all active:scale-95" style={{ background: "linear-gradient(135deg, #60a5fa, #a78bfa)" }}>다시 하기</button>
           </div>
         )}
