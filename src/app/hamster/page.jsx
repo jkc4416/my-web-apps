@@ -11,7 +11,7 @@ const XP_PER_ACTION = 8;
 const XP_PER_LEVEL = 100;
 const WHEEL_DURATION = 8000;
 const TOY_PLAY_DURATION = 6000;
-const COIN_PER_TAP = 2;
+const COIN_PER_TAP = 10;
 const CAGE_W = 340;
 const CAGE_H = 220;
 const POOP_INTERVAL = 25000; // poop every ~25s
@@ -35,46 +35,97 @@ const TOYS = [
 const SAWDUST_ITEM = { id: "sawdust", name: "새 톱밥", emoji: "🪵", cost: 15 };
 
 // 30 decoration items — 5 slots (hat, face, neck, back, aura)
+// Accessory pixel-art palette codes (extends hamster COLORS below)
+// T=transparent, GO=gold, GD=dark gold, BK=black, WH=white, R=red, DR=dark red,
+// B=blue, DB=dark blue, G=green, Y=yellow, P=pink, U=purple, O=orange,
+// BR=brown, C=cyan, GL=glass-blue
+const T=0, GO=10, GD=11, BK=12, WH=13, R=14, B=15, G=16, Y=17, P=18, U=19, O=20, BR=21, C=22, DR=24, GL=27;
+
+// Each accessory pixel-art uses cells whose size = hamster's pixel size, so
+// scaling with the hamster is automatic. Position offsets are also in cells
+// (relative to top-left of hamster sprite grid).
+const PX = (g) => g; // identity helper for readability
+
 const DECOR_ITEMS = [
-  // Hat (10) - rendered above head
-  { id: "flower_pin", name: "꽃 핀", emoji: "🌸", slot: "hat", cost: 30 },
-  { id: "cap", name: "야구 모자", emoji: "🧢", slot: "hat", cost: 40 },
-  { id: "bow", name: "리본", emoji: "🎀", slot: "hat", cost: 35 },
-  { id: "crown", name: "왕관", emoji: "👑", slot: "hat", cost: 120 },
-  { id: "party_hat", name: "고깔 모자", emoji: "🥳", slot: "hat", cost: 50 },
-  { id: "top_hat", name: "실크 해트", emoji: "🎩", slot: "hat", cost: 80 },
-  { id: "graduation", name: "학사모", emoji: "🎓", slot: "hat", cost: 70 },
-  { id: "santa_hat", name: "산타 모자", emoji: "🎅", slot: "hat", cost: 55 },
-  { id: "wizard_hat", name: "마법사 모자", emoji: "🧙", slot: "hat", cost: 90 },
-  { id: "star_hairpin", name: "별 머리핀", emoji: "⭐", slot: "hat", cost: 45 },
+  // ─── Hat (10) ───────────────────────────────────────────────────────────
+  { id: "flower_pin", name: "꽃 핀", emoji: "🌸", slot: "hat", cost: 30,
+    art: PX([[T,P,T],[P,Y,P],[T,P,T]]) },
+  { id: "cap", name: "야구 모자", emoji: "🧢", slot: "hat", cost: 40,
+    art: PX([[T,T,B,B,B,T,T],[T,B,B,B,B,B,T],[B,B,B,B,B,B,B]]) },
+  { id: "bow", name: "리본", emoji: "🎀", slot: "hat", cost: 35,
+    art: PX([[P,P,T,P,P],[T,P,P,P,T],[P,P,T,P,P]]) },
+  { id: "crown", name: "왕관", emoji: "👑", slot: "hat", cost: 120,
+    art: PX([[GO,T,GO,T,GO],[GO,R,GO,R,GO],[GD,GD,GD,GD,GD]]) },
+  { id: "party_hat", name: "파티 모자", emoji: "🥳", slot: "hat", cost: 50,
+    art: PX([
+      [T, T, T, GO, T, T, T],     // gold star — top point
+      [T, GO,GO,GO,GO,GO, T],     // star body
+      [T, T, GO, T, GO,T, T],     // star arms
+      [T, T, T, R, T, T, T],      // red cone tip
+      [T, T, R, WH,R, T, T],      // white stripe (narrow)
+      [T, R, WH,WH,WH,R, T],      // white stripe (wider)
+      [T, R, R, R, R, R, T],      // red band
+      [R, WH,WH,WH,WH,WH,R],      // white band (wide)
+      [R, R, R, R, R, R, R],      // red base
+    ]) },
+  { id: "top_hat", name: "실크 해트", emoji: "🎩", slot: "hat", cost: 80,
+    art: PX([[T,BK,BK,BK,T],[T,BK,BK,BK,T],[T,R,R,R,T],[BK,BK,BK,BK,BK]]) },
+  { id: "graduation", name: "학사모", emoji: "🎓", slot: "hat", cost: 70,
+    art: PX([[BK,BK,BK,BK,BK],[T,T,BK,T,Y]]) },
+  { id: "santa_hat", name: "산타 모자", emoji: "🎅", slot: "hat", cost: 55,
+    art: PX([[T,T,T,T,WH],[T,R,R,R,WH],[WH,WH,WH,WH,WH]]) },
+  { id: "wizard_hat", name: "마법사 모자", emoji: "🧙", slot: "hat", cost: 90,
+    art: PX([[T,T,U,T,T],[T,T,Y,T,T],[T,U,U,U,T],[U,U,U,U,U]]) },
+  { id: "star_hairpin", name: "별 머리핀", emoji: "⭐", slot: "hat", cost: 45,
+    art: PX([[T,Y,T],[Y,Y,Y],[Y,T,Y]]) },
 
-  // Face (6) - rendered on face area
-  { id: "sunglasses", name: "선글라스", emoji: "🕶️", slot: "face", cost: 50 },
-  { id: "glasses", name: "동그란 안경", emoji: "👓", slot: "face", cost: 35 },
-  { id: "mask", name: "의료 마스크", emoji: "😷", slot: "face", cost: 25 },
-  { id: "mustache", name: "멋쟁이 콧수염", emoji: "🥸", slot: "face", cost: 40 },
-  { id: "monocle", name: "단안경", emoji: "🧐", slot: "face", cost: 60 },
-  { id: "cherry", name: "체리 볼터치", emoji: "🍒", slot: "face", cost: 30 },
+  // ─── Face (6) ──────────────────────────────────────────────────────────
+  { id: "sunglasses", name: "선글라스", emoji: "🕶️", slot: "face", cost: 50,
+    art: PX([[BK,BK,BK,BK,BK],[BK,BK,T,BK,BK]]) },
+  { id: "glasses", name: "동그란 안경", emoji: "👓", slot: "face", cost: 35,
+    art: PX([[BK,BK,BK,BK,BK],[BK,GL,BK,GL,BK]]) },
+  { id: "mask", name: "의료 마스크", emoji: "😷", slot: "face", cost: 25,
+    art: PX([[WH,WH,WH,WH,WH],[WH,WH,WH,WH,WH]]) },
+  { id: "mustache", name: "멋쟁이 콧수염", emoji: "🥸", slot: "face", cost: 40,
+    art: PX([[BR,BR,T,BR,BR],[BR,T,T,T,BR]]) },
+  { id: "monocle", name: "단안경", emoji: "🧐", slot: "face", cost: 60,
+    art: PX([[BK,BK,BK,T,T],[BK,GL,BK,T,T],[BK,BK,BK,T,T]]) },
+  { id: "cherry", name: "체리 볼터치", emoji: "🍒", slot: "face", cost: 30,
+    art: PX([[P,T,T,T,P],[P,T,T,T,P]]) },
 
-  // Neck (7) - rendered below head
-  { id: "scarf", name: "목도리", emoji: "🧣", slot: "neck", cost: 40 },
-  { id: "necktie", name: "넥타이", emoji: "👔", slot: "neck", cost: 45 },
-  { id: "bell", name: "방울 목걸이", emoji: "🔔", slot: "neck", cost: 20 },
-  { id: "pearl", name: "진주 목걸이", emoji: "📿", slot: "neck", cost: 70 },
-  { id: "bow_tie", name: "나비 넥타이", emoji: "🎗️", slot: "neck", cost: 50 },
-  { id: "medal", name: "금메달", emoji: "🏅", slot: "neck", cost: 100 },
-  { id: "headphones", name: "헤드폰", emoji: "🎧", slot: "neck", cost: 65 },
+  // ─── Neck (7) ──────────────────────────────────────────────────────────
+  { id: "scarf", name: "목도리", emoji: "🧣", slot: "neck", cost: 40,
+    art: PX([[R,R,R,R,R,R,R],[T,DR,DR,DR,DR,DR,T]]) },
+  { id: "necktie", name: "넥타이", emoji: "👔", slot: "neck", cost: 45,
+    art: PX([[T,B,T],[B,B,B],[T,B,T],[T,B,T]]) },
+  { id: "bell", name: "방울 목걸이", emoji: "🔔", slot: "neck", cost: 20,
+    art: PX([[T,GO,T],[GO,GO,GO],[T,GO,T]]) },
+  { id: "pearl", name: "진주 목걸이", emoji: "📿", slot: "neck", cost: 70,
+    art: PX([[WH,WH,WH,WH,WH]]) },
+  { id: "bow_tie", name: "나비 넥타이", emoji: "🎗️", slot: "neck", cost: 50,
+    art: PX([[R,R,DR,R,R],[T,R,DR,R,T]]) },
+  { id: "medal", name: "금메달", emoji: "🏅", slot: "neck", cost: 100,
+    art: PX([[T,Y,T],[Y,GO,Y],[T,Y,T]]) },
+  { id: "headphones", name: "헤드폰", emoji: "🎧", slot: "neck", cost: 65,
+    art: PX([[BK,BK,BK,BK,BK,BK,BK],[BK,T,T,T,T,T,BK]]) },
 
-  // Back (4) - rendered behind body
-  { id: "angel_wings", name: "천사 날개", emoji: "👼", slot: "back", cost: 110 },
-  { id: "fairy_wings", name: "요정 날개", emoji: "🧚", slot: "back", cost: 130 },
-  { id: "hero_cape", name: "히어로 망토", emoji: "🦸", slot: "back", cost: 150 },
-  { id: "backpack", name: "미니 백팩", emoji: "🎒", slot: "back", cost: 60 },
+  // ─── Back (4) ──────────────────────────────────────────────────────────
+  { id: "angel_wings", name: "천사 날개", emoji: "👼", slot: "back", cost: 110,
+    art: PX([[WH,WH,T,T,T,WH,WH],[WH,WH,WH,T,WH,WH,WH],[T,WH,WH,WH,WH,WH,T],[T,T,WH,WH,WH,T,T]]) },
+  { id: "fairy_wings", name: "요정 날개", emoji: "🧚", slot: "back", cost: 130,
+    art: PX([[U,U,T,T,T,U,U],[U,P,U,T,U,P,U],[T,U,U,T,U,U,T],[T,T,U,T,U,T,T]]) },
+  { id: "hero_cape", name: "히어로 망토", emoji: "🦸", slot: "back", cost: 150,
+    art: PX([[T,R,R,R,T],[R,R,R,R,R],[R,DR,R,DR,R],[R,R,R,R,R],[T,R,T,R,T]]) },
+  { id: "backpack", name: "미니 백팩", emoji: "🎒", slot: "back", cost: 60,
+    art: PX([[BR,BR,BR],[BR,GO,BR],[BR,BR,BR],[BR,T,BR]]) },
 
-  // Aura (3) - rendered around hamster
-  { id: "halo", name: "반짝 후광", emoji: "✨", slot: "aura", cost: 80 },
-  { id: "hearts", name: "하트 오라", emoji: "💕", slot: "aura", cost: 75 },
-  { id: "stars_aura", name: "별 오라", emoji: "🌟", slot: "aura", cost: 85 },
+  // ─── Aura (3) ──────────────────────────────────────────────────────────
+  { id: "halo", name: "반짝 후광", emoji: "✨", slot: "aura", cost: 80,
+    art: PX([[T,Y,Y,Y,T],[Y,T,T,T,Y],[T,Y,Y,Y,T]]) },
+  { id: "hearts", name: "하트 오라", emoji: "💕", slot: "aura", cost: 75,
+    art: PX([[P,T,P],[P,P,P],[T,P,T]]) },
+  { id: "stars_aura", name: "별 오라", emoji: "🌟", slot: "aura", cost: 85,
+    art: PX([[T,Y,T],[Y,Y,Y],[Y,T,Y]]) },
 ];
 
 const DECOR_SLOTS = [
@@ -134,7 +185,21 @@ const SPRITES = [
   { normal: [[0,0,0,0,7,0,7,0,7,0,0,0,0],[0,0,0,2,2,0,0,0,2,2,0,0,0],[0,0,2,2,1,1,1,1,1,2,2,0,0],[0,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,1,1,1,0],[1,1,4,4,1,1,5,1,1,4,4,1,1],[1,1,6,6,1,1,1,1,1,6,6,1,1],[0,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,3,3,3,3,3,1,1,1,0],[0,0,1,3,3,3,3,3,3,3,1,0,0],[0,0,0,1,1,0,0,0,1,1,0,0,0]], sleep: [[0,0,0,0,7,0,7,0,7,0,0,0,0],[0,0,0,2,2,0,0,0,2,2,0,0,0],[0,0,2,2,1,1,1,1,1,2,2,0,0],[0,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,1,1,1,1,1,1,1,1,0],[1,1,1,1,1,1,5,1,1,1,1,1,1],[1,1,6,6,1,1,1,1,1,6,6,1,1],[0,1,1,1,1,1,1,1,1,1,1,1,0],[0,1,1,1,3,3,3,3,3,1,1,1,0],[0,0,1,3,3,3,3,3,3,3,1,0,0],[0,0,0,1,1,0,0,0,1,1,0,0,0]] },
 ];
 
-const COLORS = { 0: "transparent", 1: "#e8a87c", 2: "#c4844c", 3: "#fde8c8", 4: "#2a1a0a", 5: "#d4836a", 6: "#ffaaaa", 7: "#fbbf24" };
+const COLORS = {
+  0: "transparent", 1: "#e8a87c", 2: "#c4844c", 3: "#fde8c8", 4: "#2a1a0a", 5: "#d4836a", 6: "#ffaaaa", 7: "#fbbf24",
+  // accessory palette (must match codes used in DECOR_ITEMS art)
+  10: "#fcd34d", 11: "#d97706", 12: "#1f2937", 13: "#f9fafb",
+  14: "#ef4444", 15: "#3b82f6", 16: "#22c55e", 17: "#facc15",
+  18: "#ec4899", 19: "#a855f7", 20: "#fb923c", 21: "#92400e",
+  22: "#06b6d4", 24: "#991b1b", 27: "#bae6fd",
+};
+
+// Convert front-facing sprite to back view by hiding facial features
+// (eye=4, nose=5, cheek=6) — replace with body color so we just see fur.
+function toBackGrid(grid) {
+  return grid.map((row) => row.map((c) => (c === 4 || c === 5 || c === 6 ? 1 : c)));
+}
+const SPRITES_BACK = SPRITES.map((s) => ({ normal: toBackGrid(s.normal), sleep: toBackGrid(s.sleep) }));
 
 function clamp(v, min = 0, max = 100) { return Math.max(min, Math.min(max, v)); }
 
@@ -149,14 +214,31 @@ function getDefaultState() {
   };
 }
 
-function PixelHamster({ tier, sleeping, flip }) {
-  const sprite = SPRITES[tier];
+function PixelHamster({ tier, sleeping, flip, view = "front" }) {
+  const sprite = view === "back" ? SPRITES_BACK[tier] : SPRITES[tier];
   const grid = sleeping ? sprite.sleep : sprite.normal;
   const size = SIZES[tier];
+  // No L/R flip in back view (symmetric)
+  const tx = view !== "back" && flip ? "scaleX(-1)" : "none";
   return (
-    <div style={{ display: "inline-grid", gridTemplateColumns: `repeat(${grid[0].length}, ${size.pixel}px)`, transform: flip ? "scaleX(-1)" : "none", imageRendering: "pixelated" }}>
+    <div style={{ display: "inline-grid", gridTemplateColumns: `repeat(${grid[0].length}, ${size.pixel}px)`, transform: tx, imageRendering: "pixelated" }}>
       {grid.flat().map((c, i) => (
         <div key={i} style={{ width: size.pixel, height: size.pixel, background: COLORS[c] || "transparent" }} />
+      ))}
+    </div>
+  );
+}
+
+// Renders an accessory's pixel art. `absolute` adds positioning class for
+// overlay use; without it the element is inline (e.g. in shop list).
+function PixelAccessory({ art, scale, style, absolute = false }) {
+  if (!art || !art.length) return null;
+  const cols = art[0].length;
+  return (
+    <div className={absolute ? "absolute pointer-events-none" : ""}
+         style={{ display: "inline-grid", gridTemplateColumns: `repeat(${cols}, ${scale}px)`, imageRendering: "pixelated", ...style }}>
+      {art.flat().map((c, i) => (
+        <div key={i} style={{ width: scale, height: scale, background: COLORS[c] || "transparent" }} />
       ))}
     </div>
   );
@@ -198,6 +280,7 @@ export default function HamsterPage() {
   const [hamX, setHamX] = useState(CAGE_W / 2);
   const [hamY, setHamY] = useState(CAGE_H / 2);
   const [hamFlip, setHamFlip] = useState(false);
+  const [hamView, setHamView] = useState("front"); // "front" | "back"
   const [hamAction, setHamAction] = useState("idle");
   const hamPosRef = useRef({ x: CAGE_W / 2, y: CAGE_H / 2 });
   const moveTimerRef = useRef(null);
@@ -253,15 +336,20 @@ export default function HamsterPage() {
     if (animRef.current) cancelAnimationFrame(animRef.current);
     const startX = hamPosRef.current.x;
     const startY = hamPosRef.current.y;
-    setHamFlip(targetX < startX);
+    const dx = targetX - startX;
+    const dy = targetY - startY;
+    setHamFlip(dx < 0);
+    // Show back view when moving predominantly upward; otherwise front.
+    if (dy < -8 && Math.abs(dy) > Math.abs(dx) * 0.7) setHamView("back");
+    else setHamView("front");
     const startTime = Date.now();
     const step = () => {
       const elapsed = Date.now() - startTime;
       const t = Math.min(elapsed / duration, 1);
       const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-      updatePos(startX + (targetX - startX) * ease, startY + (targetY - startY) * ease);
+      updatePos(startX + dx * ease, startY + dy * ease);
       if (t < 1) animRef.current = requestAnimationFrame(step);
-      else { animRef.current = null; if (onDone) onDone(); }
+      else { animRef.current = null; setHamView("front"); if (onDone) onDone(); }
     };
     animRef.current = requestAnimationFrame(step);
   }, [updatePos]);
@@ -1415,8 +1503,8 @@ export default function HamsterPage() {
             zIndex: 10,
           }}>
             <div className="relative inline-block">
-              <PixelHamster tier={tier} sleeping={isSleeping} flip={hamFlip} />
-              {/* Equipped decorations */}
+              <PixelHamster tier={tier} sleeping={isSleeping} flip={hamFlip} view={hamView} />
+              {/* Equipped decorations — pixel art, scaled to hamster's pixel size */}
               {(() => {
                 const getDecor = (slot) => {
                   const id = state.equippedDecor[slot];
@@ -1432,16 +1520,39 @@ export default function HamsterPage() {
                 const px = SIZES[tier].pixel;
                 const spriteW = spriteCols * px;
                 const spriteH = spriteRows * px;
+                const isBack = hamView === "back";
+                // Center an accessory horizontally over the hamster
+                const center = (artCols) => (spriteCols - artCols) / 2 * px;
+                // Eye/face row varies by tier (rows 1..4); approximate at ~35-40% height.
+                const faceRowPx = Math.floor(spriteRows * 0.38) * px;
+                const neckRowPx = Math.floor(spriteRows * 0.6) * px;
                 return (
                   <>
-                    {back && <span className="absolute pointer-events-none" style={{ left: -spriteW * 0.4, top: spriteH * 0.2, fontSize: spriteW * 0.6, opacity: 0.7, filter: "blur(0.5px)" }}>{back.emoji}</span>}
-                    {hat && <span className="absolute pointer-events-none" style={{ left: "50%", top: -spriteH * 0.15, transform: "translateX(-50%)", fontSize: spriteW * 0.5 }}>{hat.emoji}</span>}
-                    {face && <span className="absolute pointer-events-none" style={{ left: "50%", top: spriteH * 0.35, transform: "translateX(-50%)", fontSize: spriteW * 0.4 }}>{face.emoji}</span>}
-                    {neck && <span className="absolute pointer-events-none" style={{ left: "50%", top: spriteH * 0.65, transform: "translateX(-50%)", fontSize: spriteW * 0.45 }}>{neck.emoji}</span>}
-                    {aura && <>
-                      <span className="absolute pointer-events-none" style={{ left: -8, top: -8, fontSize: spriteW * 0.3, animation: "spin 4s linear infinite" }}>{aura.emoji}</span>
-                      <span className="absolute pointer-events-none" style={{ right: -8, bottom: -8, fontSize: spriteW * 0.3, animation: "spin 4s linear infinite reverse" }}>{aura.emoji}</span>
-                    </>}
+                    {/* Back accessory — render BEFORE hamster visually using negative z + lower opacity overlap */}
+                    {back && (
+                      <PixelAccessory absolute art={back.art} scale={px}
+                        style={{ left: center(back.art[0].length), top: spriteH * 0.18, zIndex: -1, opacity: 0.95 }} />
+                    )}
+                    {hat && (
+                      <PixelAccessory absolute art={hat.art} scale={px}
+                        style={{ left: center(hat.art[0].length), top: -(hat.art.length) * px + px }} />
+                    )}
+                    {face && !isBack && (
+                      <PixelAccessory absolute art={face.art} scale={px}
+                        style={{ left: center(face.art[0].length), top: faceRowPx }} />
+                    )}
+                    {neck && !isBack && (
+                      <PixelAccessory absolute art={neck.art} scale={px}
+                        style={{ left: center(neck.art[0].length), top: neckRowPx }} />
+                    )}
+                    {aura && (
+                      <>
+                        <PixelAccessory absolute art={aura.art} scale={Math.max(2, px - 1)}
+                          style={{ left: -aura.art[0].length * 2, top: -aura.art.length * 2, animation: "spin 4s linear infinite" }} />
+                        <PixelAccessory absolute art={aura.art} scale={Math.max(2, px - 1)}
+                          style={{ right: -aura.art[0].length * 2, bottom: -aura.art.length * 2, animation: "spin 4s linear infinite reverse" }} />
+                      </>
+                    )}
                   </>
                 );
               })()}
@@ -1610,7 +1721,14 @@ export default function HamsterPage() {
                           disabled={!owned && state.coins < decor.cost}
                           className="w-full flex items-center justify-between p-2.5 mb-1 rounded-xl transition-all active:scale-[0.98] disabled:opacity-40"
                           style={{ background: equipped ? "rgba(251,191,36,0.08)" : "rgba(255,255,255,.02)", border: `1px solid ${equipped ? "rgba(251,191,36,0.25)" : owned ? "rgba(74,222,128,0.12)" : "rgba(255,255,255,.04)"}` }}>
-                          <div className="flex items-center gap-2.5"><span className="text-xl">{decor.emoji}</span>
+                          <div className="flex items-center gap-2.5">
+                            {decor.id === "party_hat" ? (
+                              <div className="w-12 h-14 flex items-center justify-center" style={{ background: "rgba(0,0,0,.25)", borderRadius: 6 }}>
+                                <PixelAccessory art={decor.art} scale={5} />
+                              </div>
+                            ) : (
+                              <span className="text-xl">{decor.emoji}</span>
+                            )}
                             <div className="text-left"><div className="text-[12px] font-medium" style={{ color: "rgba(255,255,255,.6)" }}>{decor.name}</div>
                               {owned && <div className="text-[9px]" style={{ color: equipped ? "#fbbf24" : "#4ade80" }}>{equipped ? "🌟 착용 중 (탭하여 해제)" : "탭하여 착용"}</div>}
                             </div></div>
