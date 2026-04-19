@@ -28,7 +28,12 @@ export default function TarotPage() {
   const [shuffled, setShuffled] = useState([]);
 
   const start = useCallback(() => {
-    const shuffledCards = [...CARDS].sort(() => Math.random() - 0.5);
+    // Fisher-Yates shuffle — uniformly random, unbiased
+    const shuffledCards = [...CARDS];
+    for (let i = shuffledCards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledCards[i], shuffledCards[j]] = [shuffledCards[j], shuffledCards[i]];
+    }
     setShuffled(shuffledCards);
     setPicked(shuffledCards.slice(0, 3));
     setFlipped([false, false, false]);
@@ -84,7 +89,9 @@ export default function TarotPage() {
                     style={{
                       background: flipped[i] ? "linear-gradient(135deg, rgba(192,132,252,0.15), rgba(244,114,182,0.15))" : "linear-gradient(135deg, #4c1d95, #7e22ce)",
                       border: `2px solid ${flipped[i] ? "rgba(192,132,252,0.3)" : "rgba(255,255,255,.1)"}`,
-                      transform: flipped[i] ? "rotateY(0)" : "rotateY(0)",
+                      transform: flipped[i] ? "rotateY(0deg) scale(1.05)" : "rotateY(180deg) scale(1)",
+                      transformStyle: "preserve-3d",
+                      perspective: "600px",
                       boxShadow: flipped[i] ? "0 0 20px rgba(192,132,252,0.15)" : "none",
                     }}>
                     {flipped[i] ? (

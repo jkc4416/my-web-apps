@@ -37,7 +37,7 @@ export default function AgeCalcPage() {
 
   const result = useMemo(() => {
     const y = parseInt(year), m = parseInt(month), d = parseInt(day);
-    if (isNaN(y) || isNaN(m) || isNaN(d) || y < 1900 || y > 2026 || m < 1 || m > 12 || d < 1 || d > 31) return null;
+    if (isNaN(y) || isNaN(m) || isNaN(d) || y < 1900 || y > new Date().getFullYear() || m < 1 || m > 12 || d < 1 || d > 31) return null;
 
     const today = new Date();
     const birth = new Date(y, m - 1, d);
