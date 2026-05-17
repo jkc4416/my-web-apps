@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "QR코드 생성기 — 무료 QR코드 만들기",
   description: "텍스트, URL, Wi-Fi, 전화번호를 QR코드로 무료 변환. 이미지 다운로드 가능. 설치 없이 브라우저에서 바로 생성.",
@@ -6,4 +8,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "QR코드 생성기", description: "무료 QR코드 생성 — 브라우저에서 바로" },
   alternates: { canonical: "https://www.funappbox.com/qrcode" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["qrcode"];
+  return (<>{children}{c && <AppContent appId="qrcode" {...c} />}</>); }

@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "사운드포커스 — 공부 집중 배경음, 백색소음 믹서",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "사운드포커스", description: "공부·일·수면에 좋은 자연 소리 믹서" },
   alternates: { canonical: "https://www.funappbox.com/sound" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["sound"];
+  return (<>{children}{c && <AppContent appId="sound" {...c} />}</>); }

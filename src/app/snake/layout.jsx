@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "스네이크 게임 — 무료 온라인 뱀 게임",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "스네이크 게임", description: "클래식 뱀 게임 — 브라우저에서 무료 플레이" },
   alternates: { canonical: "https://www.funappbox.com/snake" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["snake"];
+  return (<>{children}{c && <AppContent appId="snake" {...c} />}</>); }

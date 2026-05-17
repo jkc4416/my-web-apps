@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "MBTI 인사이트 — 16가지 MBTI 유형 성격 분석",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "MBTI 인사이트 — 16가지 성격 분석", description: "MBTI 유형별 성격, 강점, 약점, 궁합 심층 분석" },
   alternates: { canonical: "https://www.funappbox.com/mbti" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["mbti"];
+  return (<>{children}{c && <AppContent appId="mbti" {...c} />}</>); }

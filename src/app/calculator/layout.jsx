@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "만능 계산기 — 연봉 실수령액, BMI, 단위변환, 할인 계산기",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "만능 계산기 — 연봉, BMI, 단위변환", description: "일상 계산을 한 곳에서" },
   alternates: { canonical: "https://www.funappbox.com/calculator" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["calculator"];
+  return (<>{children}{c && <AppContent appId="calculator" {...c} />}</>); }

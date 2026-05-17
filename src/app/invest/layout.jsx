@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "투자 시뮬레이터 — 복리 계산기, 적립식 투자 수익률 시뮬레이션",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "투자 시뮬레이터", description: "복리 수익률 시뮬레이션 — 무료 투자 계산기" },
   alternates: { canonical: "https://www.funappbox.com/invest" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["invest"];
+  return (<>{children}{c && <AppContent appId="invest" {...c} />}</>); }

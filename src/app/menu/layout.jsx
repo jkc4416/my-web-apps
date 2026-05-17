@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "밥뭐먹지 — 오늘 뭐 먹지? 랜덤 메뉴 추천 룰렛",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "밥뭐먹지", description: "오늘 뭐 먹지? 랜덤 메뉴 룰렛으로 결정!" },
   alternates: { canonical: "https://www.funappbox.com/menu" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["menu"];
+  return (<>{children}{c && <AppContent appId="menu" {...c} />}</>); }

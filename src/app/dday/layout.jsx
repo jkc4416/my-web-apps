@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "디데이 계산기 — D-Day 카운터, 날짜 계산",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "디데이 계산기", description: "중요한 날까지 카운트다운 — 무료 D-Day" },
   alternates: { canonical: "https://www.funappbox.com/dday" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["dday"];
+  return (<>{children}{c && <AppContent appId="dday" {...c} />}</>); }

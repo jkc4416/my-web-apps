@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "오늘의 운세 & 사주팔자 — 무료 운세 보기",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "오늘의 운세 & 사주팔자", description: "무료 사주 풀이와 오늘의 운세를 확인하세요" },
   alternates: { canonical: "https://www.funappbox.com/fortune" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["fortune"];
+  return (<>{children}{c && <AppContent appId="fortune" {...c} />}</>); }

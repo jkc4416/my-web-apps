@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "비밀번호 생성기 — 안전한 랜덤 비밀번호 만들기",
   description: "안전한 랜덤 비밀번호를 즉시 생성. 길이, 대소문자, 숫자, 특수문자 옵션 선택 가능. 강도 표시 + 원클릭 복사. 무료.",
@@ -6,4 +8,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "비밀번호 생성기", description: "안전한 랜덤 비밀번호 — 무료 생성" },
   alternates: { canonical: "https://www.funappbox.com/password" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["password"];
+  return (<>{children}{c && <AppContent appId="password" {...c} />}</>); }

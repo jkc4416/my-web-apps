@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "타이핑 테스트 — 한글 타자 속도 측정, 타자 연습",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "타이핑 테스트", description: "한글 타자 속도 & 정확도 측정 — 무료" },
   alternates: { canonical: "https://www.funappbox.com/typing" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["typing"];
+  return (<>{children}{c && <AppContent appId="typing" {...c} />}</>); }

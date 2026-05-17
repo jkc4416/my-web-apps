@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "햄스터 키우기 — 무료 가상 펫 육성 게임",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "햄스터 키우기", description: "귀여운 도트 햄스터 육성 게임 — 무료 플레이" },
   alternates: { canonical: "https://www.funappbox.com/hamster" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["hamster"];
+  return (<>{children}{c && <AppContent appId="hamster" {...c} />}</>); }

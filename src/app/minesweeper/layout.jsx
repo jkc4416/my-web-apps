@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "지뢰찾기 — 무료 온라인 마인스위퍼",
   description: "브라우저에서 바로 즐기는 클래식 지뢰찾기! 초급(9×9), 중급(12×12), 고급(16×16) 난이도. 깃발 모드, 타이머. 설치 없이 무료 플레이.",
@@ -6,4 +8,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "지뢰찾기", description: "무료 온라인 마인스위퍼 — 브라우저에서 바로" },
   alternates: { canonical: "https://www.funappbox.com/minesweeper" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["minesweeper"];
+  return (<>{children}{c && <AppContent appId="minesweeper" {...c} />}</>); }

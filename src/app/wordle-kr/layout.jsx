@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "한글 워들 — 매일 새로운 단어 맞추기 게임",
   description: "매일 바뀌는 한글 단어를 6번 안에 맞춰보세요! 워들의 한국어 버전. 결과를 이모지로 공유할 수 있어요.",
@@ -6,4 +8,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "한글 워들", description: "매일 새로운 단어 맞추기 게임" },
   alternates: { canonical: "https://www.funappbox.com/wordle-kr" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["wordle-kr"];
+  return (<>{children}{c && <AppContent appId="wordle-kr" {...c} />}</>); }

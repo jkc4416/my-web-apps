@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "컬러크래프트 — 색상 팔레트 생성기, 그라데이션, 컬러 도구",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "컬러크래프트", description: "색상 팔레트 생성기 — 무료 디자인 컬러 도구" },
   alternates: { canonical: "https://www.funappbox.com/color" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["color"];
+  return (<>{children}{c && <AppContent appId="color" {...c} />}</>); }

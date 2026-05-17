@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "플래피버드 — Flappy Bird 무료 온라인 게임",
   description:
@@ -12,4 +14,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "플래피버드", description: "Flappy Bird — 브라우저에서 무료 플레이" },
   alternates: { canonical: "https://www.funappbox.com/flappy" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["flappy"];
+  return (<>{children}{c && <AppContent appId="flappy" {...c} />}</>); }

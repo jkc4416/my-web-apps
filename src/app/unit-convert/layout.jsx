@@ -1,3 +1,5 @@
+import AppContent from "../../components/AppContent";
+import { APP_CONTENT } from "../../components/app-content-data";
 export const metadata = {
   title: "단위 변환기 — 길이, 무게, 온도, 넓이, 속도 변환",
   description: "길이(cm↔인치), 무게(kg↔파운드), 온도(섭씨↔화씨), 넓이(평↔m²), 속도, 데이터 단위를 즉시 변환. 무료 온라인 단위 변환 도구.",
@@ -6,4 +8,5 @@ export const metadata = {
   twitter: { card: "summary_large_image", title: "단위 변환기", description: "무료 단위 변환 — 길이, 무게, 온도, 넓이" },
   alternates: { canonical: "https://www.funappbox.com/unit-convert" },
 };
-export default function Layout({ children }) { return children; }
+export default function Layout({ children }) { const c = APP_CONTENT["unit-convert"];
+  return (<>{children}{c && <AppContent appId="unit-convert" {...c} />}</>); }

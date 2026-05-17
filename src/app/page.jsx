@@ -293,7 +293,7 @@ export default function Home() {
               className="text-xs tracking-widest uppercase"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
-              27 Apps Live
+              {apps.length} Apps Live
             </span>
           </div>
 
@@ -319,6 +319,71 @@ export default function Home() {
             스네이크, 햄스터 키우기까지 — 설치 없이 바로 사용하세요.
           </p>
         </header>
+
+        {/* Intro section */}
+        <section className="max-w-3xl pb-12 sm:pb-16" style={{ color: "rgba(255,255,255,0.55)" }}>
+          <h2 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: "rgba(255,255,255,0.85)" }}>
+            한국어 사용자를 위한 27가지 무료 웹 도구·게임
+          </h2>
+          <p className="text-sm sm:text-base leading-relaxed mb-3">
+            <strong style={{ color: "rgba(255,255,255,0.75)" }}>FunAppBox</strong>는 일상에서 자주 필요한 도구와
+            짧은 휴식 시간에 즐길 수 있는 미니 게임을 한 곳에 모아둔 무료 웹 서비스입니다.
+            연봉 계산기·디데이·QR코드 같은 실용 도구부터, 한글 워들·플래피버드·햄스터 키우기 같은
+            캐주얼 게임까지 모두 <strong style={{ color: "rgba(255,255,255,0.75)" }}>회원가입 없이 무료</strong>로
+            바로 사용할 수 있습니다.
+          </p>
+          <p className="text-sm sm:text-base leading-relaxed">
+            모든 도구는 한국어 사용자에게 최적화되어 있으며 (한글 IME 처리, 한국식 만 나이, 한국식 사주팔자 등),
+            입력한 데이터는 사용자의 브라우저에만 저장되어 외부로 전송되지 않습니다.
+          </p>
+        </section>
+
+        {/* Why FunAppBox */}
+        <section className="pb-12 sm:pb-16">
+          <h2 className="text-lg sm:text-xl font-bold mb-6" style={{ color: "rgba(255,255,255,0.85)" }}>
+            왜 FunAppBox인가요?
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            {[
+              { icon: "⚡", title: "설치 없이 즉시 사용", desc: "브라우저만 있으면 됩니다. 앱 다운로드, 회원가입 모두 불필요." },
+              { icon: "🆓", title: "100% 무료", desc: "모든 도구와 게임이 영구 무료. 결제·구독 시스템 없음." },
+              { icon: "🔒", title: "개인정보 보호", desc: "입력값은 사용자 브라우저(localStorage)에만 저장. 서버 전송 없음." },
+              { icon: "🇰🇷", title: "한국어 최적화", desc: "한글 IME, 만 나이, 사주팔자, 맞춤법 등 한국식 기능 다수." },
+              { icon: "📱", title: "모바일·PC 모두 지원", desc: "반응형 디자인으로 어떤 기기에서도 잘 동작합니다." },
+              { icon: "🚀", title: "빠른 로딩", desc: "정적 사전 렌더링(SSG)으로 1초 이내 즉시 로드." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl p-4 sm:p-5" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                <div className="text-2xl mb-2">{item.icon}</div>
+                <h3 className="text-sm sm:text-base font-bold mb-1" style={{ color: "rgba(255,255,255,0.85)" }}>{item.title}</h3>
+                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Categories overview */}
+        <section className="pb-8 sm:pb-10">
+          <h2 className="text-lg sm:text-xl font-bold mb-3" style={{ color: "rgba(255,255,255,0.85)" }}>
+            어떤 도구·게임이 있나요?
+          </h2>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: "rgba(255,255,255,0.45)" }}>
+            27개의 앱이 4개 카테고리로 나뉘어 있습니다. 아래에서 원하는 카테고리를 둘러보세요.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: "🛠️ 실용 도구", count: 10, color: "#22c55e", desc: "계산기·QR·디데이·색상·단위변환" },
+              { label: "🔮 테스트·점술", count: 8, color: "#a855f7", desc: "MBTI·운세·타로·이름궁합·맞춤법" },
+              { label: "🎮 미니 게임", count: 8, color: "#fbbf24", desc: "워들·2048·스네이크·플래피·햄스터" },
+              { label: "📊 기타", count: 1, color: "#60a5fa", desc: "투자 시뮬레이터" },
+            ].map((cat) => (
+              <div key={cat.label} className="rounded-xl p-3 sm:p-4 text-center" style={{ background: "rgba(255,255,255,0.025)", border: `1px solid ${cat.color}20` }}>
+                <div className="text-xs sm:text-sm font-bold mb-1" style={{ color: cat.color }}>{cat.label}</div>
+                <div className="text-2xl font-black tabular-nums mb-1" style={{ color: "rgba(255,255,255,0.85)" }}>{cat.count}개</div>
+                <div className="text-[10px] sm:text-xs leading-tight" style={{ color: "rgba(255,255,255,0.4)" }}>{cat.desc}</div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Bento Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pb-24">
@@ -412,31 +477,82 @@ export default function Home() {
           ))}
         </div>
 
-        {/* SEO text block — visible to crawlers, subtle for users */}
-        <section className="pb-8 max-w-2xl mx-auto" style={{ color: "rgba(255,255,255,0.15)" }}>
-          <div className="h-px max-w-xs mx-auto mb-8" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)" }} />
-          <h2 className="text-sm font-semibold mb-3" style={{ color: "rgba(255,255,255,0.2)" }}>FunAppBox — 무료 온라인 도구 & 게임</h2>
-          <p className="text-xs leading-relaxed mb-3">
-            FunAppBox는 설치 없이 브라우저에서 바로 사용할 수 있는 무료 웹 도구와 게임 모음입니다.
-            이름궁합 테스트로 두 사람의 궁합을 확인하고, 만능 계산기로 연봉 실수령액이나 BMI를 계산하세요.
-            MBTI 인사이트에서 16가지 성격 유형을 분석하고, 맞춤법 왕 퀴즈로 헷갈리는 한국어 맞춤법을 마스터하세요.
-          </p>
-          <p className="text-xs leading-relaxed mb-3">
-            사운드포커스로 공부할 때 집중력을 높이고, 투자 시뮬레이터로 복리의 마법을 체험하세요.
-            컬러크래프트에서 나만의 색상 팔레트를 만들고, 타이핑 챌린지로 타자 속도를 측정하세요.
-            밥뭐먹지 룰렛으로 오늘의 메뉴를 정하고, 디데이 메이커로 중요한 날을 카운트다운하세요.
-          </p>
-          <p className="text-xs leading-relaxed mb-3">
-            사주팔자와 오늘의 운세로 매일의 운세를 확인하고, 스네이크 게임과 플래피버드로 잠시 쉬어가세요.
-            햄스터 키우기에서 귀여운 도트 햄스터를 돌보며 레벨업시켜보세요.
-            모든 도구는 회원가입 없이 무료로 이용 가능합니다.
-          </p>
+        {/* Usage guide */}
+        <section className="pb-12 sm:pb-16">
+          <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: "rgba(255,255,255,0.85)" }}>
+            처음 오셨나요? 추천 사용법
+          </h2>
+          <div className="space-y-3">
+            {[
+              { step: "1", title: "관심 있는 카드를 탭하세요", desc: "위의 카드 그리드에서 끌리는 도구나 게임을 선택하면 즉시 실행됩니다." },
+              { step: "2", title: "회원가입 불필요", desc: "어떤 정보도 입력할 필요 없이 바로 사용 가능합니다." },
+              { step: "3", title: "기록은 자동 저장", desc: "게임 점수, 도구 설정 등은 브라우저에 자동으로 저장되어 다음 방문 시 그대로 이어집니다." },
+              { step: "4", title: "결과를 공유해보세요", desc: "MBTI·타로·운세·게임 점수 등은 친구에게 카톡·인스타로 공유 가능합니다." },
+            ].map((s) => (
+              <div key={s.step} className="rounded-xl p-4 flex gap-4 items-start" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                <div className="text-xl font-black w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(168,85,247,0.15)", color: "#c084fc" }}>{s.step}</div>
+                <div>
+                  <div className="text-sm font-bold mb-1" style={{ color: "rgba(255,255,255,0.85)" }}>{s.title}</div>
+                  <div className="text-xs sm:text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{s.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
-        {/* Footer */}
-        <footer className="pb-12 text-center" style={{ color: "rgba(255,255,255,0.08)" }}>
-          <p className="text-xs">© 2026 FunAppBox. All tools are free.</p>
-        </footer>
+        {/* FAQ section */}
+        <section className="pb-12 sm:pb-16 max-w-3xl">
+          <h2 className="text-lg sm:text-xl font-bold mb-6" style={{ color: "rgba(255,255,255,0.85)" }}>
+            자주 묻는 질문
+          </h2>
+          <div className="space-y-4">
+            {[
+              { q: "정말 모두 무료인가요?", a: "네, 모든 27개 도구와 게임은 완전 무료입니다. 결제·구독·인앱 구매가 일절 없습니다. 사이트 운영비는 Google AdSense 광고로 충당합니다." },
+              { q: "회원가입이 필요한가요?", a: "필요 없습니다. 모든 도구는 회원가입·로그인 없이 즉시 사용 가능합니다." },
+              { q: "내가 입력한 정보(이름·생년월일 등)는 어디에 저장되나요?", a: "오직 사용자의 브라우저(localStorage)에만 저장됩니다. 서버나 외부로 절대 전송되지 않으며, 브라우저 데이터를 삭제하면 함께 사라집니다." },
+              { q: "모바일에서도 잘 동작하나요?", a: "모든 도구는 모바일·PC 양쪽 모두 최적화되어 있습니다. 'iOS Safari 홈 화면에 추가'를 사용하면 앱처럼 사용할 수도 있습니다." },
+              { q: "오프라인에서도 사용 가능한가요?", a: "한 번 페이지를 로드하면 대부분의 도구는 인터넷 없이도 동작합니다. 단, 첫 방문 시에는 인터넷이 필요합니다." },
+              { q: "새로운 도구 제안은 어디로 보내나요?", a: "문의 페이지에서 이메일로 보내주세요. 사용자 제안을 적극 반영하고 있습니다." },
+            ].map((item) => (
+              <div key={item.q} className="rounded-xl p-4 sm:p-5" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                <div className="text-sm sm:text-base font-bold mb-2" style={{ color: "rgba(255,255,255,0.85)" }}>Q. {item.q}</div>
+                <div className="text-xs sm:text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>A. {item.a}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* SEO long-form content */}
+        <section className="pb-12 max-w-3xl" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <h2 className="text-base sm:text-lg font-bold mb-3" style={{ color: "rgba(255,255,255,0.75)" }}>FunAppBox에 대해 더 알아보기</h2>
+          <p className="text-sm leading-relaxed mb-3">
+            FunAppBox는 일상에서 자주 필요한 작은 도구와 짧은 시간 즐길 수 있는 미니 게임을
+            한 곳에 모아둔 무료 웹 서비스입니다. 매번 다른 사이트에서 계산기·단위변환·이름궁합을
+            찾는 번거로움을 줄이고, 잠깐의 휴식 시간에 부담 없이 즐길 수 있는 캐주얼 게임을 제공합니다.
+          </p>
+          <p className="text-sm leading-relaxed mb-3">
+            <strong style={{ color: "rgba(255,255,255,0.7)" }}>실용 도구</strong>에는 만능 계산기,
+            연봉 실수령액 계산, BMI 측정, 단위 변환기, 나이 계산기, 디데이 카운터, 비밀번호 생성기,
+            QR코드 생성, 글자수 세기, 색상 도구가 포함됩니다. 일상적인 작업부터 디자이너·개발자의
+            전문적인 작업까지 폭넓게 활용됩니다.
+          </p>
+          <p className="text-sm leading-relaxed mb-3">
+            <strong style={{ color: "rgba(255,255,255,0.7)" }}>테스트·점술</strong> 카테고리에는
+            이름 궁합, MBTI 16가지 성격 분석, 동물 성격 테스트, 연애 타로, 전생 테스트, 오늘의
+            사주 운세, 밸런스 게임, 한국어 맞춤법 퀴즈가 있습니다. 친구·가족과 결과를 공유하며
+            즐길 수 있는 가벼운 심리·점술 콘텐츠입니다.
+          </p>
+          <p className="text-sm leading-relaxed mb-3">
+            <strong style={{ color: "rgba(255,255,255,0.7)" }}>미니 게임</strong>은 한글 워들,
+            지뢰찾기, 2048, 틱택토, 스네이크, 플래피버드, 햄스터 키우기(다마고치), 타이핑 챌린지로
+            구성됩니다. 클래식 게임부터 현대적인 픽셀 아트 게임까지 다양하게 준비되어 있습니다.
+          </p>
+          <p className="text-sm leading-relaxed">
+            추가로 <strong style={{ color: "rgba(255,255,255,0.7)" }}>투자 시뮬레이터</strong>로
+            과거 시점의 투자를 백테스트해볼 수 있습니다. 비트코인, 삼성전자, S&amp;P500 등 주요
+            자산을 2005~2026년 사이 임의 시점에 투자했을 때의 수익률을 그래프로 확인하세요.
+          </p>
+        </section>
 
         {/* JSON-LD Structured Data */}
         <script

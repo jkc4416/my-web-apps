@@ -1,4 +1,5 @@
 import Script from "next/script";
+import Footer from "../components/Footer";
 import "./globals.css";
 
 const GA_ID = "G-9B1VWBK256";
@@ -111,6 +112,7 @@ export default function RootLayout({ children }) {
           `}
         </Script>
         {children}
+        <Footer />
       </body>
     </html>
   );
